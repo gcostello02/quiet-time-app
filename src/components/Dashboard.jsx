@@ -13,7 +13,7 @@ const Dashboard = () => {
       await signOut();
       navigate("/");
     } catch (err) {
-      console.log("An unexpected error occurred ", err); // Catch unexpected errors
+      console.log("An unexpected error occurred ", err);
     }
   };
   console.log(session);

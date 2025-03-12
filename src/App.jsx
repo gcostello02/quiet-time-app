@@ -8,8 +8,6 @@ import { UserAuth } from "./context/AuthContext";
 function App() {
   const { user } = UserAuth();
 
-  // console.log(user);
-
   return (
     <>
       <Signin />

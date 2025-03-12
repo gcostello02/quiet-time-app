@@ -16,17 +16,17 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      const result = await signUpNewUser(email, password); // Call context function
+      const result = await signUpNewUser(email, password);
 
       if (result.success) {
-        navigate("/dashboard"); // Navigate to dashboard on success
+        navigate("/dashboard"); 
       } else {
-        setError(result.error.message); // Show error message on failure
+        setError(result.error.message);
       }
     } catch (err) {
-      setError("An unexpected error occurred ", err); // Catch unexpected errors
+      setError("An unexpected error occurred ", err); 
     } finally {
-      setLoading(false); // End loading state
+      setLoading(false);
     }
   };
 
@@ -38,7 +38,6 @@ const Signup = () => {
           Already have an account? <Link to="/">Sign in</Link>
         </p>
         <div className="flex flex-col py-4">
-          {/* <label htmlFor="Email">Email</label> */}
           <input
             onChange={(e) => setEmail(e.target.value)}
             className="p-3 mt-2"
@@ -49,7 +48,6 @@ const Signup = () => {
           />
         </div>
         <div className="flex flex-col py-4">
-          {/* <label htmlFor="Password">Password</label> */}
           <input
             onChange={(e) => setPassword(e.target.value)}
             className="p-3 mt-2"
