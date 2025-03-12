@@ -35,7 +35,7 @@ const Signin = () => {
     <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8 bg-white dark:bg-gray-900">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <img 
-          alt="QT APP" 
+          alt="QT APP" //TODO: Update with logo
           src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" 
           className="mx-auto h-10 w-auto"
         />
@@ -65,6 +65,11 @@ const Signin = () => {
               <label htmlFor="password" className="block text-sm font-medium text-gray-900 dark:text-gray-300">
                 Password
               </label>
+              <div className="text-sm">
+                <Link to="/forgotpassword" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                  Forgot password?
+                </Link>
+              </div>
             </div>
             <div className="mt-2">
               <input

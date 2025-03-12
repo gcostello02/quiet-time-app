@@ -4,6 +4,8 @@ import Signup from "./components/Signup";
 import Signin from "./components/Signin";
 import Dashboard from "./components/Dashboard";
 import PrivateRoute from "./components/PrivateRoute";
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
 
 export const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -17,4 +19,6 @@ export const router = createBrowserRouter([
       </PrivateRoute>
     ),
   },
+  { path: "/forgotpassword", element: <ForgotPassword /> },
+  { path: "/resetpassword", element: <ResetPassword /> },
 ]);
