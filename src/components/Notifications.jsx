@@ -1,15 +1,15 @@
 import React from 'react';
 import Navbar from './Navbar';
 
-const Bible = () => {
+const Notifications = () => {
   return (
     <div>
       <Navbar />
       <div className='container mx-auto mt-1'>
-        Bible Page
+        Notifications Page
       </div>
     </div>
   );
 };
 
-export default Bible;
+export default Notifications;

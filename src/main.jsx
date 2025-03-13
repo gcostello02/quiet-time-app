@@ -9,7 +9,9 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <>
       <AuthContextProvider>
-        <RouterProvider router={router} />
+        <div className="bg-gray-100 dark:bg-gray-800 min-h-screen">
+          <RouterProvider router={router} />
+        </div>
       </AuthContextProvider>
     </>
   </StrictMode>
