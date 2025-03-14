@@ -12,11 +12,10 @@ const Bible = () => {
   return (
     <div>
       <Navbar />
-      <div className="min-h-screen bg-white dark:bg-gray-900 p-6">
+      <div className="min-h-screen p-6">
         <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-4">
-          Bible (ESV)
+          Bible (ESV) {/* TODO: Add more translations */}
         </h2>
-
         <div className="flex justify-center gap-4 mb-4">
           <div>
             <label className="block text-sm font-medium text-gray-900 dark:text-gray-300">
@@ -28,7 +27,7 @@ const Bible = () => {
                 setSelectedBook(e.target.value);
                 setSelectedChapter("1"); // Reset chapter when book changes
               }}
-              className="mt-1 block w-48 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white"
+              className="mt-1 block w-48 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
             >
               {books.map((book) => (
                 <option key={book} value={book}>
@@ -45,7 +44,7 @@ const Bible = () => {
             <select
               value={selectedChapter}
               onChange={(e) => setSelectedChapter(e.target.value)}
-              className="mt-1 block w-20 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white"
+              className="mt-1 block w-20 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
             >
               {chapters.map((chapter) => (
                 <option key={chapter} value={chapter}>
@@ -56,7 +55,7 @@ const Bible = () => {
           </div>
         </div>
 
-        <div className="max-w-3xl mx-auto bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md">
+        <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 p-4 rounded-lg shadow-md">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
             {selectedBook} {selectedChapter}
           </h3>
