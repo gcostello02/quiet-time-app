@@ -10,6 +10,7 @@ import Bible from "./components/Bible";
 import Profile from "./components/Profile";
 import Notifications from "./components/Notifications";
 import Notes from "./components/Notes";
+import EditProfile from "./components/EditProfile";
 
 export const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -54,6 +55,14 @@ export const router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <Notes />
+      </PrivateRoute>
+    )
+  },
+  { 
+    path: "/edit-profile", 
+    element: (
+      <PrivateRoute>
+        <EditProfile />
       </PrivateRoute>
     )
   },
