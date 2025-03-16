@@ -6,14 +6,12 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const [setLoading] = useState(false);
-
+  
   const { signUpNewUser } = UserAuth();
   const navigate = useNavigate();
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
     try {
       const result = await signUpNewUser(email, password);
@@ -25,8 +23,6 @@ const Signup = () => {
       }
     } catch (err) {
       setError("An unexpected error occurred ", err); 
-    } finally {
-      setLoading(false);
     }
   };
 

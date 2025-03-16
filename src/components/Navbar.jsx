@@ -2,6 +2,8 @@ import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuIt
 import { Bars3Icon, BellIcon, XMarkIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
+import React, { useEffect, useState } from "react";
+import { supabase } from "../supabaseClient";
 
 const navigationItems = [
   { name: 'Dashboard', href: '/dashboard' },
@@ -13,9 +15,10 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
-  const { signOut } = UserAuth();
+  const { session, signOut } = UserAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [profile, setProfile] = useState(null);
 
   const handleSignOut = async (e) => {
     e.preventDefault();
@@ -26,6 +29,26 @@ export default function Navbar() {
       console.log("An unexpected error occurred ", err);
     }
   };
+
+  useEffect(() => {
+      const fetchProfile = async () => {
+        if (!session?.user) return;
+  
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", session.user.id)
+          .single();
+  
+        if (error) {
+          console.error("Error fetching profile:", error);
+        } else {
+          setProfile(data);
+        }
+      };
+  
+      fetchProfile();
+    }, [session]);
 
   return (
     <Disclosure as="nav" className="bg-white dark:bg-gray-900 border-b border-gray-300 dark:border-gray-600 shadow-sm">
@@ -91,16 +114,16 @@ export default function Navbar() {
                   <span className="sr-only">Open user menu</span>
                   <img
                     alt="User"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src={profile?.avatar_url || "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"}
                     className="size-8 rounded-full"
                   />
                 </MenuButton>
               </div>
-              <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-gray-800 py-1 ring-1 shadow-lg ring-black/5 transition focus:outline-none">
+              <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-gray-900 py-1 ring-1 shadow-lg ring-black/5 transition focus:outline-none">
                 <MenuItem>
                   <Link
                     to="/profile"
-                    className="block px-4 py-2 text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="block px-4 py-2 text-sm text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
                   >
                     Your Profile
                   </Link>
@@ -108,7 +131,7 @@ export default function Navbar() {
                 <MenuItem>
                   <button
                     onClick={handleSignOut}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
                   >
                     Sign out
                   </button>
