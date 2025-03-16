@@ -42,21 +42,6 @@ const ProfilePage = () => {
               </Link>
             </div>
 
-            <div className="flex space-x-6 mt-4">
-              <div className="text-center">
-                <span className="font-semibold">10</span>
-                <p className="text-sm text-gray-600">Posts</p>
-              </div>
-              <div className="text-center">
-                <span className="font-semibold">120</span>
-                <p className="text-sm text-gray-600">Followers</p>
-              </div>
-              <div className="text-center">
-                <span className="font-semibold">180</span>
-                <p className="text-sm text-gray-600">Following</p>
-              </div>
-            </div>
-
             <p className="mt-4 text-gray-700">{profile?.description || "No description yet."}</p>
           </div>
         </div>
