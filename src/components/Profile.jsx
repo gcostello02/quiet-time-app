@@ -26,12 +26,39 @@ const ProfilePage = () => {
   return (
     <div>
       <Navbar />
-      <div className="max-w-lg mx-auto mt-10 bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
-        <img src={profile?.avatar_url} alt="Profile Avatar" className="w-24 h-24 rounded-full mx-auto" />
-        <h2 className="text-xl text-center font-semibold mt-4">{profile?.username}</h2>
-        <p className="text-center text-gray-600 mt-2">{profile?.description || "No description yet."}</p>
-        <div className="mt-4 text-center">
-          <Link to="/edit-profile" className="text-blue-500 hover:underline">Edit Profile</Link>
+      <div className="max-w-3xl mx-auto mt-10 p-6 bg-white dark:bg-gray-900 shadow-md rounded-lg">
+        <div className="flex items-center space-x-8">
+          <img 
+            src={profile?.avatar_url || "https://via.placeholder.com/150"} 
+            alt="Profile Avatar" 
+            className="w-32 h-32 rounded-full border-4 border-gray-300" 
+          />
+
+          <div className="flex-1">
+            <div className="flex items-center space-x-4">
+              <h2 className="text-2xl font-semibold">{profile?.username || "Username"}</h2>
+              <Link to="/edit-profile" className="border px-4 py-1 rounded-lg text-sm font-medium hover:bg-gray-100">
+                Edit Profile
+              </Link>
+            </div>
+
+            <div className="flex space-x-6 mt-4">
+              <div className="text-center">
+                <span className="font-semibold">10</span>
+                <p className="text-sm text-gray-600">Posts</p>
+              </div>
+              <div className="text-center">
+                <span className="font-semibold">120</span>
+                <p className="text-sm text-gray-600">Followers</p>
+              </div>
+              <div className="text-center">
+                <span className="font-semibold">180</span>
+                <p className="text-sm text-gray-600">Following</p>
+              </div>
+            </div>
+
+            <p className="mt-4 text-gray-700">{profile?.description || "No description yet."}</p>
+          </div>
         </div>
       </div>
     </div>

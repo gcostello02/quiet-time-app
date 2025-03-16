@@ -56,10 +56,10 @@ export default function Navbar() {
                     key={item.name}
                     to={item.href}
                     className={classNames(
+                      "px-3 py-2 text-sm font-medium rounded-md border-b-2 border-transparent", // Ensures consistent height
                       location.pathname === item.href
-                        ? "bg-indigo-600 text-white"
-                        : "text-gray-900 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-black dark:hover:text-white",
-                      "rounded-md px-3 py-2 text-sm font-medium"
+                        ? "bg-indigo-600 text-white border-indigo-600" // Active state, with same size but colored border
+                        : "text-gray-900 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-black dark:hover:text-white"
                     )}
                   >
                     {item.name}
@@ -91,7 +91,7 @@ export default function Navbar() {
                 <MenuButton className="relative flex rounded-full bg-gray-100 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
                   <span className="sr-only">Open user menu</span>
                   <img
-                    alt="User" //TODO: Add user profile picture here
+                    alt="User"
                     src={profile?.avatar_url || "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"}
                     className="size-8 rounded-full"
                   />

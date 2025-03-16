@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 
 const EditProfile = () => {
-  const { session, setProfile } = UserAuth(); // Get setProfile from context
+  const { session, setProfile } = UserAuth(); 
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
@@ -34,7 +34,10 @@ const EditProfile = () => {
       } else {
         setUsername(data.username || "");
         setDescription(data.description || "");
-        setPreviewUrl(data.avatar_url || "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png");
+        setPreviewUrl(
+          data.avatar_url ||
+            "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"
+        );
       }
 
       setLoading(false);
@@ -55,46 +58,55 @@ const EditProfile = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
+  
     let avatarUrl = previewUrl;
-
+  
     if (avatar) {
       const filePath = `avatars/${session.user.id}.${avatar.name}`;
       const { error: uploadError } = await supabase.storage
         .from("profile-pictures")
         .upload(filePath, avatar, { upsert: true });
-
+  
       if (uploadError) {
         console.error("Error uploading avatar:", uploadError);
         setError("Failed to upload image.");
         setLoading(false);
         return;
       }
-
+  
       avatarUrl = supabase.storage.from("profile-pictures").getPublicUrl(filePath).data.publicUrl;
     }
-
+  
     const updatedProfile = {
       username,
       description,
       avatar_url: avatarUrl,
     };
-
-    const { error: updateError } = await supabase
-      .from("profiles")
-      .update(updatedProfile)
-      .eq("id", session.user.id);
-
-    if (updateError) {
-      console.error("Error updating profile:", updateError);
-      setError("Failed to update profile.");
-    } else {
-      setProfile(updatedProfile);
-      navigate("/profile");
+  
+    try {
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update(updatedProfile)
+        .eq("id", session.user.id);
+  
+      if (updateError) {
+        if (updateError.code === "23505") {
+          setError("Username is already taken. Please choose another one.");
+        } else {
+          console.error("Error updating profile:", updateError);
+          setError("Failed to update profile.");
+        }
+      } else {
+        setProfile(updatedProfile);
+        navigate("/profile");
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      setError("An unexpected error occurred.");
     }
-
+  
     setLoading(false);
-  };
+  };  
 
   if (!session) {
     return <p className="text-center mt-10">Please sign in to edit your profile.</p>;
@@ -106,8 +118,6 @@ const EditProfile = () => {
       <div className="max-w-lg mx-auto mt-10 bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold text-center">Edit Profile</h2>
 
-        {error && <p className="text-center text-red-500">{error}</p>}
-
         <form onSubmit={handleUpdateProfile} className="space-y-4">
           <div className="flex flex-col items-center">
             <img
@@ -115,7 +125,12 @@ const EditProfile = () => {
               alt="Profile Avatar"
               className="w-24 h-24 rounded-full"
             />
-            <input type="file" onChange={handleFileChange} className="mt-2" accept="image/*" />
+            <input
+              type="file"
+              onChange={handleFileChange}
+              className="mt-2"
+              accept="image/*"
+            />
           </div>
 
           <div>
@@ -130,7 +145,9 @@ const EditProfile = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium">Description (Max 200 chars)</label>
+            <label className="block text-sm font-medium">
+              Description (Max 200 chars)
+            </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -147,6 +164,8 @@ const EditProfile = () => {
             {loading ? "Saving..." : "Save Changes"}
           </button>
         </form>
+
+        {error && <p className="text-center text-red-500">{error}</p>}
       </div>
     </div>
   );
