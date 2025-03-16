@@ -5,6 +5,7 @@ const AuthContext = createContext()
 
 export const AuthContextProvider = ({ children }) => {
   const [session, setSession] = useState(undefined) 
+  const [profile, setProfile] = useState(null);
 
   const adjectives = [
     "adorable", "adventurous", "aggressive", "alert", "amusing", "ancient", "angry", "anxious", "artistic", "astonishing",
@@ -41,8 +42,7 @@ export const AuthContextProvider = ({ children }) => {
     while (!isUnique) {
       const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)];
       const randomAnimal = animals[Math.floor(Math.random() * animals.length)];
-      const randomNumber = Math.floor(1000 + Math.random() * 9000);
-      username = `${randomAdjective}_${randomAnimal}_${randomNumber}`;
+      username = `${randomAdjective}_${randomAnimal}`;
 
       const { data } = await supabase
         .from("profiles")
@@ -57,11 +57,26 @@ export const AuthContextProvider = ({ children }) => {
     return username;
   };
 
+  const fetchProfile = async (userId) => {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
+      .single();
+
+    if (error) {
+      console.error("Error fetching profile:", error);
+      return null;
+    }
+
+    return data;
+  };
+
   const signUpNewUser = async (email, password) => {
     const { data, error } = await supabase.auth.signUp({
       email: email.toLowerCase(),
       password: password,
-    }) 
+    })
 
     if (error) {
       console.error("Error signing up: ", error) 
@@ -89,6 +104,13 @@ export const AuthContextProvider = ({ children }) => {
       }
     }
 
+    const userProfile = await fetchProfile(data.user.id);
+    console.log("User Profile:", userProfile)
+    if (userProfile) {
+      setProfile(userProfile);
+    }
+    console.log("Profile Sign Up", profile)
+
     return { success: true, data } 
   } 
 
@@ -105,7 +127,16 @@ export const AuthContextProvider = ({ children }) => {
       }
 
       console.log("Sign-in success:", data) 
-      return { success: true, data }  
+
+      const userProfile = await fetchProfile(data.user.id);
+      console.log("User Profile:", userProfile)
+      if (userProfile) {
+        setProfile(userProfile);
+      }
+      console.log("Profile Sign In", profile)
+
+      return { success: true, data } 
+
     } catch (error) {
       console.error("Unexpected error during sign-in:", error.message) 
       return {
@@ -116,14 +147,20 @@ export const AuthContextProvider = ({ children }) => {
   } 
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session) 
-    }) 
-
     supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session) 
-    }) 
-  }, []) 
+      setSession(session);
+      if (session?.user?.id) {
+        fetchProfile(session.user.id).then((profileData) => {
+          if (profileData) {
+            setProfile(profileData);
+          }
+        });
+        console.log("Profile", profile)
+      } else {
+        setProfile(null);
+      }
+    });
+  }, []);
 
   async function signOut() {
     const { error } = await supabase.auth.signOut() 
@@ -134,7 +171,7 @@ export const AuthContextProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ signUpNewUser, signInUser, session, signOut }}
+      value={{ signUpNewUser, signInUser, session, signOut, profile, setProfile }}
     >
       {children}
     </AuthContext.Provider>

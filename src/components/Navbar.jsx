@@ -2,8 +2,7 @@ import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuIt
 import { Bars3Icon, BellIcon, XMarkIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
-import React, { useEffect, useState } from "react";
-import { supabase } from "../supabaseClient";
+import React from "react";
 
 const navigationItems = [
   { name: 'Dashboard', href: '/dashboard' },
@@ -15,10 +14,9 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
-  const { session, signOut } = UserAuth();
+  const { signOut, profile } = UserAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [profile, setProfile] = useState(null);
 
   const handleSignOut = async (e) => {
     e.preventDefault();
@@ -29,26 +27,6 @@ export default function Navbar() {
       console.log("An unexpected error occurred ", err);
     }
   };
-
-  useEffect(() => {
-      const fetchProfile = async () => {
-        if (!session?.user) return;
-  
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", session.user.id)
-          .single();
-  
-        if (error) {
-          console.error("Error fetching profile:", error);
-        } else {
-          setProfile(data);
-        }
-      };
-  
-      fetchProfile();
-    }, [session]);
 
   return (
     <Disclosure as="nav" className="bg-white dark:bg-gray-900 border-b border-gray-300 dark:border-gray-600 shadow-sm">
@@ -113,7 +91,7 @@ export default function Navbar() {
                 <MenuButton className="relative flex rounded-full bg-gray-100 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
                   <span className="sr-only">Open user menu</span>
                   <img
-                    alt="User"
+                    alt="User" //TODO: Add user profile picture here
                     src={profile?.avatar_url || "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"}
                     className="size-8 rounded-full"
                   />

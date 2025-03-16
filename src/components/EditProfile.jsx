@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 
 const EditProfile = () => {
-  const { session } = UserAuth();
+  const { session, setProfile } = UserAuth(); // Get setProfile from context
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
@@ -32,9 +32,9 @@ const EditProfile = () => {
         console.error("Error fetching profile:", error);
         setError("Failed to load profile.");
       } else {
-        setUsername(data.username);
-        setDescription(data.description);
-        setPreviewUrl(data.avatar_url);
+        setUsername(data.username || "");
+        setDescription(data.description || "");
+        setPreviewUrl(data.avatar_url || "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png");
       }
 
       setLoading(false);
@@ -47,7 +47,7 @@ const EditProfile = () => {
     const file = event.target.files[0];
     if (file) {
       setAvatar(file);
-      setPreviewUrl(URL.createObjectURL(file))
+      setPreviewUrl(URL.createObjectURL(file));
     }
   };
 
@@ -59,7 +59,7 @@ const EditProfile = () => {
     let avatarUrl = previewUrl;
 
     if (avatar) {
-      const filePath = `avatars/${session.user.id}`;
+      const filePath = `avatars/${session.user.id}.${avatar.name}`;
       const { error: uploadError } = await supabase.storage
         .from("profile-pictures")
         .upload(filePath, avatar, { upsert: true });
@@ -71,22 +71,25 @@ const EditProfile = () => {
         return;
       }
 
-      avatarUrl = supabase.storage.from("profile-pictures").getPublicUrl(filePath);
+      avatarUrl = supabase.storage.from("profile-pictures").getPublicUrl(filePath).data.publicUrl;
     }
+
+    const updatedProfile = {
+      username,
+      description,
+      avatar_url: avatarUrl,
+    };
 
     const { error: updateError } = await supabase
       .from("profiles")
-      .update({
-        username,
-        description,
-        avatar_url: avatarUrl.data.publicUrl,
-      })
+      .update(updatedProfile)
       .eq("id", session.user.id);
 
     if (updateError) {
       console.error("Error updating profile:", updateError);
       setError("Failed to update profile.");
     } else {
+      setProfile(updatedProfile);
       navigate("/profile");
     }
 
@@ -108,11 +111,11 @@ const EditProfile = () => {
         <form onSubmit={handleUpdateProfile} className="space-y-4">
           <div className="flex flex-col items-center">
             <img
-              src={previewUrl || "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"}
+              src={previewUrl}
               alt="Profile Avatar"
               className="w-24 h-24 rounded-full"
             />
-            <input type="file" onChange={handleFileChange} className="mt-2" />
+            <input type="file" onChange={handleFileChange} className="mt-2" accept="image/*" />
           </div>
 
           <div>
@@ -139,12 +142,9 @@ const EditProfile = () => {
           <button
             type="submit"
             className="w-full bg-blue-600 text-white p-2 rounded-md flex justify-center dark:bg-blue-700"
+            disabled={loading}
           >
-            {loading ? (
-              <div className="w-5 h-5 border-2 border-white border-solid border-t-transparent rounded-full animate-spin"></div>
-            ) : (
-              "Save Changes"
-            )}
+            {loading ? "Saving..." : "Save Changes"}
           </button>
         </form>
       </div>
