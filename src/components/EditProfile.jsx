@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { UserAuth } from "../context/AuthContext";
 import { supabase } from "../supabaseClient";
@@ -6,7 +7,7 @@ import Navbar from "./Navbar";
 import esvData from "../data/ESV.json";
 
 const EditProfile = () => {
-  const { session, setProfile } = UserAuth(); 
+  const { session, setProfile, profile } = UserAuth(); 
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
@@ -29,43 +30,21 @@ const EditProfile = () => {
   const verses = esvData[selectedBook]?.[selectedChapter]?.length ?? 0;
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      if (!session?.user) return;
-
-      setLoading(true);
-      setError(null);
-
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", session.user.id)
-        .single();
-
-      if (error) {
-        console.error("Error fetching profile:", error);
-        setError("Failed to load profile.");
-      } else {
-        setUsername(data.username || "");
-        setDescription(data.description || "");
-        setPreviewUrl(
-          data.avatar_url ||
-            "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"
-        );
-        setName(data.name || "");
-        setPrayer(data.prayer_req || "");
-        setSelectedBook(data.life_verse_book || "Genesis");
-        setSelectedChapter(data.life_verse_chapter || 1);
-        setStartVerse(data.life_verse_start || 1);
-        setEndVerse(data.life_verse_end || 1);
-        setDisplayPrayer(data.prayer_req_display || false);
-        setDisplayVerse(data.life_verse_display || false);
-      }
-
-      setLoading(false);
-    };
-
-    fetchProfile();
-  }, [session]);
+    setUsername(profile.username || "");
+    setDescription(profile.description || "");
+    setPreviewUrl(
+      profile.avatar_url ||
+        "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"
+    );
+    setName(profile.name || "");
+    setPrayer(profile.prayer_req || "");
+    setSelectedBook(profile.life_verse_book || "Genesis");
+    setSelectedChapter(profile.life_verse_chapter || 1);
+    setStartVerse(profile.life_verse_start || 1);
+    setEndVerse(profile.life_verse_end || 1);
+    setDisplayPrayer(profile.prayer_req_display || false);
+    setDisplayVerse(profile.life_verse_display || false);
+  }, [profile]);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];

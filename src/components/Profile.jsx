@@ -1,27 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { UserAuth } from "../context/AuthContext";
-import { supabase } from "../supabaseClient";
+// import { supabase } from "../supabaseClient";
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
 
 const ProfilePage = () => {
-  const { profile, setProfile, session } = UserAuth();
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      if (session?.user?.id) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", session.user.id)
-          .single();
-
-        if (data) setProfile(data);
-      }
-    };
-
-    fetchProfile();
-  }, [session]);
+  const { profile } = UserAuth();
 
   return (
     <div>
