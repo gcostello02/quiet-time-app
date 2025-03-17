@@ -21,6 +21,8 @@ const EditProfile = () => {
   const [selectedChapter, setSelectedChapter] = useState(1);
   const [startVerse, setStartVerse] = useState(1);
   const [endVerse, setEndVerse] = useState(1);
+  const [displayPrayer, setDisplayPrayer] = useState(false);
+  const [displayVerse, setDisplayVerse] = useState(false);
 
   const books = Object.keys(esvData);
   const chapters = Object.keys(esvData[selectedBook]);
@@ -51,6 +53,12 @@ const EditProfile = () => {
         );
         setName(data.name || "");
         setPrayer(data.prayer_req || "");
+        setSelectedBook(data.life_verse_book || "Genesis");
+        setSelectedChapter(data.life_verse_chapter || 1);
+        setStartVerse(data.life_verse_start || 1);
+        setEndVerse(data.life_verse_end || 1);
+        setDisplayPrayer(data.prayer_req_display || false);
+        setDisplayVerse(data.life_verse_display || false);
       }
 
       setLoading(false);
@@ -96,6 +104,12 @@ const EditProfile = () => {
       avatar_url: avatarUrl,
       name: name,
       prayer_req: prayerreq,
+      prayer_req_display: displayPrayer,
+      live_verse_display: displayVerse,
+      life_verse_book: selectedBook,
+      life_verse_chapter: selectedChapter,
+      life_verse_start: startVerse,
+      life_verse_end: endVerse,
     };
   
     try {
@@ -148,26 +162,28 @@ const EditProfile = () => {
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium">Username</label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              maxLength={30}
-              className="w-full mt-1 p-2 border rounded-md dark:bg-gray-700 dark:text-white"
-            />
-          </div>
+          <div className="flex gap-4 justify-between">
+            <div>
+              <label className="block text-sm font-medium">Username</label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                maxLength={30}
+                className="w-full mt-1 p-2 border rounded-md dark:bg-gray-700 dark:text-white"
+              />
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium">Your Name (optional)</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              maxLength={30}
-              className="w-full mt-1 p-2 border rounded-md dark:bg-gray-700 dark:text-white"
-            />
+            <div>
+              <label className="block text-sm font-medium">Your Name (optional)</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                maxLength={30}
+                className="w-full mt-1 p-2 border rounded-md dark:bg-gray-700 dark:text-white"
+              />
+            </div>
           </div>
 
           <div>
@@ -181,78 +197,108 @@ const EditProfile = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium">Prayer Request (Max 200 chars)</label>
-            <textarea
-              value={prayerreq}
-              onChange={(e) => setPrayer(e.target.value)}
-              maxLength={200}
-              className="w-full mt-1 p-2 border rounded-md dark:bg-gray-700 dark:text-white"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-900 dark:text-gray-300">Favorite Verse(s)</label>
-            <div className="flex">
-              <select
-                value={selectedBook}
-                onChange={(e) => {
-                  setSelectedBook(e.target.value);
-                  setSelectedChapter(1);
-                }}
-                className="mt-1 block w-48 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
-              >
-                {books.map((book) => (
-                  <option key={book} value={book}>
-                    {book}
-                  </option>
-                ))}
-              </select>
-              <select
-                value={selectedChapter}
-                onChange={(e) => setSelectedChapter(Number(e.target.value))}
-                className="mt-1 block w-20 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
-              >
-                {chapters.map((chapter) => (
-                  <option key={chapter} value={chapter}>
-                    {chapter}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-900 dark:text-gray-300">
-              Verse(s) Start & End
+            <label className="block mt-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={displayPrayer}
+                onChange={() => setDisplayPrayer(!displayPrayer)}
+                className="mr-1 cursor-pointer"
+              />
+              Display Prayer Request
             </label>
-            <div className="flex gap-4">
-              <select
-                value={startVerse}
-                onChange={(e) => {
-                  setStartVerse(Number(e.target.value));
-                  setEndVerse((prevEnd) => (prevEnd < Number(e.target.value) ? Number(e.target.value) : prevEnd));
-                }}
-                className="mt-1 block w-20 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
-              >
-                {Array.from({ length: verses }, (_, i) => i + 1).map((verse) => (
-                  <option key={verse} value={verse}>
-                    {verse}
-                  </option>
-                ))}
-              </select>
-              <select
-                value={endVerse}
-                onChange={(e) => setEndVerse(Number(e.target.value))}
-                className="mt-1 block w-20 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
-              >
-                {Array.from({ length: verses - startVerse + 1 }, (_, i) => i + startVerse).map((verse) => (
-                  <option key={verse} value={verse}>
-                    {verse}
-                  </option>
-                ))}
-              </select>
-            </div>
           </div>
+
+          {displayPrayer && (
+            <div>
+              <label className="block text-sm font-medium">Prayer Request (Max 200 chars)</label>
+              <textarea
+                value={prayerreq}
+                onChange={(e) => setPrayer(e.target.value)}
+                maxLength={200}
+                className="w-full mt-1 p-2 border rounded-md dark:bg-gray-700 dark:text-white"
+              />
+            </div>
+          )}
+
+          <div>
+            <label className="block mt-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={displayVerse}
+                onChange={() => setDisplayVerse(!displayVerse)}
+                className="mr-1 cursor-pointer"
+              />
+              Display Favorite Verse
+            </label>
+          </div>
+          {displayVerse && (
+            <div>
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-300">Favorite Verse(s)</label>
+              <div className="flex gap-4">
+                <select
+                  value={selectedBook}
+                  onChange={(e) => {
+                    setSelectedBook(e.target.value);
+                    setSelectedChapter(1);
+                  }}
+                  className="mt-1 block w-48 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                >
+                  {books.map((book) => (
+                    <option key={book} value={book}>
+                      {book}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={selectedChapter}
+                  onChange={(e) => setSelectedChapter(Number(e.target.value))}
+                  className="mt-1 block w-20 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                >
+                  {chapters.map((chapter) => (
+                    <option key={chapter} value={chapter}>
+                      {chapter}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            
+          )}
+
+          {displayVerse && (
+            <div>
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-300">
+                Verse(s) Start & End
+              </label>
+              <div className="flex gap-4">
+                <select
+                  value={startVerse}
+                  onChange={(e) => {
+                    setStartVerse(Number(e.target.value));
+                    setEndVerse((prevEnd) => (prevEnd < Number(e.target.value) ? Number(e.target.value) : prevEnd));
+                  }}
+                  className="mt-1 block w-20 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                >
+                  {Array.from({ length: verses }, (_, i) => i + 1).map((verse) => (
+                    <option key={verse} value={verse}>
+                      {verse}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={endVerse}
+                  onChange={(e) => setEndVerse(Number(e.target.value))}
+                  className="mt-1 block w-20 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                >
+                  {Array.from({ length: verses - startVerse + 1 }, (_, i) => i + startVerse).map((verse) => (
+                    <option key={verse} value={verse}>
+                      {verse}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
 
           <button
             type="submit"
