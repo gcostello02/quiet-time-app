@@ -29,7 +29,7 @@ const ProfilePage = () => {
       <div className="max-w-3xl mx-auto mt-10 p-6 bg-white dark:bg-gray-900 shadow-md rounded-lg">
         <div className="flex items-center space-x-8">
           <img 
-            src={profile?.avatar_url || "https://via.placeholder.com/150"} 
+            src={profile?.avatar_url || "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"} 
             alt="Profile Avatar" 
             className="w-32 h-32 rounded-full border-4 border-gray-300" 
           />
