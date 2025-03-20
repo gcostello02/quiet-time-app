@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import esvData from "../data/ESV.json";
-import Navbar from "./Navbar";
+import Navbar from "../components/Navbar";
 
 const Bible = () => {
   const [selectedBook, setSelectedBook] = useState(Object.keys(esvData)[0]);

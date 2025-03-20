@@ -2,7 +2,7 @@ import React from "react";
 import { UserAuth } from "../context/AuthContext";
 // import { supabase } from "../supabaseClient";
 import { Link } from "react-router-dom";
-import Navbar from "./Navbar";
+import Navbar from "../components/Navbar";
 
 const ProfilePage = () => {
   const { profile } = UserAuth();
