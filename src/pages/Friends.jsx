@@ -43,9 +43,23 @@ const Friends = () => {
     }
 
     const friendIds = new Set(friendsData?.map((f) => f.friend_id));
-    console.log(friendIds)
 
-    const filteredUsers = allUsers.filter(user => !friendIds.has(user.id));
+    const { data: friendsRequestData, error: friendsRequestError } = await supabase
+      .from("friend_requests")
+      .select("receiver_id")
+      .eq("sender_id", session?.user?.id);
+
+    if (friendsRequestError) {
+      console.error("Error fetching friends:", friendsRequestError);
+      setLoading(false);
+      return;
+    }
+
+    const friendRequestIds = new Set(friendsRequestData?.map((f) => f.receiver_id));
+
+    const filteredUsers = allUsers
+      .filter(user => !friendIds.has(user.id))
+      .filter(user => !friendRequestIds.has(user.id))
     console.log(filteredUsers)
     setUsers(filteredUsers);
 
@@ -65,15 +79,21 @@ const Friends = () => {
   };
 
   const fetchPendingRequests = async () => {
-    const { data, error } = await supabase
-      .from("friend_requests")
-      .select("receiver_id, profiles (username)")
+    let { data, error } = await supabase
+      .from('friend_requests')
+      .select(`
+        receiver_id,
+        profiles!friend_requests_receiver_id_fkey(id, username) as receiver_profile
+      `)
       .eq("sender_id", session?.user?.id)
-      .eq("status", "pending");
   
-    if (!error) {
-      setPendingRequests(data);
+    if (error) {
+      console.error("Error fetching pending requests:", error);
+      return;
     }
+  
+    setPendingRequests(data);
+    console.log(data);
   };
 
   return (
