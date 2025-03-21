@@ -1,4 +1,4 @@
-import Signin from "./components/Signin";
+import Signin from "./pages/Signin";
 
 import { UserAuth } from "./context/AuthContext";
 

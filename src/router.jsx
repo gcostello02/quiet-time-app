@@ -1,16 +1,17 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
-import Signup from "./components/Signup";
-import Signin from "./components/Signin";
-import Dashboard from "./components/Dashboard";
+import Signup from "./pages/Signup";
+import Signin from "./pages/Signin";
+import Dashboard from "./pages/Dashboard";
 import PrivateRoute from "./components/PrivateRoute";
-import ForgotPassword from "./components/ForgotPassword";
-import ResetPassword from "./components/ResetPassword";
-import Bible from "./components/Bible";
-import Profile from "./components/Profile";
-import Notifications from "./components/Notifications";
-import Notes from "./components/Notes";
-import EditProfile from "./components/EditProfile";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import Bible from "./pages/Bible";
+import Profile from "./pages/Profile";
+import Notifications from "./pages/Notifications";
+import Notes from "./pages/Notes";
+import EditProfile from "./pages/EditProfile";
+import Friends from "./pages/Friends";
 
 export const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -63,6 +64,14 @@ export const router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <EditProfile />
+      </PrivateRoute>
+    )
+  },
+  { 
+    path: "/friends", 
+    element: (
+      <PrivateRoute>
+        <Friends />
       </PrivateRoute>
     )
   },

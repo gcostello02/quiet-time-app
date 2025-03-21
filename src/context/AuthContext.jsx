@@ -155,7 +155,6 @@ export const AuthContextProvider = ({ children }) => {
             setProfile(profileData);
           }
         });
-        console.log("Profile", profile)
       } else {
         setProfile(null);
       }
