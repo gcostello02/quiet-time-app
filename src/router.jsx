@@ -8,7 +8,6 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Bible from "./pages/Bible";
 import Profile from "./pages/Profile";
-import Notifications from "./pages/Notifications";
 import Notes from "./pages/Notes";
 import EditProfile from "./pages/EditProfile";
 import Friends from "./pages/Friends";
@@ -40,14 +39,6 @@ export const router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <Profile />
-      </PrivateRoute>
-    )
-  },
-  { 
-    path: "/notifications", 
-    element: (
-      <PrivateRoute>
-        <Notifications />
       </PrivateRoute>
     )
   },

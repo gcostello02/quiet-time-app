@@ -86,14 +86,6 @@ export default function Navbar() {
               <UserGroupIcon className="size-6" aria-hidden="true" />
             </button>
 
-            <button
-              onClick={() => navigate("/notifications")}
-              className="rounded-full bg-gray-100 dark:bg-gray-800 p-2 text-gray-900 dark:text-gray-400 hover:text-black dark:hover:text-white focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600"
-            >
-              <span className="sr-only">View notifications</span>
-              <BellIcon className="size-6" aria-hidden="true" />
-            </button>
-
             <Menu as="div" className="relative">
               <div>
                 <MenuButton className="relative flex rounded-full bg-gray-100 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">

@@ -83,7 +83,7 @@ const EditProfile = () => {
       name: name,
       prayer_req: prayerreq,
       prayer_req_display: displayPrayer,
-      live_verse_display: displayVerse,
+      life_verse_display: displayVerse,
       life_verse_book: selectedBook,
       life_verse_chapter: selectedChapter,
       life_verse_start: startVerse,

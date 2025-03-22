@@ -15,16 +15,16 @@ const Friends = () => {
 
   useEffect(() => {
     if (session?.user?.id) {
-      fetchUsers()
-      fetchPendingRequests()
-      fetchReceivedRequests()
-      fetchFriends()
+      fetchUsers();
+      fetchPendingRequests();
+      fetchReceivedRequests();
+      fetchFriends();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   const fetchUsers = async () => {
     setLoading(true);
-  
     const { data: allUsers, error: profilesError } = await supabase
       .from("profiles")
       .select("id, username")
@@ -36,105 +36,67 @@ const Friends = () => {
       return;
     }
 
-    const { data: friendsData, error: friendsError } = await supabase
+    const { data: friendsData } = await supabase
       .from("friends")
       .select("friend_id")
       .eq("user_id", session?.user?.id);
 
-    if (friendsError) {
-      console.error("Error fetching friends:", friendsError);
-      setLoading(false);
-      return;
-    }
-
     const friendIds = new Set(friendsData?.map((f) => f.friend_id));
 
-    const { data: friendsRequestData, error: friendsRequestError } = await supabase
+    const { data: friendRequestsData } = await supabase
       .from("friend_requests")
       .select("receiver_id")
       .eq("sender_id", session?.user?.id);
 
-    if (friendsRequestError) {
-      console.error("Error fetching friends:", friendsRequestError);
-      setLoading(false);
-      return;
-    }
-
-    const friendRequestIds = new Set(friendsRequestData?.map((f) => f.receiver_id));
+    const friendRequestIds = new Set(friendRequestsData?.map((f) => f.receiver_id));
 
     const filteredUsers = allUsers.filter(user => !friendIds.has(user.id) && !friendRequestIds.has(user.id));
     setUsers(filteredUsers);
-
     setLoading(false);
   };
 
   const sendFriendRequest = async (receiverId) => {
     if (!session) return;
-  
-    const { error } = await supabase
+
+    await supabase
       .from("friend_requests")
-      .insert([{ sender_id: session.user.id, receiver_id: receiverId, status: "pending" }]);
-  
-    if (error) console.error("Error sending friend request:", error);
-  
-    fetchUsers()
-    fetchPendingRequests()
+      .insert([{ sender_id: session.user.id, receiver_id: receiverId }]);
+
+    fetchUsers();
   };
 
   const fetchPendingRequests = async () => {
-    let { data, error } = await supabase
+    const { data } = await supabase
       .from('friend_requests')
-      .select(`
-        receiver_id,
-        profiles!friend_requests_receiver_id_fkey(id, username) as receiver_profile
-      `)
-      .eq("sender_id", session?.user?.id)
-  
-    if (error) {
-      console.error("Error fetching pending requests:", error);
-      return;
-    }
-  
+      .select(`receiver_id, profiles!friend_requests_receiver_id_fkey(id, username) as receiver_profile`)
+      .eq("sender_id", session?.user?.id);
+
     setPendingRequests(data);
   };
 
   const fetchReceivedRequests = async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("friend_requests")
-      .select(`
-        sender_id, 
-        profiles!friend_requests_sender_id_fkey(id, username) as sender_profile`)
+      .select(`sender_id, profiles!friend_requests_sender_id_fkey(id, username) as sender_profile`)
       .eq("receiver_id", session?.user?.id)
-      .eq("status", "pending");
 
-    if (error) {
-      console.error("Error fetching received requests:", error);
-      return;
-    }
-    
     setReceivedRequests(data);
   };
 
   const acceptFriendRequest = async (senderId) => {
-    const { data, error } = await supabase.from("friends").insert([
+    await supabase.from("friends").insert([
       { user_id: session.user.id, friend_id: senderId },
       { user_id: senderId, friend_id: session.user.id },
-    ]).select();
-
-    console.log(data, error)
+    ]);
 
     await supabase.from("friend_requests")
       .delete()
       .eq("sender_id", senderId)
       .eq("receiver_id", session.user.id);
 
-    await supabase.from("friend_requests")
-      .delete()
-      .eq("receiver_id", senderId)
-      .eq("sender_id", session.user.id);
-
     fetchReceivedRequests();
-  }
+    fetchFriends();
+  };
 
   const declineFriendRequest = async (senderId) => {
     await supabase.from("friend_requests")
@@ -143,57 +105,52 @@ const Friends = () => {
       .eq("receiver_id", session.user.id);
 
     fetchReceivedRequests();
-  }
+  };
 
-  
   const fetchFriends = async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("friends")
-      .select(`
-        friend_id, 
-        profiles!friends_friend_id_fkey(username) as friend_profile`)
+      .select(`friend_id, profiles!friends_friend_id_fkey(username) as friend_profile`)
       .eq("user_id", session?.user?.id);
 
-    if (!error) {
-      setFriends(data);
-    }
-  }
+    setFriends(data);
+  };
 
   const removeFriend = async (friendId) => {
     await supabase.from("friends")
       .delete()
       .eq("user_id", session.user.id)
       .eq("friend_id", friendId);
-  
+
     await supabase.from("friends")
       .delete()
       .eq("user_id", friendId)
       .eq("friend_id", session.user.id);
-  
+
     fetchFriends();
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
       <Navbar />
-      <div className="max-w-lg mx-auto mt-10 bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
+      <div className="max-w-lg mx-auto mt-10 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
         <div className="flex justify-between border-b mb-4">
-          <button onClick={() => setTab("requests")} className={`w-1/3 py-2 ${tab === "requests" ? "border-b-2 border-blue-500 font-bold" : ""}`}>
-            Find Friends
-          </button>
-          <button onClick={() => setTab("friends")} className={`w-1/3 py-2 ${tab === "friends" ? "border-b-2 border-blue-500 font-bold" : ""}`}>
-            Friends
-          </button>
-          <button onClick={() => setTab("notifications")} className={`w-1/3 py-2 ${tab === "notifications" ? "border-b-2 border-blue-500 font-bold" : ""}`}>
-            Received
-          </button>
+          {["requests", "friends", "notifications"].map((item) => (
+            <button 
+              key={item} 
+              onClick={() => setTab(item)} 
+              className={`w-1/3 py-2 text-center ${tab === item ? "border-b-2 border-blue-500 font-bold" : "text-gray-500"}`}
+            >
+              {item.charAt(0).toUpperCase() + item.slice(1)}
+            </button>
+          ))}
         </div>
 
         {loading ? (
           <p className="text-center">Loading...</p>
         ) : tab === "requests" ? (
           <div>
-            {pendingRequests.length !== 0 && (
+            {pendingRequests.length !== 0 ? (
               <>
                 <h3 className="text-lg font-semibold mt-4 mb-2">Pending Requests</h3>
                 {pendingRequests.map((req) => (
@@ -203,26 +160,28 @@ const Friends = () => {
                   </div>
                 ))}
               </>
-            )}
-            <h3 className="text-lg font-semibold mt-4 mb-2">Add Friends</h3>
+            ) : null}
+            <h3 className="text-lg font-semibold mb-2">Add Friends</h3>
             <input
               type="text"
               placeholder="Search users..."
-              value={searchTerm}
+              className="w-full p-2 mb-3 border rounded-lg dark:bg-gray-700 dark:text-white"
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full p-2 border rounded mb-2"
             />
-
-            {users
-              .filter(user => user.username.toLowerCase().includes(searchTerm.toLowerCase()))
-              .map((user) => (
-                <div key={user.id} className="flex justify-between items-center border p-2 rounded mb-2">
-                  <span>{user.username}</span>
-                  <button onClick={() => sendFriendRequest(user.id)} className="bg-blue-500 text-white px-3 py-1 rounded">
-                    Send Request
-                  </button>
-                </div>
-              ))}
+            {users.length === 0 ? (
+              <p>No users available to add.</p>
+            ) : (
+              users
+                .filter((user) => user.username.toLowerCase().includes(searchTerm.toLowerCase()))
+                .map((user) => (
+                  <div key={user.id} className="flex justify-between items-center border p-2 rounded-lg mb-2 dark:bg-gray-700">
+                    <span>{user.username}</span>
+                    <button onClick={() => sendFriendRequest(user.id)} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg">
+                      Send Request
+                    </button>
+                  </div>
+                ))
+            )}
           </div>
         ) : tab === "friends" ? (
           <div>
@@ -231,10 +190,10 @@ const Friends = () => {
               <p>No friends yet.</p>
             ) : (
               friends.map((friend) => (
-                <div key={friend.friend_id} className="flex justify-between items-center border p-2 rounded mb-2">
+                <div key={friend.friend_id} className="flex justify-between items-center border p-3 rounded-lg dark:bg-gray-700">
                   <span>{friend.profiles.username}</span>
-                  <button onClick={() => removeFriend(friend.friend_id)} className="bg-red-500 text-white px-3 py-1 rounded">
-                    Remove Friend
+                  <button onClick={() => removeFriend(friend.friend_id)} className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg">
+                    Remove
                   </button>
                 </div>
               ))
@@ -242,16 +201,20 @@ const Friends = () => {
           </div>
         ) : (
           <div>
-            <h3 className="text-lg font-semibold mt-4 mb-2">Received Requests</h3>
+            <h3 className="text-lg font-semibold mb-2">Received Requests</h3>
             {receivedRequests.length === 0 ? (
               <p>No received requests.</p>
             ) : (
               receivedRequests.map((req) => (
-                <div key={req.sender_id} className="flex justify-between items-center border p-2 rounded mb-2">
+                <div key={req.sender_id} className="flex justify-between items-center border p-3 rounded-lg dark:bg-gray-700">
                   <span>{req.profiles.username}</span>
                   <div>
-                    <button onClick={() => acceptFriendRequest(req.sender_id)} className="bg-green-500 text-white px-3 py-1 rounded mr-2">Accept</button>
-                    <button onClick={() => declineFriendRequest(req.sender_id)} className="bg-red-500 text-white px-3 py-1 rounded">Decline</button>
+                    <button onClick={() => acceptFriendRequest(req.sender_id)} className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg mr-2">
+                      Accept
+                    </button>
+                    <button onClick={() => declineFriendRequest(req.sender_id)} className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg">
+                      Decline
+                    </button>
                   </div>
                 </div>
               ))
