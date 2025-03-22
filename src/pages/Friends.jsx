@@ -11,6 +11,7 @@ const Friends = () => {
   const [pendingRequests, setPendingRequests] = useState([]);
   const [receivedRequests, setReceivedRequests] = useState([]);
   const [friends, setFriends] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     if (session?.user?.id) {
@@ -76,7 +77,8 @@ const Friends = () => {
   
     if (error) console.error("Error sending friend request:", error);
   
-    fetchUsers();
+    fetchUsers()
+    fetchPendingRequests()
   };
 
   const fetchPendingRequests = async () => {
@@ -157,6 +159,20 @@ const Friends = () => {
     }
   }
 
+  const removeFriend = async (friendId) => {
+    await supabase.from("friends")
+      .delete()
+      .eq("user_id", session.user.id)
+      .eq("friend_id", friendId);
+  
+    await supabase.from("friends")
+      .delete()
+      .eq("user_id", friendId)
+      .eq("friend_id", session.user.id);
+  
+    fetchFriends();
+  };
+
   return (
     <div>
       <Navbar />
@@ -188,13 +204,25 @@ const Friends = () => {
                 ))}
               </>
             )}
-            <h3 className="text-lg font-semibold mb-2">Add Friends</h3>
-            {users.length === 0 ? <p>No users available to add.</p> : users.map((user) => (
-              <div key={user.id} className="flex justify-between items-center border p-2 rounded mb-2">
-                <span>{user.username}</span>
-                <button onClick={() => sendFriendRequest(user.id)} className="bg-blue-500 text-white px-3 py-1 rounded">Send Request</button>
-              </div>
-            ))}
+            <h3 className="text-lg font-semibold mt-4 mb-2">Add Friends</h3>
+            <input
+              type="text"
+              placeholder="Search users..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full p-2 border rounded mb-2"
+            />
+
+            {users
+              .filter(user => user.username.toLowerCase().includes(searchTerm.toLowerCase()))
+              .map((user) => (
+                <div key={user.id} className="flex justify-between items-center border p-2 rounded mb-2">
+                  <span>{user.username}</span>
+                  <button onClick={() => sendFriendRequest(user.id)} className="bg-blue-500 text-white px-3 py-1 rounded">
+                    Send Request
+                  </button>
+                </div>
+              ))}
           </div>
         ) : tab === "friends" ? (
           <div>
@@ -203,8 +231,11 @@ const Friends = () => {
               <p>No friends yet.</p>
             ) : (
               friends.map((friend) => (
-                <div key={friend.friend_id} className="border p-2 rounded mb-2">
+                <div key={friend.friend_id} className="flex justify-between items-center border p-2 rounded mb-2">
                   <span>{friend.profiles.username}</span>
+                  <button onClick={() => removeFriend(friend.friend_id)} className="bg-red-500 text-white px-3 py-1 rounded">
+                    Remove Friend
+                  </button>
                 </div>
               ))
             )}
