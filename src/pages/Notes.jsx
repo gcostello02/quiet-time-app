@@ -40,6 +40,7 @@ const Notes = () => {
   };
 
   //TODO: Popup with note taking strategies COMA, ACTS, General Questions to answer on bookmark
+  //TODO: Make bible and notes stack after a certain width limit
 
   return (
     <div>
