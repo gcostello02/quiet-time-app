@@ -1,18 +1,20 @@
 import React, { useState } from "react";
 import esvData from "../data/ESV.json";
 import Navbar from "../components/Navbar";
+import { MinusCircle } from "lucide-react";
 
 const Notes = () => {
   const [selectedBook, setSelectedBook] = useState(Object.keys(esvData)[0]);
   const [selectedChapter, setSelectedChapter] = useState("1");
-  const [isBibleVisible, setIsBibleVisible] = useState(true);
+  const [isBibleVisible, setIsBibleVisible] = useState(false);
   const [title, setTitle] = useState("");
   const [publicContent, setPublicContent] = useState("");
   const [privateContent, setPrivateContent] = useState("");
   const [prayerContent, setPrayerContent] = useState("");
   const [publicPrayerContent, setPublicPrayerContent] = useState("");
-  const [bibleReferences, setBibleReferences] = useState([{ book: "", chapter: "" }]);
+  const [bibleReferences, setBibleReferences] = useState([{ book: selectedBook, chapter: selectedChapter }]);
   const [visibility, setVisibility] = useState("private_anonymous");
+  // eslint-disable-next-line no-unused-vars
   const [pdfFile, setPdfFile] = useState(null);
 
   const books = Object.keys(esvData);
@@ -31,16 +33,16 @@ const Notes = () => {
   const handleFileChange = (e) => setPdfFile(e.target.files[0]);
 
   const handleAddReference = () => {
-    setBibleReferences([...bibleReferences, { book: "", chapter: "" }]);
+    setBibleReferences([...bibleReferences, { book: selectedBook, chapter: selectedChapter }]);
+;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic (e.g., save to database)
+    // TODO: Handle form submission logic (e.g., save to database)
   };
 
   //TODO: Popup with note taking strategies COMA, ACTS, General Questions to answer on bookmark
-  //TODO: Make bible and notes stack after a certain width limit
 
   return (
     <div>
@@ -50,12 +52,12 @@ const Notes = () => {
           onClick={() => setIsBibleVisible(!isBibleVisible)}
           className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-md"
         >
-          {isBibleVisible ? "Hide Bible" : "Show Bible"}
+          {isBibleVisible ? "Hide Bible" : "Show Splitscreen Bible"}
         </button>
       </div>
 
-      <div className="min-h-screen p-6 flex">
-        <div className={`flex-1 p-4 max-w-3xl mx-auto ${isBibleVisible ? "border-r-2 border-gray-300" : ""}`}>
+      <div className="min-h-screen p-6 flex flex-col lg:flex-row gap-4">
+        <div className={`flex-1 p-4 mx-auto w-full ${isBibleVisible ? "lg:border-r-2 border-gray-300" : ""} lg:max-w-3xl`}>
           <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-4">
             Notes
           </h2>
@@ -142,22 +144,45 @@ const Notes = () => {
             <div>
               <label className="block text-sm font-medium text-gray-900 dark:text-white">Bible References</label>
               {bibleReferences.map((reference, index) => (
-                // TODO: Make this a select from the esv books list
                 <div key={index} className="flex space-x-2 mb-2">
-                  <input
-                    type="text"
+                  <select
                     value={reference.book}
-                    onChange={(e) => handleBibleReferenceChange(index, "book", e.target.value)}
-                    className="w-1/2 rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
-                    placeholder="Book"
-                  />
-                  <input
-                    type="number"
+                    onChange={(e) => {
+                      handleBibleReferenceChange(index, "book", e.target.value);
+                      handleBibleReferenceChange(index, "chapter", "1");
+                    }}
+                    className="mt-1 block w-48 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                  >
+                    {books.map((book) => (
+                      <option key={book} value={book}>
+                        {book}
+                      </option>
+                    ))}
+                  </select>
+                  <select
                     value={reference.chapter}
                     onChange={(e) => handleBibleReferenceChange(index, "chapter", e.target.value)}
-                    className="w-1/2 rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
-                    placeholder="Chapter"
-                  />
+                    className="mt-1 block w-20 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                  >
+                    {Object.keys(esvData[reference.book]).map((chapter) => (
+                      <option key={chapter} value={chapter}>
+                        {chapter}
+                      </option>
+                    ))}
+                  </select>
+                  {bibleReferences.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = [...bibleReferences];
+                        updated.splice(index, 1);
+                        setBibleReferences(updated);
+                      }}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <MinusCircle className="w-5 h-5" />
+                    </button>
+                  )}
                 </div>
               ))}
               <button
@@ -167,7 +192,6 @@ const Notes = () => {
               >
                 Add Another Reference
               </button>
-              //TODO: Add a remove reference function and button
             </div>
 
             <div>
@@ -194,11 +218,6 @@ const Notes = () => {
                 onChange={handleFileChange}
                 className="mt-1 block w-full text-sm text-gray-900 dark:text-white"
               />
-              {pdfFile && (
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                  Uploaded File: {pdfFile.name}
-                </p>
-              )}
             </div>
 
             <div className="text-center">
@@ -206,14 +225,14 @@ const Notes = () => {
                 type="submit"
                 className="px-6 py-3 mt-4 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none"
               >
-                Submit Note
+                Finish Quiet Time
               </button>
             </div>
           </form>
         </div>
 
         {isBibleVisible && (
-          <div className="flex-1 p-4">
+          <div className="flex-1 p-4 max-w-3xl mx-auto">
             <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-4">
               Bible (ESV)
             </h2>

@@ -25,7 +25,7 @@ const Bible = () => {
               value={selectedBook}
               onChange={(e) => {
                 setSelectedBook(e.target.value);
-                setSelectedChapter("1"); // Reset chapter when book changes
+                setSelectedChapter("1");
               }}
               className="mt-1 block w-48 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
             >
