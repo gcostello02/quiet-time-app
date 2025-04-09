@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import esvData from "../data/ESV.json";
 import Navbar from "../components/Navbar";
 import { MinusCircle } from "lucide-react";
+import { UserAuth } from "../context/AuthContext";
+import { supabase } from "../supabaseClient";
+import { useNavigate } from "react-router-dom";
 
 const Notes = () => {
+  const { session } = UserAuth(); 
   const [selectedBook, setSelectedBook] = useState(Object.keys(esvData)[0]);
   const [selectedChapter, setSelectedChapter] = useState("1");
   const [isBibleVisible, setIsBibleVisible] = useState(false);
@@ -14,8 +18,10 @@ const Notes = () => {
   const [publicPrayerContent, setPublicPrayerContent] = useState("");
   const [bibleReferences, setBibleReferences] = useState([{ book: selectedBook, chapter: selectedChapter }]);
   const [visibility, setVisibility] = useState("private_anonymous");
-  // eslint-disable-next-line no-unused-vars
   const [pdfFile, setPdfFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const books = Object.keys(esvData);
   const chapters = Object.keys(esvData[selectedBook]);
@@ -34,13 +40,75 @@ const Notes = () => {
 
   const handleAddReference = () => {
     setBibleReferences([...bibleReferences, { book: selectedBook, chapter: selectedChapter }]);
-;
-  };
+  }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // TODO: Handle form submission logic (e.g., save to database)
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
+
+    let pdfUrl = null
+    
+    if (pdfFile) {
+      const filePath = `${session.user.id}/${new Date().toISOString().split("T")[0]}.pdf`
+      const { error: uploadError } = await supabase.storage
+      .from("note-pdfs")
+      .upload(filePath, pdfFile, { upsert: true })
+      
+      if (uploadError) {
+        console.error("Error uploading avatar:", uploadError);
+        setError("Failed to upload pdf.");
+        setLoading(false);
+        return;
+      }
+
+      pdfUrl = supabase.storage.from("note-pdfs").getPublicUrl(filePath).data.publicUrl
+    }
+
+    const { data: noteData, error: noteError } = await supabase
+      .from("notes")
+      .insert([
+        {
+          user_id: session.user.id,
+          title: title,
+          public_notes_content: publicContent,
+          private_notes_content: privateContent,
+          public_prayer_content: publicPrayerContent,
+          private_prayer_content: prayerContent,
+          visibility: visibility,
+          pdf_url: pdfUrl,
+        },
+      ])
+      .select()
+      .single();
+
+    if (noteError) {
+      console.error("Error inserting note:", noteError);
+      setError("Failed to save note.");
+      setLoading(false);
+      return;
+    }
+
+    const referenceRows = bibleReferences.map((ref) => ({
+      note_id: noteData.id,
+      book: ref.book,
+      chapter: ref.chapter,
+    }));
+
+    const { error: refError } = await supabase
+      .from("note_references")
+      .insert(referenceRows);
+
+    if (refError) {
+      console.error("Error inserting references:", refError);
+      setError("Failed to save references.");
+      setLoading(false);
+      return;
+    }
+
+    setLoading(false);
+    navigate("/dashboard")
+  }
 
   //TODO: Popup with note taking strategies COMA, ACTS, General Questions to answer on bookmark
 
@@ -224,11 +292,14 @@ const Notes = () => {
               <button
                 type="submit"
                 className="px-6 py-3 mt-4 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none"
+                disabled={loading}
               >
-                Finish Quiet Time
+                {loading ? "Saving Note..." : "Finish Quiet Time"}
               </button>
             </div>
           </form>
+
+          {error && <p className="text-center text-red-500">{error}</p>}
         </div>
 
         {isBibleVisible && (
