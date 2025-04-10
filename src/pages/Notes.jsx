@@ -111,6 +111,7 @@ const Notes = () => {
   }
 
   //TODO: Popup with note taking strategies COMA, ACTS, General Questions to answer on bookmark
+  //TODO: Better Names and Placeholders for text boxes
 
   return (
     <div>
@@ -160,7 +161,7 @@ const Notes = () => {
                 onChange={(e) => handleContentChange(e, setPublicContent)}
                 rows="4"
                 className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
-                placeholder="Write public content" //TODO: Better placeholders
+                placeholder="Write public content"
               />
             </div>
 
@@ -357,6 +358,17 @@ const Notes = () => {
                   </p>
                 ))}
               </div>
+            </div>
+            <div className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400 px-4">
+              The Holy Bible, English Standard Version. ESV® Text Edition: 2016. Copyright © 2001 by{" "}
+              <a
+                href="https://www.crossway.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 dark:text-blue-400 underline"
+              >
+                Crossway Bibles, a publishing ministry of Good News Publishers.
+              </a>      
             </div>
           </div>
         )}

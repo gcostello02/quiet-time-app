@@ -68,6 +68,17 @@ const Bible = () => {
           </div>
         </div>
       </div>
+      <div className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400 px-4">
+        The Holy Bible, English Standard Version. ESV® Text Edition: 2016. Copyright © 2001 by{" "}
+        <a
+          href="https://www.crossway.org/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 dark:text-blue-400 underline"
+        >
+          Crossway Bibles, a publishing ministry of Good News Publishers.
+        </a>      
+      </div>
     </div>
   );
 };
