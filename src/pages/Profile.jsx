@@ -2,17 +2,62 @@ import React, { useState, useEffect } from "react";
 import { UserAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { supabase } from "../supabaseClient";
 
 const ProfilePage = () => {
-  const { profile } = UserAuth();
+  const { session, profile } = UserAuth();
   const [loading, setLoading] = useState(true);
+  const [streak, setStreak] = useState(0);
 
   useEffect(() => {
     if (profile) {
       setLoading(false);
       console.log("Profile", profile)
     }
-  }, [profile]);
+
+    const fetchStats = async () => {
+      const { data: dateData } = await supabase
+        .from("notes")
+        .select("created_at")
+        .eq("user_id", session.user.id);
+
+      if (dateData) {
+        console.log(dateData)
+
+        const dates = dateData
+          .map((n) => new Date(n.created_at).toLocaleDateString("en-CA"))
+          .sort((a, b) => (a > b ? -1 : 1));
+        
+        console.log(dates)
+
+        const dateSet = new Set(dates);
+        
+        const today = new Date();
+        const todayStr = today.toISOString().split("T")[0];
+
+        let currentStreak = 0;
+        let checkingDate = new Date(today)
+
+        if (!dateSet.has(todayStr)) {
+          checkingDate.setDate(checkingDate.getDate() - 1);
+        }
+
+        while (true) {
+          const dateStr = checkingDate.toISOString().split("T")[0];
+          if (dateSet.has(dateStr)) {
+            currentStreak++
+            checkingDate.setDate(checkingDate.getDate() - 1)
+          } else {
+            break
+          }
+        }
+
+        setStreak(currentStreak);
+      }
+    }
+
+    fetchStats()
+  }, [profile, session.user.id]);
 
   if (loading) {
     return (
@@ -70,8 +115,8 @@ const ProfilePage = () => {
 
         <div className="mt-6 flex justify-around text-center border-t pt-4">
           <div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">QT Streak</p>
-            <p className="text-lg font-semibold">{profile.streak ? profile.streak : 0}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">TAWG Streak</p>
+            <p className="text-lg font-semibold">{streak}</p>
           </div>
           <div>
             <p className="text-sm text-gray-500 dark:text-gray-400">Favorite Verse</p>
