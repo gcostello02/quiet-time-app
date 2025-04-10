@@ -5,6 +5,7 @@ import { MinusCircle } from "lucide-react";
 import { UserAuth } from "../context/AuthContext";
 import { supabase } from "../supabaseClient";
 import { useNavigate } from "react-router-dom";
+import Accordion from "../components/Accordian"
 
 const Notes = () => {
   const { session } = UserAuth(); 
@@ -17,7 +18,7 @@ const Notes = () => {
   const [prayerContent, setPrayerContent] = useState("");
   const [publicPrayerContent, setPublicPrayerContent] = useState("");
   const [bibleReferences, setBibleReferences] = useState([{ book: selectedBook, chapter: selectedChapter }]);
-  const [visibility, setVisibility] = useState("private_anonymous");
+  const [visibility, setVisibility] = useState("public_anonymous");
   const [pdfFile, setPdfFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -111,7 +112,6 @@ const Notes = () => {
   }
 
   //TODO: Popup with note taking strategies COMA, ACTS, General Questions to answer on bookmark
-  //TODO: Better Names and Placeholders for text boxes
 
   return (
     <div>
@@ -129,11 +129,12 @@ const Notes = () => {
         <div className={`flex-1 p-4 mx-auto w-full ${isBibleVisible ? "lg:border-r-2 border-gray-300" : ""} lg:max-w-3xl`}>
           <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-4">
             Notes
-          </h2>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          </h2>         
+
+          <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-gray-900 shadow-md rounded-xl p-6">
             <div>
               <label htmlFor="title" className="block text-sm font-medium text-gray-900 dark:text-white">
-                Title
+                Title (Max 100 characters)
               </label>
               <input
                 type="text"
@@ -142,17 +143,14 @@ const Notes = () => {
                 value={title}
                 onChange={handleTitleChange}
                 maxLength="100"
-                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
-                placeholder="Enter title (max 100 characters)"
+                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                placeholder="Suggestion: MM/DD/YYYY Notes"
               />
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                {title.length} / 100 characters
-              </p>
             </div>
 
             <div>
               <label htmlFor="publicContent" className="block text-sm font-medium text-gray-900 dark:text-white">
-                Public Content
+                Notes
               </label>
               <textarea
                 id="publicContent"
@@ -160,14 +158,14 @@ const Notes = () => {
                 value={publicContent}
                 onChange={(e) => handleContentChange(e, setPublicContent)}
                 rows="4"
-                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
-                placeholder="Write public content"
+                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                placeholder="Notes here will be seen by others if a public visibility option is chosen"
               />
             </div>
 
             <div>
               <label htmlFor="privateContent" className="block text-sm font-medium text-gray-900 dark:text-white">
-                Private Content
+                Private Notes
               </label>
               <textarea
                 id="privateContent"
@@ -175,14 +173,14 @@ const Notes = () => {
                 value={privateContent}
                 onChange={(e) => handleContentChange(e, setPrivateContent)}
                 rows="4"
-                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
-                placeholder="Write private content"
+                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                placeholder="Notes here won't be seen by anyone no matter what visibility option is chosen"
               />
             </div>
 
             <div>
               <label htmlFor="publicPrayerContent" className="block text-sm font-medium text-gray-900 dark:text-white">
-                Public Prayer Content
+                Prayers
               </label>
               <textarea
                 id="publicPrayerContent"
@@ -190,14 +188,14 @@ const Notes = () => {
                 value={publicPrayerContent}
                 onChange={(e) => handleContentChange(e, setPublicPrayerContent)}
                 rows="4"
-                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
-                placeholder="Write public prayer content"
+                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                placeholder="Prayers here will be seen by others if a public visibility option is chosen"
               />
             </div>
 
             <div>
               <label htmlFor="prayerContent" className="block text-sm font-medium text-gray-900 dark:text-white">
-                Private Prayer Content
+                Private Prayers
               </label>
               <textarea
                 id="prayerContent"
@@ -205,13 +203,13 @@ const Notes = () => {
                 value={prayerContent}
                 onChange={(e) => handleContentChange(e, setPrayerContent)}
                 rows="4"
-                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
-                placeholder="Write private prayer content"
+                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                placeholder="Prayers here won't be seen by anyone no matter what visibility option is chosen"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-900 dark:text-white">Bible References</label>
+              <label className="block text-sm font-medium text-gray-900 dark:text-white">What I Read</label>
               {bibleReferences.map((reference, index) => (
                 <div key={index} className="flex space-x-2 mb-2">
                   <select
@@ -220,7 +218,7 @@ const Notes = () => {
                       handleBibleReferenceChange(index, "book", e.target.value);
                       handleBibleReferenceChange(index, "chapter", "1");
                     }}
-                    className="mt-1 block w-48 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                    className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
                   >
                     {books.map((book) => (
                       <option key={book} value={book}>
@@ -231,7 +229,7 @@ const Notes = () => {
                   <select
                     value={reference.chapter}
                     onChange={(e) => handleBibleReferenceChange(index, "chapter", e.target.value)}
-                    className="mt-1 block w-20 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                    className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
                   >
                     {Object.keys(esvData[reference.book]).map((chapter) => (
                       <option key={chapter} value={chapter}>
@@ -247,7 +245,7 @@ const Notes = () => {
                         updated.splice(index, 1);
                         setBibleReferences(updated);
                       }}
-                      className="text-red-500 hover:text-red-700"
+                      className="text-red-500 hover:text-red-700 bg-gray-100"
                     >
                       <MinusCircle className="w-5 h-5" />
                     </button>
@@ -257,24 +255,12 @@ const Notes = () => {
               <button
                 type="button"
                 onClick={handleAddReference}
-                className="text-blue-500 hover:text-blue-700 text-sm"
+                className="text-blue-500 hover:text-blue-700 text-sm bg-gray-100"
               >
-                Add Another Reference
+                Add Another Chapter
               </button>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-900 dark:text-white">Visibility</label>
-              <select
-                value={visibility}
-                onChange={(e) => setVisibility(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
-              >
-                <option value="private_anonymous">Private (Anonymous to be seen by others)</option>
-                <option value="private_not_seen">Private (Not to be seen)</option>
-                <option value="public_friends">Public (To friends)</option>
-              </select>
-            </div>
 
             <div>
               <label htmlFor="pdfFile" className="block text-sm font-medium text-gray-900 dark:text-white">
@@ -287,6 +273,19 @@ const Notes = () => {
                 onChange={handleFileChange}
                 className="mt-1 block w-full text-sm text-gray-900 dark:text-white"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-900 dark:text-white">Visibility</label>
+              <select
+                value={visibility}
+                onChange={(e) => setVisibility(e.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+              >
+                <option value="public_anonymous">Public (To friends and anonymous to other users)</option>
+                <option value="public_friends">Public (Just to friends)</option>
+                <option value="private_not_seen">Private (Not to be seen)</option>
+              </select>
             </div>
 
             <div className="text-center">
