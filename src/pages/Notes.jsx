@@ -5,7 +5,6 @@ import { MinusCircle } from "lucide-react";
 import { UserAuth } from "../context/AuthContext";
 import { supabase } from "../supabaseClient";
 import { useNavigate } from "react-router-dom";
-import Accordion from "../components/Accordian"
 
 const Notes = () => {
   const { session } = UserAuth(); 
@@ -209,7 +208,7 @@ const Notes = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-900 dark:text-white">What I Read</label>
+              <label className="block text-sm font-medium text-gray-900 dark:text-white">Chapters Read</label>
               {bibleReferences.map((reference, index) => (
                 <div key={index} className="flex space-x-2 mb-2">
                   <select
