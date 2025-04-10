@@ -39,9 +39,13 @@ const Dashboard = () => {
         .eq("user_id", userId);
 
       if (dateData) {
+        console.log(dateData)
+
         const dates = dateData
-          .map((n) => new Date(n.created_at).toISOString().split("T")[0])
+          .map((n) => new Date(n.created_at).toLocaleDateString("en-CA"))
           .sort((a, b) => (a > b ? -1 : 1));
+        
+        console.log(dates)
 
         const dateSet = new Set(dates);
         
@@ -99,18 +103,35 @@ const Dashboard = () => {
         <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow mb-6">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">About This App</h2>
           <p className="text-gray-700 dark:text-gray-300">
-            This app helps you grow in your relationship with God through consistent quiet time. Track your reading,
-            reflect through notes, and build a streak to stay spiritually grounded.
+            <strong>TWAG</strong>, or <strong>T</strong>ime <strong>A</strong>lone <strong>W</strong>ith <strong>G</strong>od is...
           </p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow ">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">Bible References</h2>
-          <img
-            src="/src/assets/references.jpg"
-            alt="Graph showing quiet time activity"
-            className="w-full rounded"
-          />
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow mb-6">
+          
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+            <h3 className="text-2xl font-semibold text-gray-800 dark:text-white">The Bible is...</h3>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+            
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+            <img
+              src="/src/assets/references.jpg"
+              alt="Graph showing quiet time activity"
+              className="w-full rounded"
+            />
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">Bible References:</h3>
+            <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">klnslk</p>
+          </div>
         </div>
       </div>
     </div>
