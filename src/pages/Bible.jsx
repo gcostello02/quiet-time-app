@@ -14,7 +14,7 @@ const Bible = () => {
       <Navbar />
       <div className="min-h-screen p-6">
         <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-4">
-          Bible (ESV) {/* TODO: Add more translations */}
+          Bible (ESV)
         </h2>
         <div className="flex justify-center gap-4 mb-4">
           <div>

@@ -110,8 +110,6 @@ const Notes = () => {
     navigate("/dashboard")
   }
 
-  //TODO: Popup with note taking strategies COMA, ACTS, General Questions to answer on bookmark
-
   return (
     <div>
       <Navbar />
@@ -127,7 +125,7 @@ const Notes = () => {
       <div className="min-h-screen p-6 flex flex-col lg:flex-row gap-4">
         <div className={`flex-1 p-4 mx-auto w-full ${isBibleVisible ? "lg:border-r-2 border-gray-300" : ""} lg:max-w-3xl`}>
           <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-4">
-            Notes
+            Time Alone with God
           </h2>         
 
           <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-gray-900 shadow-md rounded-xl p-6">
@@ -294,7 +292,7 @@ const Notes = () => {
                 className="px-6 py-3 mt-4 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none"
                 disabled={loading}
               >
-                {loading ? "Saving Note..." : "Finish Quiet Time"}
+                {loading ? "Saving..." : "Finish TAWG"}
               </button>
             </div>
           </form>
