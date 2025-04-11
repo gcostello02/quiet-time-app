@@ -11,6 +11,8 @@ import Profile from "./pages/Profile";
 import Notes from "./pages/Notes";
 import EditProfile from "./pages/EditProfile";
 import Friends from "./pages/Friends";
+import HowTo from "./pages/HowTo";
+import Plan from "./pages/Plan";
 
 export const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -63,6 +65,22 @@ export const router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <Friends />
+      </PrivateRoute>
+    )
+  },
+  { 
+    path: "/howto", 
+    element: (
+      <PrivateRoute>
+        <HowTo />
+      </PrivateRoute>
+    )
+  },
+  { 
+    path: "/plan", 
+    element: (
+      <PrivateRoute>
+        <Plan />
       </PrivateRoute>
     )
   },

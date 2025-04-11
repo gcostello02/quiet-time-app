@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { UserAuth } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 import { supabase } from "../supabaseClient";
-import { BookOpenIcon, FireIcon, StarIcon, LinkIcon, SparklesIcon } from "@heroicons/react/24/outline";
+import { BookOpenIcon, FireIcon, LinkIcon, SparklesIcon } from "@heroicons/react/24/outline";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const { session } = UserAuth();
@@ -85,19 +86,33 @@ const Dashboard = () => {
     <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
       <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">{title}</h3>
       <ul className="list-disc list-inside space-y-1">
-        {links.map((link, idx) => (
-          <li key={idx}>
-            <a
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
-            >
-              <LinkIcon className="h-4 w-4" />
-              {link.label}
-            </a>
-          </li>
-        ))}
+        {links.map((link, idx) => {
+          const isInternal = link.href.startsWith("/");
+  
+          return (
+            <li key={idx}>
+              {isInternal ? (
+                <Link
+                  to={link.href}
+                  className="text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
+                >
+                  <LinkIcon className="h-4 w-4" />
+                  {link.label}
+                </Link>
+              ) : (
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
+                >
+                  <LinkIcon className="h-4 w-4" />
+                  {link.label}
+                </a>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
@@ -127,14 +142,14 @@ const Dashboard = () => {
           <LinkList
             title="📖 Reading Plans"
             links={[
-              { label: "40 Day Getting Started Plan", href: "#" },
+              { label: "40 Day Getting Started Plan", href: "/plan" },
               { label: "Bible in a Year Plan", href: "https://www.biblica.com/resources/reading-plans/" },
             ]}
           />
           <LinkList
             title="📚 Resources"
             links={[
-              { label: "How to do TAWG", href: "#" },
+              { label: "How to do TAWG", href: "/howto" },
               { label: "Got Questions", href: "https://www.gotquestions.org/" },
               { label: "Enduring Word Commentary", href: "https://enduringword.com/bible-commentary/" },
             ]}
