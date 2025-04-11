@@ -1,0 +1,242 @@
+[
+  {
+    "day": 1,
+    "book": "Genesis",
+    "chapters": "1-2",
+    "description": "The Creation Account"
+  },
+  {
+    "day": 2,
+    "book": "Genesis",
+    "chapters": "3",
+    "description": "The Beginning of Sin"
+  },
+  {
+    "day": 3,
+    "book": "Genesis",
+    "chapters": "15; 17:15-27",
+    "description": "God's Covenant with Abraham"
+  },
+  {
+    "day": 4,
+    "book": "Genesis",
+    "chapters": "21:1-7; 22",
+    "description": "God's Faithfullness and Abraham's Faith"
+  },
+  {
+    "day": 5,
+    "book": "Exodus",
+    "chapters": "3-4",
+    "description": "God Call Moses to Deliver His People"
+  },
+  {
+    "day": 6,
+    "book": "Exodus",
+    "chapters": "20",
+    "description": "The Ten Commandments"
+  },
+  {
+    "day": 7,
+    "book": "Joshua",
+    "chapters": "1",
+    "description": "Conquering of the Promised Land"
+  },
+  {
+    "day": 8,
+    "book": "1 Samuel",
+    "chapters": "16-17",
+    "description": "David and Goliath"
+  },
+  {
+    "day": 9,
+    "book": "1 Kings",
+    "chapters": "3; 8:1-9:9",
+    "description": "King Solomon's Wisdom and the Temple"
+  },
+  {
+    "day": 10,
+    "book": "1 Kings",
+    "chapters": "18",
+    "description": "The Prophet Elijah and the Prophets of Baal"
+  },
+  {
+    "day": 11,
+    "book": "2 Kings",
+    "chapters": "25",
+    "description": "The Siege of Jerusalem and Exile of Judah"
+  },
+  {
+    "day": 12,
+    "book": "Daniel",
+    "chapters": "2-3",
+    "description": "Daniel in Babylon; The Fiery Furnace"
+  },
+  {
+    "day": 13,
+    "book": "Ezra",
+    "chapters": "3",
+    "description": "Rebuilding the Temple in Jerusalem"
+  },
+  {
+    "day": 14,
+    "book": "Isaiah",
+    "chapters": "9, 53, 61",
+    "description": "Isaiah's Prophecy of the Coming Messiah"
+  },
+  {
+    "day": 15,
+    "book": "Luke",
+    "chapters": "1-2",
+    "description": "The Birth of Jesus"
+  },
+  {
+    "day": 16,
+    "book": "John",
+    "chapters": "1:1-18",
+    "description": "Who Jesus Is"
+  },
+  {
+    "day": 17,
+    "book": "Luke",
+    "chapters": "4:14-44",
+    "description": "Jesus Begins His Ministry"
+  },
+  {
+    "day": 18,
+    "book": "Matthew",
+    "chapters": "5-6",
+    "description": "The Core of Jesus's Teaching"
+  },
+  {
+    "day": 19,
+    "book": "John",
+    "chapters": "3",
+    "description": "God's Love for the World"
+  },
+  {
+    "day": 20,
+    "book": "John",
+    "chapters": "5",
+    "description": "Jesus's Miracles and Authority"
+  },
+  {
+    "day": 21,
+    "book": "John",
+    "chapters": "11",
+    "description": "Jesus's Power Over Death"
+  },
+  {
+    "day": 22,
+    "book": "John",
+    "chapters": "15",
+    "description": "The Christian Life Defined"
+  },
+  {
+    "day": 23,
+    "book": "John",
+    "chapters": "17",
+    "description": "Jesus's High Priestly Prayer"
+  },
+  {
+    "day": 24,
+    "book": "Matthew",
+    "chapters": "26-27",
+    "description": "The Arrest and Crucifixion of Jesus"
+  },
+  {
+    "day": 25,
+    "book": "John",
+    "chapters": "20",
+    "description": "The Ressurection of Jesus"
+  },
+  {
+    "day": 26,
+    "book": "Luke",
+    "chapters": "24",
+    "description": "The Ascension of Jesus"
+  },
+  {
+    "day": 27,
+    "book": "Acts",
+    "chapters": "2",
+    "description": "The Coming of the Holy Spirit"
+  },
+  {
+    "day": 28,
+    "book": "Acts",
+    "chapters": "9",
+    "description": "The Conversion of Saul"
+  },
+  {
+    "day": 29,
+    "book": "Acts",
+    "chapters": "16",
+    "description": "The Gospel Spreads to Europe"
+  },
+  {
+    "day": 30,
+    "book": "Acts",
+    "chapters": "26",
+    "description": "Paul's Defense of the Christian Faith"
+  },
+  {
+    "day": 31,
+    "book": "Romans",
+    "chapters": "3",
+    "description": "Justification by Faith Alone"
+  },
+  {
+    "day": 32,
+    "book": "Romans",
+    "chapters": "7-8",
+    "description": "The Battle with Sin; Life in the Spirit"
+  },
+  {
+    "day": 33,
+    "book": "1 Corinthians",
+    "chapters": "13",
+    "description": "The Way of Love"
+  },
+  {
+    "day": 34,
+    "book": "1 Corinthians",
+    "chapters": "15",
+    "description": "The Power of the Resurrection"
+  },
+  {
+    "day": 35,
+    "book": "Galatians",
+    "chapters": "5",
+    "description": "Freedom in Christ"
+  },
+  {
+    "day": 36,
+    "book": "Ephesians",
+    "chapters": "6",
+    "description": "The Whole Armor of God"
+  },
+  {
+    "day": 37,
+    "book": "Philippians",
+    "chapters": "1:18-2:18",
+    "description": "Christ's Example"
+  },
+  {
+    "day": 38,
+    "book": "Colossians",
+    "chapters": "3:1-17",
+    "description": "Putting on the New Self"
+  },
+  {
+    "day": 39,
+    "book": "James",
+    "chapters": "1",
+    "description": "Pure Religion"
+  },
+  {
+    "day": 40,
+    "book": "Revelation",
+    "chapters": "21-22",
+    "description": "The New Heaven and Earth"
+  }
+]
