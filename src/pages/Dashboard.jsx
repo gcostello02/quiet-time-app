@@ -127,15 +127,15 @@ const Dashboard = () => {
           <LinkList
             title="📖 Reading Plans"
             links={[
-              { label: "ESV Bible Reading Plan", href: "#" },
+              { label: "40 Day Getting Started Plan", href: "#" },
               { label: "Bible in a Year Plan", href: "https://www.biblica.com/resources/reading-plans/" },
             ]}
           />
           <LinkList
             title="📚 Resources"
             links={[
-              { label: "Got Questions", href: "https://www.gotquestions.org/" },
               { label: "How to do TAWG", href: "#" },
+              { label: "Got Questions", href: "https://www.gotquestions.org/" },
               { label: "Enduring Word Commentary", href: "https://enduringword.com/bible-commentary/" },
             ]}
           />
@@ -147,25 +147,25 @@ const Dashboard = () => {
             <div>
               <p className="font-semibold">📜 Historically Accurate</p>
               <p className="text-gray-700 dark:text-gray-300">
-                2 Peter 1:16 – For we did not follow cleverly devised myths when we made known to you the power and coming of our Lord Jesus Christ, but we were eyewitnesses of his majesty.
+                2 Peter 1:16 - For we did not follow cleverly devised myths when we made known to you the power and coming of our Lord Jesus Christ, but we were eyewitnesses of his majesty.
               </p>
             </div>
             <div>
               <p className="font-semibold">🔗 Internally Consistent</p>
               <p className="text-gray-700 dark:text-gray-300">
-                63,779 cross-references in the graph show how the Bible is 66 separate books all holding to the same beliefs.
+                63,779 cross-references in the graph show how the Bible is 66 books written by 40 authors, but is one story because each writer was inspired by the Holy Spirit.
               </p>
             </div>
             <div>
               <p className="font-semibold">🔮 Prophetically Accurate</p>
               <p className="text-gray-700 dark:text-gray-300">
-                2 Peter 1:21 – For no prophecy was ever produced by the will of man, but men spoke from God as they were carried along by the Holy Spirit.
+                2 Peter 1:21 - For no prophecy was ever produced by the will of man, but men spoke from God as they were carried along by the Holy Spirit.
               </p>
             </div>
             <div>
               <p className="font-semibold">🙌 Jesus Approved</p>
               <p className="text-gray-700 dark:text-gray-300">
-                Romans 10:17 – So faith comes from hearing, and hearing through the word of Christ.
+                Romans 10:17 - So faith comes from hearing, and hearing through the word of Christ.
               </p>
             </div>
           </div>

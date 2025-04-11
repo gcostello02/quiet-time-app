@@ -281,8 +281,9 @@ const Notes = () => {
                 onChange={(e) => setVisibility(e.target.value)}
                 className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
               >
-                <option value="public_anonymous">Public (To friends and anonymous to other users)</option>
+                <option value="public_all">Public (To friends and anonymous to other users)</option>
                 <option value="public_friends">Public (Just to friends)</option>
+                <option value="private_anonymous">Public (Anonymous to everyone)</option>
                 <option value="private_not_seen">Private (Not to be seen)</option>
               </select>
             </div>
