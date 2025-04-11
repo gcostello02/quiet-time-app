@@ -127,8 +127,8 @@ const Dashboard = () => {
           <LinkList
             title="📖 Reading Plans"
             links={[
-              { label: "ESV Bible Reading Plan", href: "https://www.crossway.org/bibles/esv-bible-reading-plans/" },
-              { label: "Bible 365", href: "https://bibleplan.org/" },
+              { label: "ESV Bible Reading Plan", href: "#" },
+              { label: "Bible in a Year Plan", href: "https://www.biblica.com/resources/reading-plans/" },
             ]}
           />
           <LinkList
@@ -143,39 +143,42 @@ const Dashboard = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow space-y-4">
-            <h3 className="text-xl font-semibold text-gray-800 dark:text-white">Why We Can Trust the Bible</h3>
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-white">Why We Can Trust the Bible:</h3>
             <div>
               <p className="font-semibold">📜 Historically Accurate</p>
               <p className="text-gray-700 dark:text-gray-300">
-                2 Peter 1:16 – For we did not follow cleverly devised myths...
+                2 Peter 1:16 – For we did not follow cleverly devised myths when we made known to you the power and coming of our Lord Jesus Christ, but we were eyewitnesses of his majesty.
               </p>
             </div>
             <div>
               <p className="font-semibold">🔗 Internally Consistent</p>
               <p className="text-gray-700 dark:text-gray-300">
-                63,779 cross-references show its divine coherence and design.
+                63,779 cross-references in the graph show how the Bible is 66 separate books all holding to the same beliefs.
               </p>
             </div>
             <div>
               <p className="font-semibold">🔮 Prophetically Accurate</p>
               <p className="text-gray-700 dark:text-gray-300">
-                2 Peter 1:21 – Men spoke from God as they were carried by the Holy Spirit.
+                2 Peter 1:21 – For no prophecy was ever produced by the will of man, but men spoke from God as they were carried along by the Holy Spirit.
               </p>
             </div>
             <div>
               <p className="font-semibold">🙌 Jesus Approved</p>
               <p className="text-gray-700 dark:text-gray-300">
-                Romans 10:17 – Faith comes from hearing, and hearing through the word of Christ.
+                Romans 10:17 – So faith comes from hearing, and hearing through the word of Christ.
               </p>
             </div>
           </div>
           <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
-            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Graph of Bible Cross References</h3>
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Graph of Bible Cross References:</h3>
             <img
               src="/src/assets/references.jpg"
               alt="Bible cross reference visualization"
               className="w-full rounded"
             />
+            <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+              This visualization depicts Bible chapters with alternating light and dark gray bars, starting with Genesis 1 on the left. White bars mark the first chapters of the Old and New Testaments. Bar lengths represent verse counts, with Psalm 119 being the longest. The 63,779 cross references are shown as colored arcs, creating a rainbow effect based on chapter distance.
+            </p>
             <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
               Graph from{" "}
               <a
