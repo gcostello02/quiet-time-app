@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { UserAuth } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 import { supabase } from "../supabaseClient";
+import { BookOpenIcon, FireIcon, StarIcon, LinkIcon, SparklesIcon } from "@heroicons/react/24/outline";
 
 const Dashboard = () => {
   const { session } = UserAuth();
@@ -16,8 +17,8 @@ const Dashboard = () => {
       const { count: total } = await supabase
         .from("notes")
         .select("*", { count: "exact", head: true })
-        .eq("user_id", userId)
-      setTotalQuietTimes(total || 0)
+        .eq("user_id", userId);
+      setTotalQuietTimes(total || 0);
 
       const { data: bookData } = await supabase
         .from("note_references")
@@ -39,21 +40,14 @@ const Dashboard = () => {
         .eq("user_id", userId);
 
       if (dateData) {
-        console.log(dateData)
-
         const dates = dateData
           .map((n) => new Date(n.created_at).toLocaleDateString("en-CA"))
           .sort((a, b) => (a > b ? -1 : 1));
-        
-        console.log(dates)
-
         const dateSet = new Set(dates);
-        
         const today = new Date();
         const todayStr = today.toISOString().split("T")[0];
-
         let currentStreak = 0;
-        let checkingDate = new Date(today)
+        let checkingDate = new Date(today);
 
         if (!dateSet.has(todayStr)) {
           checkingDate.setDate(checkingDate.getDate() - 1);
@@ -62,75 +56,137 @@ const Dashboard = () => {
         while (true) {
           const dateStr = checkingDate.toISOString().split("T")[0];
           if (dateSet.has(dateStr)) {
-            currentStreak++
-            checkingDate.setDate(checkingDate.getDate() - 1)
+            currentStreak++;
+            checkingDate.setDate(checkingDate.getDate() - 1);
           } else {
-            break
+            break;
           }
         }
 
         setStreak(currentStreak);
       }
-    }
+    };
 
-    fetchStats()
-  }, [userId])
+    fetchStats();
+  }, [userId]);
+
+  // eslint-disable-next-line no-unused-vars
+  const StatCard = ({ icon: Icon, title, value }) => (
+    <div className="flex items-center gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+      <Icon className="h-8 w-8 text-indigo-500" />
+      <div>
+        <h4 className="text-md font-semibold text-gray-700 dark:text-white">{title}</h4>
+        <p className="text-xl font-bold text-indigo-600 dark:text-indigo-400">{value}</p>
+      </div>
+    </div>
+  );
+
+  const LinkList = ({ title, links }) => (
+    <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+      <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">{title}</h3>
+      <ul className="list-disc list-inside space-y-1">
+        {links.map((link, idx) => (
+          <li key={idx}>
+            <a
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
+            >
+              <LinkIcon className="h-4 w-4" />
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <Navbar />
-      <div className="max-w-5xl mx-auto p-6">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Welcome to TAWG!</h1>
+      <div className="max-w-5xl mx-auto p-6 space-y-8">
+        <div>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Welcome to TAWG!</h1>
         </div>
 
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
-            <h3 className="text-md font-semibold text-gray-800 dark:text-white">🔥 Quiet time streak:</h3>
-            <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{streak} days</p>
-          </div>
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
-            <h3 className="text-md font-semibold text-gray-800 dark:text-white">Total Quiet Times:</h3>
-            <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{totalQuietTimes} days</p>
-          </div>
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
-            <h3 className="text-md font-semibold text-gray-800 dark:text-white">Most Read Book:</h3>
-            <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{mostReadBook}</p>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <StatCard icon={FireIcon} title="TAWG Streak" value={`${streak} days`} />
+          <StatCard icon={SparklesIcon} title="Total TAWGs" value={`${totalQuietTimes} days`} />
+          <StatCard icon={BookOpenIcon} title="Most Read Book" value={mostReadBook} />
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow mb-6">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">About This App</h2>
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">About This App</h2>
           <p className="text-gray-700 dark:text-gray-300">
-            <strong>TWAG</strong>, or <strong>T</strong>ime <strong>A</strong>lone <strong>W</strong>ith <strong>G</strong>od is...
+            <strong>TAWG</strong> (<strong>T</strong>ime <strong>A</strong>lone <strong>W</strong>ith <strong>G</strong>od) is a way to intentionally slow down and connect with God daily through Scripture, prayer, and reflection.
           </p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow mb-6">
-          
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <LinkList
+            title="📖 Reading Plans"
+            links={[
+              { label: "ESV Bible Reading Plan", href: "https://www.crossway.org/bibles/esv-bible-reading-plans/" },
+              { label: "Bible 365", href: "https://bibleplan.org/" },
+            ]}
+          />
+          <LinkList
+            title="📚 Resources"
+            links={[
+              { label: "Got Questions", href: "https://www.gotquestions.org/" },
+              { label: "How to do TAWG", href: "#" },
+              { label: "Enduring Word Commentary", href: "https://enduringword.com/bible-commentary/" },
+            ]}
+          />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
-            <h3 className="text-2xl font-semibold text-gray-800 dark:text-white">The Bible is...</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow space-y-4">
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-white">Why We Can Trust the Bible</h3>
+            <div>
+              <p className="font-semibold">📜 Historically Accurate</p>
+              <p className="text-gray-700 dark:text-gray-300">
+                2 Peter 1:16 – For we did not follow cleverly devised myths...
+              </p>
+            </div>
+            <div>
+              <p className="font-semibold">🔗 Internally Consistent</p>
+              <p className="text-gray-700 dark:text-gray-300">
+                63,779 cross-references show its divine coherence and design.
+              </p>
+            </div>
+            <div>
+              <p className="font-semibold">🔮 Prophetically Accurate</p>
+              <p className="text-gray-700 dark:text-gray-300">
+                2 Peter 1:21 – Men spoke from God as they were carried by the Holy Spirit.
+              </p>
+            </div>
+            <div>
+              <p className="font-semibold">🙌 Jesus Approved</p>
+              <p className="text-gray-700 dark:text-gray-300">
+                Romans 10:17 – Faith comes from hearing, and hearing through the word of Christ.
+              </p>
+            </div>
           </div>
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
-            
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Graph of Bible Cross References</h3>
             <img
               src="/src/assets/references.jpg"
-              alt="Graph showing quiet time activity"
+              alt="Bible cross reference visualization"
               className="w-full rounded"
             />
-          </div>
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
-            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">Bible References:</h3>
-            <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">klnslk</p>
+            <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+              Graph from{" "}
+              <a
+                href="https://www.chrisharrison.net/index.php/Visualizations/BibleViz"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 dark:text-blue-400 underline"
+              >
+                Chris Harrison
+              </a>
+            </p>
           </div>
         </div>
       </div>
