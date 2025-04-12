@@ -150,7 +150,6 @@ const Friends = () => {
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
       <Navbar />
       <div className="max-w-2xl mx-auto mt-12 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg">
-        {/* Tabs */}
         <div className="flex border-b border-gray-300 dark:border-gray-600 mb-6">
           {["requests", "friends", "notifications"].map((item) => (
             <button
@@ -204,7 +203,7 @@ const Friends = () => {
                         <span>{user.username}</span>
                         <button
                           onClick={() => sendFriendRequest(user.id)}
-                          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1.5 rounded-lg transition"
+                          className="bg-indigo-600 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg transition"
                         >
                           Send Request
                         </button>

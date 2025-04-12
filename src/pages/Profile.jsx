@@ -107,7 +107,7 @@ const ProfilePage = () => {
             <div className="mt-3">
               <p className="text-sm text-gray-500 dark:text-gray-400">Prayer Request</p>
               <p className="text-gray-700 dark:text-gray-300">
-                {profile.prayer_req_display ? profile.prayer_req || "No request" : "Hidden"}
+                {profile.prayer_req_display ? profile.prayer_req : "None"}
               </p>
           </div>
           </div>
