@@ -3,6 +3,7 @@ import { Bars3Icon, BellIcon, XMarkIcon, PencilSquareIcon, UserGroupIcon } from 
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
 import React from "react";
+import logo from '../assets/logo.png';
 
 const navigationItems = [
   { name: 'Dashboard', href: '/dashboard' },
@@ -44,9 +45,9 @@ export default function Navbar() {
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex shrink-0 items-center">
               <img
-                alt="QT APP" //TODO: Update with logo
-                src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-                className="h-8 w-auto"
+                alt="TAWG"
+                src={logo}
+                className="h-10 w-auto"
               />
             </div>
             <div className="hidden sm:ml-6 sm:block">
