@@ -47,6 +47,7 @@ const EditProfile = () => {
     setEndVerse(profile.life_verse_end || 1);
     setDisplayPrayer(profile.prayer_req_display || false);
     setDisplayVerse(profile.life_verse_display || false);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
   const handleFileChange = (event) => {

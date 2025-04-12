@@ -130,100 +130,144 @@ const Friends = () => {
     fetchFriends();
   };
 
+  const TabButton = ({ label, active, onClick }) => (
+    <button
+      onClick={onClick}
+      className={`w-1/3 py-2 text-center ${active ? "bg-indigo-600 text-gray-100 font-bold" : "text-gray-500"}`}
+    >
+      {label.charAt(0).toUpperCase() + label.slice(1)}
+    </button>
+  );
+  
+  const UserCard = ({ username, rightElement }) => (
+    <div className="flex justify-between items-center border p-2 rounded-lg mb-2 dark:bg-gray-700">
+      <span>{username}</span>
+      {rightElement}
+    </div>
+  );
+  
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
       <Navbar />
-      <div className="max-w-lg mx-auto mt-10 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-        <div className="flex justify-between border-b mb-4">
+      <div className="max-w-2xl mx-auto mt-12 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg">
+        {/* Tabs */}
+        <div className="flex border-b border-gray-300 dark:border-gray-600 mb-6">
           {["requests", "friends", "notifications"].map((item) => (
-            <button 
-              key={item} 
-              onClick={() => setTab(item)} 
-              className={`w-1/3 py-2 text-center ${tab === item ? "border-b-2 border-blue-500 font-bold" : "text-gray-500"}`}
+            <button
+              key={item}
+              onClick={() => setTab(item)}
+              className={`w-1/3 py-3 text-lg font-medium transition-colors ${
+                tab === item
+                  ? "bg-indigo-600 text-white rounded-t-md"
+                  : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+              }`}
             >
               {item.charAt(0).toUpperCase() + item.slice(1)}
             </button>
           ))}
         </div>
-
+  
         {loading ? (
-          <p className="text-center">Loading...</p>
+          <p className="text-center text-gray-500 dark:text-gray-400">Loading...</p>
         ) : tab === "requests" ? (
-          <div>
-            {pendingRequests.length !== 0 ? (
-              <>
-                <h3 className="text-lg font-semibold mt-4 mb-2">Pending Requests</h3>
-                {pendingRequests.map((req) => (
-                  <div key={req.receiver_id} className="flex justify-between items-center border p-2 rounded mb-2">
-                    <span>{req.profiles.username}</span>
-                    <span className="text-gray-500">Pending</span>
-                  </div>
-                ))}
-              </>
-            ) : null}
-            <h3 className="text-lg font-semibold mb-2">Add Friends</h3>
-            <input
-              type="text"
-              placeholder="Search users..."
-              className="w-full p-2 mb-3 border rounded-lg dark:bg-gray-700 dark:text-white"
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            {users.length === 0 ? (
-              <p>No users available to add.</p>
-            ) : (
-              users
-                .filter((user) => user.username.toLowerCase().includes(searchTerm.toLowerCase()))
-                .map((user) => (
-                  <div key={user.id} className="flex justify-between items-center border p-2 rounded-lg mb-2 dark:bg-gray-700">
-                    <span>{user.username}</span>
-                    <button onClick={() => sendFriendRequest(user.id)} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg">
-                      Send Request
-                    </button>
-                  </div>
-                ))
+          <div className="space-y-6">
+            {pendingRequests.length > 0 && (
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Pending Requests</h3>
+                <div className="space-y-3">
+                  {pendingRequests.map((req) => (
+                    <div key={req.receiver_id} className="flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                      <span>{req.profiles.username}</span>
+                      <span className="text-sm text-gray-500">Pending</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             )}
+  
+            <div>
+              <h3 className="text-lg font-semibold mb-3">Add Friends</h3>
+              <input
+                type="text"
+                placeholder="Search users..."
+                className="w-full p-3 mb-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-white"
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              {users.length === 0 ? (
+                <p className="text-gray-500 dark:text-gray-400">No users available to add.</p>
+              ) : (
+                <div className="space-y-3">
+                  {users
+                    .filter((user) => user.username.toLowerCase().includes(searchTerm.toLowerCase()))
+                    .map((user) => (
+                      <div key={user.id} className="flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                        <span>{user.username}</span>
+                        <button
+                          onClick={() => sendFriendRequest(user.id)}
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1.5 rounded-lg transition"
+                        >
+                          Send Request
+                        </button>
+                      </div>
+                    ))}
+                </div>
+              )}
+            </div>
           </div>
         ) : tab === "friends" ? (
           <div>
-            <h3 className="text-lg font-semibold mb-2">Friends</h3>
+            <h3 className="text-lg font-semibold mb-4">Friends</h3>
             {friends.length === 0 ? (
-              <p>No friends yet.</p>
+              <p className="text-gray-500 dark:text-gray-400">No friends yet.</p>
             ) : (
-              friends.map((friend) => (
-                <div key={friend.friend_id} className="flex justify-between items-center border p-3 rounded-lg dark:bg-gray-700">
-                  <span>{friend.profiles.username}</span>
-                  <button onClick={() => removeFriend(friend.friend_id)} className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg">
-                    Remove
-                  </button>
-                </div>
-              ))
+              <div className="space-y-3">
+                {friends.map((friend) => (
+                  <div key={friend.friend_id} className="flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                    <span>{friend.profiles.username}</span>
+                    <button
+                      onClick={() => removeFriend(friend.friend_id)}
+                      className="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-lg transition"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         ) : (
           <div>
-            <h3 className="text-lg font-semibold mb-2">Received Requests</h3>
+            <h3 className="text-lg font-semibold mb-4">Received Requests</h3>
             {receivedRequests.length === 0 ? (
-              <p>No received requests.</p>
+              <p className="text-gray-500 dark:text-gray-400">No received requests.</p>
             ) : (
-              receivedRequests.map((req) => (
-                <div key={req.sender_id} className="flex justify-between items-center border p-3 rounded-lg dark:bg-gray-700">
-                  <span>{req.profiles.username}</span>
-                  <div>
-                    <button onClick={() => acceptFriendRequest(req.sender_id)} className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg mr-2">
-                      Accept
-                    </button>
-                    <button onClick={() => declineFriendRequest(req.sender_id)} className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg">
-                      Decline
-                    </button>
+              <div className="space-y-3">
+                {receivedRequests.map((req) => (
+                  <div key={req.sender_id} className="flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                    <span>{req.profiles.username}</span>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => acceptFriendRequest(req.sender_id)}
+                        className="bg-green-500 hover:bg-green-600 text-white px-4 py-1.5 rounded-lg transition"
+                      >
+                        Accept
+                      </button>
+                      <button
+                        onClick={() => declineFriendRequest(req.sender_id)}
+                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-lg transition"
+                      >
+                        Decline
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))
+                ))}
+              </div>
             )}
           </div>
         )}
       </div>
     </div>
-  );
+  );  
 };
 
 export default Friends;
