@@ -29,6 +29,10 @@ const EditProfile = () => {
   const verses = esvData[selectedBook]?.[selectedChapter]?.length ?? 0;
 
   useEffect(() => {
+    if (!profile) {
+      navigate("/profile")
+    }
+
     setUsername(profile.username || "");
     setDescription(profile.description || "");
     setPreviewUrl(
@@ -280,7 +284,7 @@ const EditProfile = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white p-2 rounded-md flex justify-center dark:bg-blue-700"
+            className="w-full bg-indigo-600 text-white p-2 rounded-md flex justify-center dark:bg-indigo-700"
             disabled={loading}
           >
             {loading ? "Saving..." : "Save Changes"}

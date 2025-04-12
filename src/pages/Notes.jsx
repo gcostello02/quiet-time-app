@@ -116,7 +116,7 @@ const Notes = () => {
       <div className="text-center mt-4">
         <button
           onClick={() => setIsBibleVisible(!isBibleVisible)}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-md"
+          className="px-4 py-2 bg-indigo-600 text-white rounded-md shadow-md"
         >
           {isBibleVisible ? "Hide Bible" : "Show Splitscreen Bible"}
         </button>
@@ -242,7 +242,7 @@ const Notes = () => {
                         updated.splice(index, 1);
                         setBibleReferences(updated);
                       }}
-                      className="text-red-500 hover:text-red-700 bg-gray-100"
+                      className="text-indigo-600 hover:text-indigo-700 bg-gray-100"
                     >
                       <MinusCircle className="w-5 h-5" />
                     </button>
@@ -252,7 +252,7 @@ const Notes = () => {
               <button
                 type="button"
                 onClick={handleAddReference}
-                className="text-blue-500 hover:text-blue-700 text-sm bg-gray-100"
+                className="text-indigo-600 hover:text-indigo-700 text-sm bg-gray-100"
               >
                 Add Another Chapter
               </button>
@@ -289,7 +289,7 @@ const Notes = () => {
             <div className="text-center">
               <button
                 type="submit"
-                className="px-6 py-3 mt-4 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none"
+                className="px-6 py-3 mt-4 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none"
                 disabled={loading}
               >
                 {loading ? "Saving..." : "Finish TAWG"}
@@ -362,7 +362,7 @@ const Notes = () => {
                 href="https://www.crossway.org/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 dark:text-blue-400 underline"
+                className="text-indigo-600 dark:text-indigo-400 hover:underline inline-flex items-center gap-1"
               >
                 Crossway Bibles, a publishing ministry of Good News Publishers.
               </a>      

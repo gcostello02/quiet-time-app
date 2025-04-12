@@ -62,7 +62,7 @@ const ProfilePage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex justify-center items-center">
-        <div className="spinner-border animate-spin h-8 w-8 border-4 border-t-transparent border-blue-500 rounded-full"></div>
+        <div className="spinner-border animate-spin h-8 w-8 border-4 border-t-transparent border-indigo-600 rounded-full"></div>
       </div>
     );
   }
@@ -85,7 +85,7 @@ const ProfilePage = () => {
               </h2>
               <Link 
                 to="/edit-profile" 
-                className="border border-gray-300 dark:border-gray-500 px-4 py-1 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="border border-gray-300 dark:border-gray-500 px-4 py-1 rounded-lg text-sm font-medium text-indigo-600 visited:text-indigo-600 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 Edit Profile
               </Link>

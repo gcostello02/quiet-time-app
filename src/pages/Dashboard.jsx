@@ -41,12 +41,12 @@ const Dashboard = () => {
         .eq("user_id", userId);
 
       if (dateData) {
-        const dates = dateData
-          .map((n) => new Date(n.created_at).toLocaleDateString("en-CA"))
-          .sort((a, b) => (a > b ? -1 : 1));
-        const dateSet = new Set(dates);
-        const today = new Date();
-        const todayStr = today.toISOString().split("T")[0];
+        const dates = dateData.map(n => new Date(n.created_at));
+        const today = new Date(); 
+        const todayStr = today.toISOString().split("T")[0]; 
+
+        const dateSet = new Set(dates.map(date => date.toLocaleDateString("en-CA")));
+
         let currentStreak = 0;
         let checkingDate = new Date(today);
 
@@ -55,7 +55,7 @@ const Dashboard = () => {
         }
 
         while (true) {
-          const dateStr = checkingDate.toISOString().split("T")[0];
+          const dateStr = checkingDate.toLocaleDateString("en-CA");
           if (dateSet.has(dateStr)) {
             currentStreak++;
             checkingDate.setDate(checkingDate.getDate() - 1);
@@ -94,7 +94,7 @@ const Dashboard = () => {
               {isInternal ? (
                 <Link
                   to={link.href}
-                  className="text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
+                  className="text-indigo-600 dark:text-indigo-400 hover:underline inline-flex items-center gap-1"
                 >
                   <LinkIcon className="h-4 w-4" />
                   {link.label}
@@ -104,7 +104,7 @@ const Dashboard = () => {
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
+                  className="text-indigo-600 dark:text-indigo-400 hover:underline inline-flex items-center gap-1"
                 >
                   <LinkIcon className="h-4 w-4" />
                   {link.label}
@@ -200,7 +200,7 @@ const Dashboard = () => {
                 href="https://www.chrisharrison.net/index.php/Visualizations/BibleViz"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 dark:text-blue-400 underline"
+                className="text-indigo-600 dark:text-indigo-400 hover:underline inline-flex items-center gap-1"
               >
                 Chris Harrison
               </a>
