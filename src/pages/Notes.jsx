@@ -131,7 +131,7 @@ const Notes = () => {
           <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-gray-900 shadow-md rounded-xl p-6">
             <div>
               <label htmlFor="title" className="block text-sm font-medium text-gray-900 dark:text-white">
-                Title (Max 100 characters)
+                Title
               </label>
               <input
                 type="text"
@@ -141,8 +141,11 @@ const Notes = () => {
                 onChange={handleTitleChange}
                 maxLength="100"
                 className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
-                placeholder="Suggestion: MM/DD/YYYY Notes"
+                placeholder="Suggestion: MM/DD/YYYY TAWG"
               />
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                 {title.length} / 100 characters
+               </p>
             </div>
 
             <div>
