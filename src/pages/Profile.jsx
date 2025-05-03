@@ -109,21 +109,21 @@ const ProfilePage = () => {
               <p className="text-gray-700 dark:text-gray-300">
                 {profile.prayer_req_display ? profile.prayer_req : "None"}
               </p>
-          </div>
+            </div>
           </div>
         </div>
 
         <div className="mt-6 flex justify-around text-center border-t pt-4">
-          <div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">TAWG Streak</p>
-            <p className="text-lg font-semibold">{streak}</p>
-          </div>
           <div>
             <p className="text-sm text-gray-500 dark:text-gray-400">Favorite Verse</p>
             <p className="text-lg font-semibold">
               {profile.life_verse_display 
                 ? `${profile.life_verse_book} ${profile.life_verse_chapter}:${profile.life_verse_start}${profile.life_verse_start !== profile.life_verse_end ? `-${profile.life_verse_end}` : ""}` : "None"}
             </p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500 dark:text-gray-400">TAWG Streak</p>
+            <p className="text-lg font-semibold">{streak}</p>
           </div>
         </div>
 
