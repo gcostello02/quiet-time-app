@@ -214,6 +214,7 @@ const EditProfile = () => {
               Display Favorite Verse
             </label>
           </div>
+          
           {displayVerse && (
             <div>
               <label className="block text-sm font-medium text-gray-900 dark:text-gray-300">Favorite Verse(s)</label>

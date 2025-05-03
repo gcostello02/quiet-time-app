@@ -8,23 +8,36 @@ import { useNavigate } from "react-router-dom";
 
 const Notes = () => {
   const { session } = UserAuth(); 
+  
   const [selectedBook, setSelectedBook] = useState(Object.keys(esvData)[0]);
   const [selectedChapter, setSelectedChapter] = useState("1");
   const [isBibleVisible, setIsBibleVisible] = useState(false);
+  const books = Object.keys(esvData);
+  const chapters = Object.keys(esvData[selectedBook]);
+
   const [title, setTitle] = useState("");
   const [publicContent, setPublicContent] = useState("");
   const [privateContent, setPrivateContent] = useState("");
   const [prayerContent, setPrayerContent] = useState("");
   const [publicPrayerContent, setPublicPrayerContent] = useState("");
+
   const [bibleReferences, setBibleReferences] = useState([{ book: selectedBook, chapter: selectedChapter }]);
+
+  const [addMemoryVerse, setAddMemoryVerse] = useState(false);
+  const [selectedMemBook, setMemSelectedBook] = useState(Object.keys(esvData)[0]);
+  const [selectedMemChapter, setMemSelectedChapter] = useState(1);
+  const [startMemVerse, setMemStartVerse] = useState(1);
+  const [endMemVerse, setMemEndVerse] = useState(1);
+  const chaptersMem = Object.keys(esvData[selectedMemBook]);
+  const versesMem = esvData[selectedMemBook]?.[selectedMemChapter]?.length ?? 0;
+
   const [visibility, setVisibility] = useState("public_anonymous");
+
   const [pdfFile, setPdfFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const books = Object.keys(esvData);
-  const chapters = Object.keys(esvData[selectedBook]);
 
   const handleTitleChange = (e) => setTitle(e.target.value)
 
@@ -57,7 +70,7 @@ const Notes = () => {
       
       if (uploadError) {
         console.error("Error uploading avatar:", uploadError);
-        setError("Failed to upload pdf.");
+        setError("Failed to upload pdf. Make sure it is a pdf.");
         setLoading(false);
         return;
       }
@@ -77,6 +90,11 @@ const Notes = () => {
           private_prayer_content: prayerContent,
           visibility: visibility,
           pdf_url: pdfUrl,
+          mem_verse_display: addMemoryVerse,
+          mem_verse_book: selectedMemBook,
+          mem_verse_chapter: selectedMemChapter,
+          mem_verse_start: startMemVerse,
+          mem_verse_end: endMemVerse
         },
       ])
       .select()
@@ -261,6 +279,85 @@ const Notes = () => {
               </button>
             </div>
 
+            <div>
+              <label className="block mt-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={addMemoryVerse}
+                  onChange={() => setAddMemoryVerse(!addMemoryVerse)}
+                  className="mr-1 cursor-pointer"
+                />
+                Would you like to add a Memory Verse(s)?
+              </label>
+            </div>
+
+            {addMemoryVerse && (
+              <div>
+                <label className="block text-sm font-medium text-gray-900 dark:text-gray-300">Favorite Verse(s)</label>
+                <div className="flex gap-4">
+                  <select
+                    value={selectedMemBook}
+                    onChange={(e) => {
+                      setMemSelectedBook(e.target.value);
+                      setMemSelectedChapter(1);
+                    }}
+                    className="mt-1 block w-48 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                  >
+                    {books.map((book) => (
+                      <option key={book} value={book}>
+                        {book}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    value={selectedMemChapter}
+                    onChange={(e) => setMemSelectedChapter(Number(e.target.value))}
+                    className="mt-1 block w-20 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                  >
+                    {chaptersMem.map((chapter) => (
+                      <option key={chapter} value={chapter}>
+                        {chapter}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
+
+            {addMemoryVerse && (
+              <div>
+                <label className="block text-sm font-medium text-gray-900 dark:text-gray-300">
+                  Verse(s) Start & End
+                </label>
+                <div className="flex gap-4">
+                  <select
+                    value={startMemVerse}
+                    onChange={(e) => {
+                      setMemStartVerse(Number(e.target.value));
+                      setMemEndVerse((prevEnd) => (prevEnd < Number(e.target.value) ? Number(e.target.value) : prevEnd));
+                    }}
+                    className="mt-1 block w-20 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                  >
+                    {Array.from({ length: versesMem }, (_, i) => i + 1).map((verse) => (
+                      <option key={verse} value={verse}>
+                        {verse}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    value={endMemVerse}
+                    onChange={(e) => setMemEndVerse(Number(e.target.value))}
+                    className="mt-1 block w-20 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                  >
+                    {Array.from({ length: versesMem - startMemVerse + 1 }, (_, i) => i + startMemVerse).map((verse) => (
+                      <option key={verse} value={verse}>
+                        {verse}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
 
             <div>
               <label htmlFor="pdfFile" className="block text-sm font-medium text-gray-900 dark:text-white">
