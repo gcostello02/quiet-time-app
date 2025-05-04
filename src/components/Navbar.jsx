@@ -1,5 +1,5 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { Bars3Icon, BellIcon, XMarkIcon, PencilSquareIcon, UserGroupIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, XMarkIcon, PencilSquareIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
 import React from "react";
@@ -57,9 +57,9 @@ export default function Navbar() {
                     key={item.name}
                     to={item.href}
                     className={classNames(
-                      "px-3 py-2 text-sm font-medium rounded-md border-b-2 border-transparent", // Ensures consistent height
+                      "px-3 py-2 text-sm font-medium rounded-md border-b-2 border-transparent",
                       location.pathname === item.href
-                        ? "bg-indigo-600 text-white border-indigo-600" // Active state, with same size but colored border
+                        ? "bg-indigo-600 text-white border-indigo-600"
                         : "text-gray-900 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-black dark:hover:text-white"
                     )}
                   >

@@ -115,7 +115,7 @@ const ProfilePage = () => {
 
         <div className="mt-6 flex justify-around text-center border-t pt-4">
           <div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Favorite Verse</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Favorite Verse(s)</p>
             <p className="text-lg font-semibold">
               {profile.life_verse_display 
                 ? `${profile.life_verse_book} ${profile.life_verse_chapter}:${profile.life_verse_start}${profile.life_verse_start !== profile.life_verse_end ? `-${profile.life_verse_end}` : ""}` : "None"}
@@ -124,6 +124,13 @@ const ProfilePage = () => {
           <div>
             <p className="text-sm text-gray-500 dark:text-gray-400">TAWG Streak</p>
             <p className="text-lg font-semibold">{streak}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Memory Verse(s)</p>
+            <p className="text-lg font-semibold">
+              {profile.mem_verse_display 
+                ? `${profile.mem_verse_book} ${profile.mem_verse_chapter}:${profile.mem_verse_start}${profile.mem_verse_start !== profile.mem_verse_end ? `-${profile.mem_verse_end}` : ""}` : "None"}
+            </p>
           </div>
         </div>
 
