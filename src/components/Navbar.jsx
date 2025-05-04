@@ -8,6 +8,7 @@ import logo from '../assets/logo.png';
 const navigationItems = [
   { name: 'Dashboard', href: '/dashboard' },
   { name: 'Bible', href: '/bible' },
+  { name: 'Feed', href: '/feed' }
 ];
 
 function classNames(...classes) {

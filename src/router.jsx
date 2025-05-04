@@ -13,6 +13,7 @@ import EditProfile from "./pages/EditProfile";
 import Friends from "./pages/Friends";
 import HowTo from "./pages/HowTo";
 import Plan from "./pages/Plan";
+import Feed from "./pages/Feed";
 
 export const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -81,6 +82,14 @@ export const router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <Plan />
+      </PrivateRoute>
+    )
+  },
+  { 
+    path: "/feed", 
+    element: (
+      <PrivateRoute>
+        <Feed />
       </PrivateRoute>
     )
   },
