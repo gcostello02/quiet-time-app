@@ -12,7 +12,6 @@ const ProfilePage = () => {
   useEffect(() => {
     if (profile) {
       setLoading(false);
-      console.log("Profile", profile)
     }
 
     const fetchStats = async () => {
@@ -22,14 +21,10 @@ const ProfilePage = () => {
         .eq("user_id", session.user.id);
 
       if (dateData) {
-        console.log(dateData)
-
         const dates = dateData
           .map((n) => new Date(n.created_at).toLocaleDateString("en-CA"))
           .sort((a, b) => (a > b ? -1 : 1));
         
-        console.log(dates)
-
         const dateSet = new Set(dates);
         
         const today = new Date();
