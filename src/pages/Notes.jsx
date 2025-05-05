@@ -157,12 +157,12 @@ const Notes = () => {
                 name="title"
                 value={title}
                 onChange={handleTitleChange}
-                maxLength="100"
+                maxLength="35"
                 className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
                 placeholder="Suggestion: MM/DD/YYYY TAWG"
               />
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                 {title.length} / 100 characters
+                 {title.length} / 35 characters
                </p>
             </div>
 

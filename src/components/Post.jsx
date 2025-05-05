@@ -80,7 +80,7 @@ const Post = ({ note }) => {
       <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700"></hr>
 
       <div className="flex items-center justify-center">
-        <p className="text-xl font-bold text-gray-900 dark:text-white">
+        <p className="text-xl font-bold text-gray-900 dark:text-white break-words">
           {note.title}
         </p>
       </div>
