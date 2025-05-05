@@ -45,7 +45,7 @@ const Dashboard = () => {
       if (dateData) {
         const dates = dateData.map(n => new Date(n.created_at));
         const today = new Date(); 
-        const todayStr = today.toISOString().split("T")[0]; 
+        const todayStr = today.toLocaleDateString(); 
 
         const dateSet = new Set(dates.map(date => date.toLocaleDateString()));
 

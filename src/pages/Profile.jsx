@@ -21,29 +21,26 @@ const ProfilePage = () => {
         .eq("user_id", session.user.id);
 
       if (dateData) {
-        const dates = dateData
-          .map((n) => new Date(n.created_at).toLocaleDateString("en-CA"))
-          .sort((a, b) => (a > b ? -1 : 1));
-        
-        const dateSet = new Set(dates);
-        
-        const today = new Date();
-        const todayStr = today.toISOString().split("T")[0];
+        const dates = dateData.map(n => new Date(n.created_at));
+        const today = new Date(); 
+        const todayStr = today.toLocaleDateString(); 
+
+        const dateSet = new Set(dates.map(date => date.toLocaleDateString()));
 
         let currentStreak = 0;
-        let checkingDate = new Date(today)
+        let checkingDate = new Date(today);
 
         if (!dateSet.has(todayStr)) {
           checkingDate.setDate(checkingDate.getDate() - 1);
         }
 
         while (true) {
-          const dateStr = checkingDate.toISOString().split("T")[0];
+          const dateStr = checkingDate.toLocaleDateString();
           if (dateSet.has(dateStr)) {
-            currentStreak++
-            checkingDate.setDate(checkingDate.getDate() - 1)
+            currentStreak++;
+            checkingDate.setDate(checkingDate.getDate() - 1);
           } else {
-            break
+            break;
           }
         }
 
