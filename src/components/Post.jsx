@@ -73,7 +73,7 @@ const Post = ({ note }) => {
           </p>
         </div>
         <div className="text-xs text-gray-400 italic">
-          {new Date(note.created_at).toLocaleDateString()}
+          {new Date(note.created_at).toLocaleString()}
         </div>
       </div>
 

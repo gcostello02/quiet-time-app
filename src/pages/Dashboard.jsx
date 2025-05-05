@@ -11,7 +11,9 @@ const Dashboard = () => {
 
   const [totalQuietTimes, setTotalQuietTimes] = useState(0);
   const [mostReadBook, setMostReadBook] = useState("");
-  const [streak, setStreak] = useState(0);
+  const [streak, setStreak] = useState(0)
+
+  const [today, setToday] = useState(true)
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -45,17 +47,19 @@ const Dashboard = () => {
         const today = new Date(); 
         const todayStr = today.toISOString().split("T")[0]; 
 
-        const dateSet = new Set(dates.map(date => date.toLocaleDateString("en-CA")));
+        const dateSet = new Set(dates.map(date => date.toLocaleDateString()));
 
         let currentStreak = 0;
         let checkingDate = new Date(today);
 
         if (!dateSet.has(todayStr)) {
           checkingDate.setDate(checkingDate.getDate() - 1);
+          setToday(false)
+          // alert("TAWG HAS NOT BEEN DONE TODAY")
         }
 
         while (true) {
-          const dateStr = checkingDate.toLocaleDateString("en-CA");
+          const dateStr = checkingDate.toLocaleDateString();
           if (dateSet.has(dateStr)) {
             currentStreak++;
             checkingDate.setDate(checkingDate.getDate() - 1);

@@ -11,7 +11,7 @@ const Feed = () => {
   const [posts, setPosts] = useState([])
   const [page, setPage] = useState(1)
 
-  const POSTS_LIMIT = 5
+  const POSTS_LIMIT = 10
 
   useEffect(() => {
     if(session?.user?.id) {
