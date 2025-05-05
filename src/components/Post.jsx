@@ -99,7 +99,7 @@ const Post = ({ note }) => {
       {note.public_notes_content && (
         <div className="mb-4">
           <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-1">Notes:</h2>
-          <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+          <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-words">
             {showMoreNote || note.public_notes_content.length < 200
               ? note.public_notes_content
               : note.public_notes_content.slice(0, 200) + "..."}
@@ -118,7 +118,7 @@ const Post = ({ note }) => {
       {note.public_prayer_content && (
         <div className="mb-4">
           <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-1">Prayer:</h2>
-          <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+          <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-words">
             {showMorePrayer || note.public_prayer_content.length < 200
               ? note.public_prayer_content
               : note.public_prayer_content.slice(0, 200) + "..."}
