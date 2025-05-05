@@ -56,7 +56,6 @@ const Feed = () => {
           return false
         }
       } else {
-        console.log("ANONY POST", post)
         post.anonymous = true
         return post.visibility === 'public_all' || post.visibility === 'private_anonymous'
       }
@@ -68,7 +67,6 @@ const Feed = () => {
       setPosts(prev => [...prev, ...filteredPosts])
     }
 
-    console.log(filteredPosts)
 
     setPage(pageNum)
     setLoading(false)
