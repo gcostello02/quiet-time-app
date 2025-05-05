@@ -8,6 +8,8 @@ const ProfilePage = () => {
   const { session, profile } = UserAuth();
   const [loading, setLoading] = useState(true);
   const [streak, setStreak] = useState(0);
+  const [notes, setNotes] = useState([]);
+  const [visibleCount, setVisibleCount] = useState(9);
 
   useEffect(() => {
     if (profile) {
@@ -46,9 +48,30 @@ const ProfilePage = () => {
 
         setStreak(currentStreak);
       }
-    }
+    };
 
-    fetchStats()
+    const fetchNotes = async () => {
+      const { data, error } = await supabase
+        .from("notes")
+        .select(`
+          id,
+          title,
+          created_at,
+          note_references (
+            book,
+            chapter
+          )
+        `)
+        .eq("user_id", session.user.id)
+        .order("created_at", { ascending: false });
+
+      if (!error) {
+        setNotes(data);
+      }
+    };
+
+    fetchStats();
+    fetchNotes();
   }, [profile, session.user.id]);
 
   if (loading) {
@@ -127,8 +150,44 @@ const ProfilePage = () => {
         </div>
 
         <div className="mt-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-200">Posts</h3>
-          <p className="text-gray-500 dark:text-gray-400">Coming soon...</p>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-200 mb-2">Your Notes</h3>
+
+          {notes.length === 0 ? (
+            <p className="text-gray-500 dark:text-gray-400">Do your TAWG and they will show up here!</p>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {notes.slice(0, visibleCount).map(note => (
+                  <div key={note.id} className="border p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
+                    <p className="text-xs text-gray-500 dark:text-gray-300 italic">
+                      {new Date(note.created_at).toLocaleDateString()}
+                    </p>
+                    <h4 className="text-md font-bold text-gray-900 dark:text-white mb-1 break-words">{note.title}</h4>
+                    {note.note_references?.length > 0 && (
+                      <div className="flex flex-wrap gap-1 text-sm">
+                        {note.note_references.map((ref, index) => (
+                          <span key={index} className="px-2 py-1 bg-indigo-100 text-indigo-800 rounded text-xs">
+                            {ref.book} {ref.chapter}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {visibleCount < notes.length && (
+                <div className="flex justify-center mt-4">
+                  <button
+                    onClick={() => setVisibleCount(visibleCount + 9)}
+                    className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                  >
+                    Load More
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>
