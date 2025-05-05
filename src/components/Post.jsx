@@ -13,20 +13,21 @@ const Post = ({ note }) => {
   }, [note.user_id])
 
   const fetchData = async () => {
-    const { data: postProfile, error: errorProfile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', note.user_id)
-      .single()
-
-    if (errorProfile) {
-      console.log("Error fetching profiles", errorProfile)
-      setLoading(false)
-      return
+    if (!note.anonymous) {
+      const { data: postProfile, error: errorProfile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', note.user_id)
+        .single()
+  
+      if (errorProfile) {
+        console.log("Error fetching profiles", errorProfile)
+        setLoading(false)
+        return
+      }
+  
+      setPostProfile(postProfile)
     }
-
-    console.log(postProfile)
-    setPostProfile(postProfile)
 
     const { data: postReferences, error: errorReferences } = await supabase
       .from('note_references')
@@ -39,9 +40,7 @@ const Post = ({ note }) => {
       return
     }
 
-    console.log(postReferences)
     setPostReferences(postReferences)
-
     setLoading(false)
   }
 
@@ -64,12 +63,12 @@ const Post = ({ note }) => {
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-3">
           <img
-            src={postProfile.avatar_url}
+            src={!note.anonymous ? postProfile.avatar_url : "/src/assets/logo.png"}
             alt="profile"
             className="w-10 h-10 rounded-full object-cover border border-gray-300 dark:border-gray-600"
           />
           <p className="text-lg font-semibold text-gray-900 dark:text-white">
-            {postProfile.username}
+            {!note.anonymous ? postProfile.username : "Anonymous"}
           </p>
         </div>
         <div className="text-xs text-gray-400 italic">
@@ -77,7 +76,7 @@ const Post = ({ note }) => {
         </div>
       </div>
 
-      <hr class="h-px bg-gray-200 border-0 dark:bg-gray-700"></hr>
+      <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700"></hr>
 
       <div className="flex items-center justify-center">
         <p className="text-xl font-bold text-gray-900 dark:text-white">

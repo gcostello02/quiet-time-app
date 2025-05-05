@@ -9,6 +9,9 @@ const Feed = () => {
   const [loading, setLoading] = useState(true) 
 
   const [posts, setPosts] = useState([])
+  const [page, setPage] = useState(1)
+
+  const POSTS_LIMIT = 5
 
   useEffect(() => {
     if(session?.user?.id) {
@@ -16,12 +19,20 @@ const Feed = () => {
     }
   }, [session?.user?.id])
 
-  const fetchPosts = async () => {
+  const fetchPosts = async (pageNum = 1) => {
     setLoading(true)
 
-    const { data: posts, error: error } = await supabase
+    const friendIds = await fetchFriendIds()
+    friendIds.push(session.user.id)
+
+    const offset = (pageNum - 1) * POSTS_LIMIT
+
+    const { data: posts, error } = await supabase
       .from('notes')
       .select('*')
+      .in('visibility', ['public_all', 'public_friends', 'private_anonymous'])
+      .order('created_at', { ascending: false })
+      .range(offset, offset + POSTS_LIMIT - 1)
 
     if (error) {
       console.error("Error fetching posts:", error)
@@ -29,9 +40,51 @@ const Feed = () => {
       return
     }
 
-    console.log(posts)
-    setPosts(posts.reverse())
+    const filteredPosts = posts.filter(post => {
+      const isFriend = friendIds.includes(post.user_id)
+      if (isFriend) {
+        if (post.visibility === 'public_all' || post.visibility === 'public_friends') {
+          post.anonymous = false
+          return true
+        }
+        else if (post.visibility === 'private_anonymous') {
+          post.anonymous = true
+          return true
+        }
+        else {
+          return false
+        }
+      } else {
+        console.log("ANONY POST", post)
+        post.anonymous = true
+        return post.visibility === 'public_all' || post.visibility === 'private_anonymous'
+      }
+    })
+
+    if (pageNum === 1) {
+      setPosts(filteredPosts)
+    } else {
+      setPosts(prev => [...prev, ...filteredPosts])
+    }
+
+    console.log(filteredPosts)
+
+    setPage(pageNum)
     setLoading(false)
+  }
+
+  const fetchFriendIds = async () => {
+    const { data: friendsData, error } = await supabase
+      .from('friends')
+      .select('friend_id')
+      .eq('user_id', session.user.id)
+  
+    if (error) {
+      console.error('Error fetching friends:', error)
+      return []
+    }
+  
+    return friendsData.map(f => f.friend_id)
   }
 
   if (loading) {
@@ -48,10 +101,18 @@ const Feed = () => {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">      
       <Navbar />
-      <div className="max-w-4xl mx-auto pb-6">
-        {posts.map((post) => (
-          <Post note={post} key={post.id}></Post>
-        ))}
+      <div className="max-w-4xl mx-auto">
+      {posts.map((post) => {
+        return <Post note={post} key={post.id}/>
+      })}
+      </div>
+      <div className="flex justify-center mt-4">
+        <button
+          className="px-4 py-2 bg-indigo-600 text-white rounded"
+          onClick={() => fetchPosts(page + 1)}
+        >
+          Load More
+        </button>
       </div>
     </div>
   )

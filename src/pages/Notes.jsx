@@ -31,7 +31,7 @@ const Notes = () => {
   const chaptersMem = Object.keys(esvData[selectedMemBook]);
   const versesMem = esvData[selectedMemBook]?.[selectedMemChapter]?.length ?? 0;
 
-  const [visibility, setVisibility] = useState("public_anonymous");
+  const [visibility, setVisibility] = useState("public_all");
 
   const [pdfFile, setPdfFile] = useState(null);
   const [loading, setLoading] = useState(false);
