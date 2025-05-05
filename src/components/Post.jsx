@@ -107,7 +107,7 @@ const Post = ({ note }) => {
           {note.public_notes_content.length > 200 && (
             <button
               onClick={() => setShowMoreNote(!showMoreNote)}
-              className="text-xs text-blue-600 hover:underline mt-1"
+              className="text-xs text-indigo-600 mt-1"
             >
               {showMoreNote ? "Show less" : "Show more"}
             </button>
@@ -126,7 +126,7 @@ const Post = ({ note }) => {
           {note.public_prayer_content.length > 200 && (
             <button
               onClick={() => setShowMorePrayer(!showMorePrayer)}
-              className="text-xs text-blue-600 hover:underline mt-1"
+              className="text-xs text-indigo-600 mt-1"
             >
               {showMorePrayer ? "Show less" : "Show more"}
             </button>
