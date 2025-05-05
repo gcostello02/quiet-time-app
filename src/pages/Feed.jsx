@@ -17,6 +17,7 @@ const Feed = () => {
     if(session?.user?.id) {
       fetchPosts()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.user?.id])
 
   const fetchPosts = async (pageNum = 1) => {

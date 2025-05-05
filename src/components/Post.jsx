@@ -10,6 +10,7 @@ const Post = ({ note }) => {
 
   useEffect(() => {
     fetchData()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [note.user_id])
 
   const fetchData = async () => {
