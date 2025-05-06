@@ -3,12 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { supabase } from "../supabaseClient";
 import { UserAuth } from "../context/AuthContext";
-import { Pencil } from "lucide-react";
+import { Pencil, ArrowLeft  } from "lucide-react";
 
 const DetailedUserNote = () => {
   const { noteId } = useParams();
   const navigate = useNavigate();
-  const { session, profile } = UserAuth();
+  const { session } = UserAuth();
   const [note, setNote] = useState(null);
   const [loading, setLoading] = useState(true)
   const [references, setReferences] = useState([])
@@ -77,15 +77,14 @@ const DetailedUserNote = () => {
       <div className="max-w-4xl mx-auto">
         <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-4 max-w-md sm:max-w-xl md:max-w-2xl mx-auto my-6 border border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-3">
-              <img
-                src={profile.avatar_url ? profile.avatar_url : "/src/assets/logo.png"}
-                alt="profile"
-                className="w-10 h-10 rounded-full object-cover border border-gray-300 dark:border-gray-600"
-              />
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                {profile.username}
-              </p>
+            <div className="flex items-center">
+              <button
+                onClick={() => navigate("/profile")}
+                className="text-indigo-600 hover:text-indigo-800 inline-flex items-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span className="text-sm font-medium">Back to Profile</span>
+              </button>
             </div>
             <div className="text-xs text-gray-400 italic">
               {new Date(note.created_at).toLocaleString()}
@@ -196,14 +195,14 @@ const DetailedUserNote = () => {
 
           {note.pdf_url && (
             <div className="mb-4">
-              <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-1">Attached PDF</h2>
+              <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-1">Attached PDF:</h2>
               <a
                 href={note.pdf_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300"
               >
-                Link to Scanned Notes
+                Scanned Notes
               </a>
             </div>
           )}

@@ -105,6 +105,17 @@ const EditNote = () => {
     setBibleReferences([...bibleReferences, { book: books[0], chapter: "1" }]);
   };
 
+  const handleDelete = async () => {
+    setLoading(true);
+    const { error } = await supabase.from("notes").delete().eq("id", noteId);
+    if (error) {
+      setError("Failed to delete note");
+      setLoading(false);
+      return;
+    }
+    navigate("/profile");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -179,7 +190,7 @@ const EditNote = () => {
       <Navbar />
       <div className="flex-1 p-4 mx-auto w-full lg:max-w-3xl">
         <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-4">
-          Edit Note
+          Edit TAWG
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-gray-900 shadow-md rounded-xl p-6">
@@ -431,13 +442,30 @@ const EditNote = () => {
           </div>
 
 
-          <div className="text-center">
+          <div className="flex justify-evenly mt-2">
+            <button
+              type="button"
+              onClick={() => navigate(`/my-entries/${noteId}`)}
+              className="px-6 py-3 mt-4 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 focus:outline-none"
+            >
+              Cancel
+            </button>
+            
             <button
               type="submit"
               className="px-6 py-3 mt-4 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none"
               disabled={loading}
-              >
+            >
               {loading ? "Saving..." : "Update TAWG"}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleDelete}
+              className="px-6 py-3 mt-4 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 focus:outline-none"
+              disabled={loading}
+            >
+              {loading ? "Deleting..." : "Delete Note"}
             </button>
           </div>
         </form>
