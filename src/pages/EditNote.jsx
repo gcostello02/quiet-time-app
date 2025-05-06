@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import { UserAuth } from "../context/AuthContext";
 import { supabase } from "../supabaseClient";
 import esvData from "../data/ESV.json";
+import { MinusCircle } from "lucide-react";
 
 const EditNote = () => {
   const { session } = UserAuth();
@@ -20,6 +21,17 @@ const EditNote = () => {
   const [visibility, setVisibility] = useState("public_all");
   const [bibleReferences, setBibleReferences] = useState([]);
 
+  const [addMemoryVerse, setAddMemoryVerse] = useState(false);
+  const [selectedMemBook, setMemSelectedBook] = useState(Object.keys(esvData)[0]);
+  const [selectedMemChapter, setMemSelectedChapter] = useState(1);
+  const [startMemVerse, setMemStartVerse] = useState(1);
+  const [endMemVerse, setMemEndVerse] = useState(1);
+  const chaptersMem = Object.keys(esvData[selectedMemBook]);
+  const versesMem = esvData[selectedMemBook]?.[selectedMemChapter]?.length ?? 0;
+
+  const [pdfFile, setPdfFile] = useState(null);
+  const [existingPdfUrl, setExistingPdfUrl] = useState(null);
+  const [createdAt, setCreatedAt] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -30,12 +42,19 @@ const EditNote = () => {
         .select(`
           id,
           user_id,
+          created_at,
           title,
           public_notes_content,
           private_notes_content,
           public_prayer_content,
           private_prayer_content,
           visibility,
+          pdf_url,
+          mem_verse_display,
+          mem_verse_book,
+          mem_verse_chapter,
+          mem_verse_start,
+          mem_verse_end,
           note_references (
             book,
             chapter
@@ -43,6 +62,8 @@ const EditNote = () => {
         `)
         .eq("id", noteId)
         .single();
+
+      console.log(data)
 
       if (error || !data || data.user_id !== session.user.id) {
         navigate("/profile");
@@ -56,6 +77,14 @@ const EditNote = () => {
       setPrayerContent(data.private_prayer_content || "");
       setVisibility(data.visibility || "public_all");
       setBibleReferences(data.note_references || []);
+      setAddMemoryVerse(data.mem_verse_display || false)
+      setMemSelectedBook(data.mem_verse_book || "Genesis")
+      setMemSelectedChapter(data.mem_verse_chapter || 1)
+      setMemStartVerse(data.mem_verse_start || 1)
+      setMemEndVerse(data.mem_verse_end || 1)
+      setPdfFile(null)
+      setCreatedAt(new Date(data.created_at));
+      setExistingPdfUrl(data.pdf_url || null)
       setLoading(false);
     };
 
@@ -72,6 +101,8 @@ const EditNote = () => {
     setBibleReferences(newReferences);
   };
 
+  const handleFileChange = (e) => setPdfFile(e.target.files[0]);
+
   const handleAddReference = () => {
     setBibleReferences([...bibleReferences, { book: books[0], chapter: "1" }]);
   };
@@ -81,6 +112,24 @@ const EditNote = () => {
     setLoading(true);
     setError(null);
 
+    let pdfUrl = existingPdfUrl;
+
+    if (pdfFile) {
+      const filePath = `${session.user.id}/${createdAt.toISOString().split("T")[0]}.pdf`;
+      const { error: uploadError } = await supabase.storage
+        .from("note-pdfs")
+        .upload(filePath, pdfFile, { upsert: true });
+
+      if (uploadError) {
+        console.error("Error uploading PDF:", uploadError);
+        setError("Failed to upload PDF. Make sure it is a PDF.");
+        setLoading(false);
+        return;
+      }
+
+      pdfUrl = supabase.storage.from("note-pdfs").getPublicUrl(filePath).data.publicUrl;
+    }
+
     const { error: updateError } = await supabase
       .from("notes")
       .update({
@@ -89,7 +138,13 @@ const EditNote = () => {
         private_notes_content: privateContent,
         public_prayer_content: publicPrayerContent,
         private_prayer_content: prayerContent,
-        visibility
+        visibility: visibility,
+        pdf_url: pdfUrl,
+        mem_verse_display: addMemoryVerse,
+        mem_verse_book: selectedMemBook,
+        mem_verse_chapter: selectedMemChapter,
+        mem_verse_start: startMemVerse,
+        mem_verse_end: endMemVerse
       })
       .eq("id", noteId);
 
@@ -111,116 +166,278 @@ const EditNote = () => {
   };
 
   if (loading) {
-    return <div className="text-center text-gray-500 dark:text-gray-400 mt-10">Loading...</div>;
+    return (
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+        <Navbar />
+        <div className="flex justify-center items-center mt-5">
+          <div className="spinner-border animate-spin h-8 w-8 border-4 border-t-transparent border-indigo-600 rounded-full"></div>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <Navbar />
-      <div className="max-w-3xl mx-auto p-6 bg-white dark:bg-gray-800 rounded shadow mt-8">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Edit Note</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="flex-1 p-4 mx-auto w-full lg:max-w-3xl">
+        <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-4">
+          Edit Note
+        </h2>
+
+        <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-gray-900 shadow-md rounded-xl p-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-white">Title</label>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-900 dark:text-white">
+              Title
+            </label>
             <input
               type="text"
+              id="title"
+              name="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="mt-1 w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white px-3 py-2"
+              maxLength="35"
+              className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+              placeholder="Suggestion: MM/DD/YYYY TAWG"            
             />
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              {title.length} / 35 characters
+            </p>
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-white">Notes</label>
+            <label htmlFor="publicContent" className="block text-sm font-medium text-gray-900 dark:text-white">
+              Notes
+            </label>
             <textarea
+              id="publicContent"
+              name="publicContent"
               value={publicContent}
               onChange={(e) => handleContentChange(e, setPublicContent)}
-              className="mt-1 w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white px-3 py-2"
               rows="4"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-white">Private Notes</label>
-            <textarea
-              value={privateContent}
-              onChange={(e) => handleContentChange(e, setPrivateContent)}
-              className="mt-1 w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white px-3 py-2"
-              rows="4"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-white">Prayers</label>
-            <textarea
-              value={publicPrayerContent}
-              onChange={(e) => handleContentChange(e, setPublicPrayerContent)}
-              className="mt-1 w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white px-3 py-2"
-              rows="4"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-white">Private Prayers</label>
-            <textarea
-              value={prayerContent}
-              onChange={(e) => handleContentChange(e, setPrayerContent)}
-              className="mt-1 w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white px-3 py-2"
-              rows="4"
+              className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+              placeholder="Notes here will be seen by others if a public visibility option is chosen"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-white">Chapters Read</label>
-            {bibleReferences.map((ref, index) => (
-              <div key={index} className="flex gap-2 mb-2">
+            <label htmlFor="privateContent" className="block text-sm font-medium text-gray-900 dark:text-white">
+              Private Notes
+            </label>
+            <textarea
+              id="privateContent"
+              name="privateContent"
+              value={privateContent}
+              onChange={(e) => handleContentChange(e, setPrivateContent)}
+              rows="4"
+              className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+              placeholder="Notes here won't be seen by anyone no matter what visibility option is chosen"
+            />
+          </div>
+          
+          <div>
+            <label htmlFor="publicPrayerContent" className="block text-sm font-medium text-gray-900 dark:text-white">
+              Prayers
+            </label>
+            <textarea
+              id="publicPrayerContent"
+              name="publicPrayerContent"
+              value={publicPrayerContent}
+              onChange={(e) => handleContentChange(e, setPublicPrayerContent)}
+              rows="4"
+              className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+              placeholder="Prayers here will be seen by others if a public visibility option is chosen"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="prayerContent" className="block text-sm font-medium text-gray-900 dark:text-white">
+              Private Prayers
+            </label>
+            <textarea
+              id="prayerContent"
+              name="prayerContent"
+              value={prayerContent}
+              onChange={(e) => handleContentChange(e, setPrayerContent)}
+              rows="4"
+              className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+              placeholder="Prayers here won't be seen by anyone no matter what visibility option is chosen"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-900 dark:text-white">Chapters Read</label>
+            {bibleReferences.map((reference, index) => (
+              <div key={index} className="flex space-x-2 mb-2">
                 <select
-                  value={ref.book}
-                  onChange={(e) => handleBibleReferenceChange(index, "book", e.target.value)}
-                  className="w-1/2 rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white px-2 py-1"
+                  value={reference.book}
+                  onChange={(e) => {
+                    handleBibleReferenceChange(index, "book", e.target.value);
+                    handleBibleReferenceChange(index, "chapter", "1");
+                  }}
+                  className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
                 >
-                  {books.map(book => (
-                    <option key={book} value={book}>{book}</option>
+                  {books.map((book) => (
+                    <option key={book} value={book}>
+                      {book}
+                    </option>
                   ))}
                 </select>
                 <select
-                  value={ref.chapter}
+                  value={reference.chapter}
                   onChange={(e) => handleBibleReferenceChange(index, "chapter", e.target.value)}
-                  className="w-1/2 rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white px-2 py-1"
+                  className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
                 >
-                  {Object.keys(esvData[ref.book]).map(ch => (
-                    <option key={ch} value={ch}>{ch}</option>
+                  {Object.keys(esvData[reference.book]).map((chapter) => (
+                    <option key={chapter} value={chapter}>
+                      {chapter}
+                    </option>
                   ))}
                 </select>
+                {bibleReferences.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updated = [...bibleReferences];
+                      updated.splice(index, 1);
+                      setBibleReferences(updated);
+                    }}
+                    className="text-indigo-600 hover:text-indigo-700 bg-gray-100"
+                  >
+                    <MinusCircle className="w-5 h-5" />
+                  </button>
+                )}
               </div>
             ))}
-            <button type="button" onClick={handleAddReference} className="text-indigo-600 text-sm mt-2">
+            <button
+              type="button"
+              onClick={handleAddReference}
+              className="text-indigo-600 hover:text-indigo-700 text-sm bg-gray-100"
+            >
               Add Another Chapter
             </button>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-white">Visibility</label>
+            <label className="block mt-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={addMemoryVerse}
+                onChange={() => setAddMemoryVerse(!addMemoryVerse)}
+                className="mr-1 cursor-pointer"
+              />
+              Would you like to add a Memory Verse(s)?
+            </label>
+          </div>
+
+          {addMemoryVerse && (
+            <div>
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-300">Favorite Verse(s)</label>
+              <div className="flex gap-4">
+                <select
+                  value={selectedMemBook}
+                  onChange={(e) => {
+                    setMemSelectedBook(e.target.value);
+                    setMemSelectedChapter(1);
+                  }}
+                  className="mt-1 block w-48 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                >
+                  {books.map((book) => (
+                    <option key={book} value={book}>
+                      {book}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={selectedMemChapter}
+                  onChange={(e) => setMemSelectedChapter(Number(e.target.value))}
+                  className="mt-1 block w-20 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                >
+                  {chaptersMem.map((chapter) => (
+                    <option key={chapter} value={chapter}>
+                      {chapter}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
+
+          {addMemoryVerse && (
+            <div>
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-300">
+                Verse(s) Start & End
+              </label>
+              <div className="flex gap-4">
+                <select
+                  value={startMemVerse}
+                  onChange={(e) => {
+                    setMemStartVerse(Number(e.target.value));
+                    setMemEndVerse((prevEnd) => (prevEnd < Number(e.target.value) ? Number(e.target.value) : prevEnd));
+                  }}
+                  className="mt-1 block w-20 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                >
+                  {Array.from({ length: versesMem }, (_, i) => i + 1).map((verse) => (
+                    <option key={verse} value={verse}>
+                      {verse}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={endMemVerse}
+                  onChange={(e) => setMemEndVerse(Number(e.target.value))}
+                  className="mt-1 block w-20 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
+                >
+                  {Array.from({ length: versesMem - startMemVerse + 1 }, (_, i) => i + startMemVerse).map((verse) => (
+                    <option key={verse} value={verse}>
+                      {verse}
+                   </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
+
+          <div>
+            <label htmlFor="pdfFile" className="block text-sm font-medium text-gray-900 dark:text-white">
+              Upload PDF
+            </label>
+            <input
+              type="file"
+              id="pdfFile"
+              name="pdfFile"
+              accept="application/pdf"
+              onChange={handleFileChange}
+              className="mt-1 block w-full text-sm text-gray-900 dark:text-white"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-900 dark:text-white">Visibility</label>
             <select
               value={visibility}
               onChange={(e) => setVisibility(e.target.value)}
-              className="mt-1 w-full rounded border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white px-3 py-2"
+              className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
             >
-              <option value="public_all">Public (Friends + anonymous)</option>
-              <option value="public_friends">Public (Friends only)</option>
-              <option value="private_anonymous">Public (Anonymous)</option>
-              <option value="private_not_seen">Private</option>
+              <option value="public_all">Public (To friends and anonymous to other users)</option>
+              <option value="public_friends">Public (Just to friends)</option>
+              <option value="private_anonymous">Public (Anonymous to everyone)</option>
+              <option value="private_not_seen">Private (Not to be seen)</option>
             </select>
           </div>
 
-          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
           <div className="text-center">
             <button
               type="submit"
-              className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700"
+              className="px-6 py-3 mt-4 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none"
               disabled={loading}
-            >
-              {loading ? "Saving..." : "Update Note"}
+              >
+              {loading ? "Saving..." : "Update TAWG"}
             </button>
           </div>
         </form>
+        
+        {error && <p className="text-red-500 text-center">{error}</p>}
       </div>
     </div>
   );

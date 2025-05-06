@@ -129,7 +129,7 @@ const Notes = () => {
   }
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <Navbar />
       <div className="text-center mt-4">
         <button
@@ -140,7 +140,7 @@ const Notes = () => {
         </button>
       </div>
 
-      <div className="min-h-screen p-6 flex flex-col lg:flex-row gap-4">
+      <div className="p-6 flex flex-col lg:flex-row gap-4">
         <div className={`flex-1 p-4 mx-auto w-full ${isBibleVisible ? "lg:border-r-2 border-gray-300" : ""} lg:max-w-3xl`}>
           <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-4">
             Time Alone with God
@@ -162,8 +162,8 @@ const Notes = () => {
                 placeholder="Suggestion: MM/DD/YYYY TAWG"
               />
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                 {title.length} / 35 characters
-               </p>
+                {title.length} / 35 characters
+              </p>
             </div>
 
             <div>
@@ -367,6 +367,7 @@ const Notes = () => {
                 type="file"
                 id="pdfFile"
                 name="pdfFile"
+                accept="application/pdf"
                 onChange={handleFileChange}
                 className="mt-1 block w-full text-sm text-gray-900 dark:text-white"
               />
