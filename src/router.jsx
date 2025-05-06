@@ -15,6 +15,7 @@ import HowTo from "./pages/HowTo";
 import Plan from "./pages/Plan";
 import Feed from "./pages/Feed";
 import DetailedUserNote from "./pages/DetailedUserNote";
+import EditNote from "./pages/EditNote";
 
 export const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -95,10 +96,18 @@ export const router = createBrowserRouter([
     )
   },
   {
-    path: "/entries/:noteId",
+    path: "/my-entries/:noteId",
     element: (
       <PrivateRoute>
         <DetailedUserNote />
+      </PrivateRoute>
+    )
+  },
+  {
+    path: "/edit-entry/:noteId",
+    element: (
+      <PrivateRoute>
+        <EditNote />
       </PrivateRoute>
     )
   }

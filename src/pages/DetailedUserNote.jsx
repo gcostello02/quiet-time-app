@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { supabase } from "../supabaseClient";
 import { UserAuth } from "../context/AuthContext";
+import { Pencil } from "lucide-react";
 
 const DetailedUserNote = () => {
   const { noteId } = useParams();
@@ -71,7 +72,7 @@ const DetailedUserNote = () => {
     : null;
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">      
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">  
       <Navbar />
       <div className="max-w-4xl mx-auto">
         <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-4 max-w-md sm:max-w-xl md:max-w-2xl mx-auto my-6 border border-gray-200 dark:border-gray-700">
@@ -200,12 +201,22 @@ const DetailedUserNote = () => {
                 href={note.pdf_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-300"
+                className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300"
               >
-                View your Written Notes
+                Link to Scanned Notes
               </a>
             </div>
           )}
+
+          <div className="text-right mb-2">
+            <button
+              onClick={() => navigate(`/edit-entry/${note.id}`)}
+              className="text-indigo-600 hover:text-indigo-800 inline-flex items-center gap-1"
+            >
+              <Pencil className="w-4 h-4" />
+              Edit
+            </button>
+          </div>
         </div>
       </div>
     </div>
