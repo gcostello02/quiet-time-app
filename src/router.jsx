@@ -14,6 +14,7 @@ import Friends from "./pages/Friends";
 import HowTo from "./pages/HowTo";
 import Plan from "./pages/Plan";
 import Feed from "./pages/Feed";
+import DetailedUserNote from "./pages/DetailedUserNote";
 
 export const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -93,4 +94,12 @@ export const router = createBrowserRouter([
       </PrivateRoute>
     )
   },
+  {
+    path: "/entries/:noteId",
+    element: (
+      <PrivateRoute>
+        <DetailedUserNote />
+      </PrivateRoute>
+    )
+  }
 ]);

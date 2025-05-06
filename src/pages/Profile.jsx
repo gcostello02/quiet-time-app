@@ -158,7 +158,7 @@ const ProfilePage = () => {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {notes.slice(0, visibleCount).map(note => (
-                  <div key={note.id} className="border p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
+                  <Link to={`/entries/${note.id}`} key={note.id} className="block border p-4 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition">
                     <p className="text-xs text-gray-500 dark:text-gray-300 italic">
                       {new Date(note.created_at).toLocaleDateString()}
                     </p>
@@ -172,7 +172,7 @@ const ProfilePage = () => {
                         ))}
                       </div>
                     )}
-                  </div>
+                  </Link>
                 ))}
               </div>
 
