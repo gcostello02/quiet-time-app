@@ -386,13 +386,24 @@ const EditProfile = () => {
             </div>
           )}
 
-          <button
-            type="submit"
-            className="w-full bg-indigo-600 text-white p-2 rounded-md flex justify-center dark:bg-indigo-700"
-            disabled={loading}
-          >
-            {loading ? "Saving..." : "Save Changes"}
-          </button>
+          <div className="flex justify-evenly">
+            <button
+              type="button"
+              onClick={() => navigate(`/profile`)}
+              className="bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 focus:outline-none"
+            >
+              Cancel
+            </button>
+            
+            <button
+              type="submit"
+              className="bg-indigo-600 text-white p-2 rounded-lg flex dark:bg-indigo-700"
+              disabled={loading}
+            >
+              {loading ? "Saving..." : "Save Changes"}
+            </button>
+
+          </div>
         </form>
 
         {error && <p className="text-center text-red-500">{error}</p>}

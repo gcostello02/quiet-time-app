@@ -150,7 +150,7 @@ const ProfilePage = () => {
         </div>
 
         <div className="mt-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-200 mb-2">Your Notes</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-200 mb-2">Your TAWG Entries:</h3>
 
           {notes.length === 0 ? (
             <p className="text-gray-500 dark:text-gray-400">Do your TAWG and they will show up here!</p>
