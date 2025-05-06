@@ -63,8 +63,6 @@ const EditNote = () => {
         .eq("id", noteId)
         .single();
 
-      console.log(data)
-
       if (error || !data || data.user_id !== session.user.id) {
         navigate("/profile");
         return;
@@ -401,6 +399,13 @@ const EditNote = () => {
             <label htmlFor="pdfFile" className="block text-sm font-medium text-gray-900 dark:text-white">
               Upload PDF
             </label>
+            {existingPdfUrl && (
+              <p className="text-sm mb-1 text-indigo-600">
+                <a href={existingPdfUrl} target="_blank" rel="noopener noreferrer">
+                  View current PDF
+                </a>
+              </p>
+            )}
             <input
               type="file"
               id="pdfFile"
