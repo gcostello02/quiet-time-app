@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
+import { Link } from "react-router-dom";
 
 const Post = ({ note }) => {
   const [loading, setLoading] = useState(true);
@@ -62,16 +63,36 @@ const Post = ({ note }) => {
   return (
     <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-4 max-w-md sm:max-w-xl md:max-w-2xl mx-auto my-6 border border-gray-200 dark:border-gray-700">
       <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-3">
-          <img
-            src={!note.anonymous ? postProfile.avatar_url : "/src/assets/logo.png"}
-            alt="profile"
-            className="w-10 h-10 rounded-full object-cover border border-gray-300 dark:border-gray-600"
-          />
-          <p className="text-lg font-semibold text-gray-900 dark:text-white">
-            {!note.anonymous ? postProfile.username : "Anonymous"}
-          </p>
-        </div>
+        {note.anonymous ?
+        (
+          <div className="flex items-center gap-3">
+            <img
+              src="/src/assets/logo.png"
+              alt="profile"
+              className="w-10 h-10 rounded-full object-cover border border-gray-300 dark:border-gray-600"
+            />
+            <p className="text-lg font-semibold text-gray-900 dark:text-white">
+              Anonymous
+            </p>
+          </div>
+        ) :
+        (
+          <Link
+            to={`/profiles/${note.user_id}`}
+            key={note.id}
+          >
+            <div className="flex items-center gap-3">
+              <img
+                src={postProfile.avatar_url}
+                alt="profile"
+                className="w-10 h-10 rounded-full object-cover border border-gray-300 dark:border-gray-600"
+              />
+              <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                {postProfile.username}
+              </p>
+            </div>
+          </Link>
+        )}
         <div className="text-xs text-gray-400 italic">
           {new Date(note.created_at).toLocaleString()}
         </div>
