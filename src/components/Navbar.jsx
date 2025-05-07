@@ -1,34 +1,34 @@
-import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { Bars3Icon, XMarkIcon, PencilSquareIcon, UserGroupIcon } from '@heroicons/react/24/outline';
-import { useNavigate, useLocation, Link } from "react-router-dom";
-import { UserAuth } from "../context/AuthContext";
-import React from "react";
-import logo from '../assets/logo.png';
+import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
+import { Bars3Icon, XMarkIcon, PencilSquareIcon, UserGroupIcon } from '@heroicons/react/24/outline'
+import { useNavigate, useLocation, Link } from "react-router-dom"
+import { UserAuth } from "../context/AuthContext"
+import React from "react"
+import logo from '../assets/logo.png'
 
 const navigationItems = [
   { name: 'Dashboard', href: '/dashboard' },
   { name: 'Bible', href: '/bible' },
   { name: 'Feed', href: '/feed' }
-];
+]
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
+  return classes.filter(Boolean).join(' ')
 }
 
 export default function Navbar() {
-  const { signOut, profile } = UserAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const { signOut, profile } = UserAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const handleSignOut = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      await signOut();
-      navigate("/");
+      await signOut()
+      navigate("/")
     } catch (err) {
-      console.log("An unexpected error occurred ", err);
+      console.log("An unexpected error occurred ", err)
     }
-  };
+  }
 
   return (
     <Disclosure as="nav" className="bg-white dark:bg-gray-900 border-b border-gray-300 dark:border-gray-600 shadow-sm">
@@ -166,5 +166,5 @@ export default function Navbar() {
         </div>
       </DisclosurePanel>
     </Disclosure>
-  );
+  )
 }
