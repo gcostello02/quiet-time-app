@@ -35,6 +35,7 @@ export default function Navbar() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           
+          {/* Mobile Menu Toggle */}
           <div className="flex items-center sm:hidden">
             <DisclosureButton className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-900 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-black dark:hover:text-white focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
               <span className="sr-only">Open main menu</span>
@@ -43,6 +44,7 @@ export default function Navbar() {
             </DisclosureButton>
           </div>
 
+          {/* Logo */}
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex shrink-0 items-center">
               <img
@@ -71,7 +73,8 @@ export default function Navbar() {
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
+          {/* Desktop Icons (Pencil and User Group) */}
+          <div className="hidden sm:flex items-center space-x-4 mr-4">
             <button
               onClick={() => navigate("/notes")}
               className="rounded-full bg-gray-100 dark:bg-gray-800 p-2 text-gray-900 dark:text-gray-400 hover:text-black dark:hover:text-white focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600"
@@ -87,7 +90,10 @@ export default function Navbar() {
               <span className="sr-only">View Friends</span>
               <UserGroupIcon className="size-6" aria-hidden="true" />
             </button>
+          </div>
 
+          {/* Profile Icon: Always visible */}
+          <div className="flex items-center space-x-4">
             <Menu as="div" className="relative">
               <div>
                 <MenuButton className="relative flex rounded-full bg-gray-100 dark:bg-gray-800 text-sm focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
@@ -140,6 +146,23 @@ export default function Navbar() {
               {item.name}
             </DisclosureButton>
           ))}
+
+          {/* Mobile Links for TAWG and Friends */}
+          <DisclosureButton
+            as={Link}
+            to="/notes"
+            className="block rounded-md px-3 py-2 text-base font-medium text-gray-900 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            Do your TAWG
+          </DisclosureButton>
+
+          <DisclosureButton
+            as={Link}
+            to="/friends"
+            className="block rounded-md px-3 py-2 text-base font-medium text-gray-900 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            Friends
+          </DisclosureButton>
         </div>
       </DisclosurePanel>
     </Disclosure>
