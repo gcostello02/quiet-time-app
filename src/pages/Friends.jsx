@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import { UserAuth } from '../context/AuthContext';
 import { supabase } from "../supabaseClient";
+import { Link } from "react-router-dom";
 
 const Friends = () => {
   const { session } = UserAuth();
@@ -176,7 +177,12 @@ const Friends = () => {
                 <div className="space-y-3">
                   {pendingRequests.map((req) => (
                     <div key={req.receiver_id} className="flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                      <span>{req.profiles.username}</span>
+                      <Link
+                        to={`/profiles/${req.profiles.id}`}
+                        key={req.profiles.id}
+                      >
+                        <p className='text-lg font-semibold text-gray-900 dark:text-white hover:text-indigo-600'>{req.profiles.username}</p>
+                      </Link>
                       <span className="text-sm text-gray-500">Pending</span>
                     </div>
                   ))}
@@ -200,7 +206,12 @@ const Friends = () => {
                     .filter((user) => user.username.toLowerCase().includes(searchTerm.toLowerCase()))
                     .map((user) => (
                       <div key={user.id} className="flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                        <span>{user.username}</span>
+                        <Link
+                          to={`/profiles/${user.id}`}
+                          key={user.id}
+                        >
+                          <p className='text-lg font-semibold text-gray-900 dark:text-white hover:text-indigo-600'>{user.username}</p>
+                        </Link>
                         <button
                           onClick={() => sendFriendRequest(user.id)}
                           className="bg-indigo-600 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg transition"
@@ -222,7 +233,12 @@ const Friends = () => {
               <div className="space-y-3">
                 {friends.map((friend) => (
                   <div key={friend.friend_id} className="flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <span>{friend.profiles.username}</span>
+                    <Link
+                      to={`/profiles/${friend.friend_id}`}
+                      key={friend.friend_id}
+                    >
+                      <p className='text-lg font-semibold text-gray-900 dark:text-white hover:text-indigo-600'>{friend.profiles.username}</p>
+                    </Link>
                     <button
                       onClick={() => removeFriend(friend.friend_id)}
                       className="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-lg transition"
@@ -243,7 +259,12 @@ const Friends = () => {
               <div className="space-y-3">
                 {receivedRequests.map((req) => (
                   <div key={req.sender_id} className="flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <span>{req.profiles.username}</span>
+                    <Link
+                      to={`/profiles/${req.sender_id}`}
+                      key={req.sender_id}
+                    >
+                      <p className='text-lg font-semibold text-gray-900 dark:text-white hover:text-indigo-600'>{req.profiles.username}</p>
+                    </Link>
                     <div className="flex gap-2">
                       <button
                         onClick={() => acceptFriendRequest(req.sender_id)}

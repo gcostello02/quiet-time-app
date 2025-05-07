@@ -205,7 +205,7 @@ const OtherProfilePage = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {notes.slice(0, visibleCount).map((note) => (
                   <Link
-                    to={`/my-entries/${note.id}`}
+                    to={`/entries/${note.id}`}
                     key={note.id}
                     className="block border p-4 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition"
                   >

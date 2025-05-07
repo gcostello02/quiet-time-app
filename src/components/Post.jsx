@@ -87,7 +87,7 @@ const Post = ({ note }) => {
                 alt="profile"
                 className="w-10 h-10 rounded-full object-cover border border-gray-300 dark:border-gray-600"
               />
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">
+              <p className="text-lg font-semibold text-gray-900 dark:text-white hover:text-indigo-600">
                 {postProfile.username}
               </p>
             </div>

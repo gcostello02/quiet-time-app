@@ -17,6 +17,7 @@ import Feed from "./pages/Feed";
 import DetailedUserNote from "./pages/DetailedUserNote";
 import EditNote from "./pages/EditNote";
 import OtherProfilePage from "./pages/OtherProfiles";
+import DetailedOtherNote from "./pages/DetailedOtherNote";
 
 export const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -117,6 +118,14 @@ export const router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <OtherProfilePage />
+      </PrivateRoute>
+    )
+  },
+  {
+    path: "entries/:noteId",
+    element: (
+      <PrivateRoute>
+        <DetailedOtherNote />
       </PrivateRoute>
     )
   }
