@@ -76,10 +76,10 @@ export default function Navbar() {
           {/* Desktop Icons (Pencil and User Group) */}
           <div className="hidden sm:flex items-center space-x-4 mr-4">
             <button
-              onClick={() => navigate("/notes")}
+              onClick={() => navigate("/tawg")}
               className="rounded-full bg-gray-100 dark:bg-gray-800 p-2 text-gray-900 dark:text-gray-400 hover:text-black dark:hover:text-white focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600"
             >
-              <span className="sr-only">Go to Notes</span>
+              <span className="sr-only">Go to TAWG</span>
               <PencilSquareIcon className="size-6" aria-hidden="true" />
             </button>
 
@@ -150,7 +150,7 @@ export default function Navbar() {
           {/* Mobile Links for TAWG and Friends */}
           <DisclosureButton
             as={Link}
-            to="/notes"
+            to="/tawg"
             className="block rounded-md px-3 py-2 text-base font-medium text-gray-900 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             Do your TAWG

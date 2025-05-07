@@ -50,7 +50,7 @@ export const router = createBrowserRouter([
     )
   },
   { 
-    path: "/notes", 
+    path: "/tawg", 
     element: (
       <PrivateRoute>
         <Notes />

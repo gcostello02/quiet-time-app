@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import { supabase } from "../supabaseClient";
 import { BookOpenIcon, FireIcon, LinkIcon, SparklesIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const { session } = UserAuth();
@@ -14,9 +15,13 @@ const Dashboard = () => {
   const [streak, setStreak] = useState(0)
 
   const [today, setToday] = useState(true)
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchStats = async () => {
+      setLoading(true)
+
       const { count: total } = await supabase
         .from("notes")
         .select("*", { count: "exact", head: true })
@@ -55,7 +60,9 @@ const Dashboard = () => {
         if (!dateSet.has(todayStr)) {
           checkingDate.setDate(checkingDate.getDate() - 1);
           setToday(false)
-          // alert("TAWG HAS NOT BEEN DONE TODAY")
+        }
+        else {
+          setToday(true)
         }
 
         while (true) {
@@ -69,6 +76,7 @@ const Dashboard = () => {
         }
 
         setStreak(currentStreak);
+        setLoading(false)
       }
     };
 
@@ -81,7 +89,13 @@ const Dashboard = () => {
       <Icon className="h-8 w-8 text-indigo-500" />
       <div>
         <h4 className="text-md font-semibold text-gray-700 dark:text-white">{title}</h4>
-        <p className="text-xl font-bold text-indigo-600 dark:text-indigo-400">{value}</p>
+        {loading ? (
+          <div className="flex justify-center items-center mt-1">
+            <div className="h-6 w-6 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) :  (
+          <p className="text-xl font-bold text-indigo-600 dark:text-indigo-400">{value}</p>
+        )}
       </div>
     </div>
   );
@@ -126,8 +140,25 @@ const Dashboard = () => {
       <Navbar />
       <div className="max-w-5xl mx-auto p-6 space-y-8">
         <div>
-          <h1 className="text-4xl text-center font-bold text-gray-900 dark:text-white mb-2">Welcome to TAWG!</h1>
+          <h1 className="text-4xl text-center font-bold text-gray-900 dark:text-white">Welcome to TAWG!</h1>
         </div>
+
+        {!today && (<div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+          <h2 className="text-center text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            🚨 It Looks Like You Haven't Done Your TAWG Yet 🚨
+          </h2>
+          <p className="text-center font-bold text-gray-700 dark:text-gray-300">
+            Click the button and do it right now!
+          </p>
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={() => navigate("/tawg")}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-md shadow-md"
+            >
+              Let's Go
+            </button>
+          </div>
+        </div>)}
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <StatCard icon={FireIcon} title="TAWG Streak" value={`${streak} days`} />
@@ -156,6 +187,7 @@ const Dashboard = () => {
               { label: "How to do TAWG", href: "/howto" },
               { label: "Got Questions", href: "https://www.gotquestions.org/" },
               { label: "Enduring Word Commentary", href: "https://enduringword.com/bible-commentary/" },
+              { label: "Conquering the Summer Guide", href: "https://docs.google.com/document/d/1QfTpVVRfp9lHQJhRdvOi1d0ubiK-3AbAUf5YSi7fQ_0/edit?usp=sharing" }
             ]}
           />
         </div>
