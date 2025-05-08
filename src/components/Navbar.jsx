@@ -31,7 +31,7 @@ export default function Navbar() {
   }
 
   return (
-    <Disclosure as="nav" className="bg-white dark:bg-gray-900 border-b border-gray-300 dark:border-gray-600 shadow-sm">
+    <Disclosure as="nav" className="bg-white dark:bg-gray-800 border-b border-gray-300 dark:border-gray-600 shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           
@@ -105,7 +105,7 @@ export default function Navbar() {
                   />
                 </MenuButton>
               </div>
-              <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-gray-900 py-1 ring-1 shadow-lg ring-black/5 transition focus:outline-none">
+              <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-gray-800 py-1 ring-1 shadow-lg ring-black/5 transition focus:outline-none">
                 <MenuItem>
                   <Link
                     to="/profile"
@@ -117,7 +117,7 @@ export default function Navbar() {
                 <MenuItem>
                   <button
                     onClick={handleSignOut}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
                   >
                     Sign out
                   </button>
