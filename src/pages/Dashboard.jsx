@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { UserAuth } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import { supabase } from "../supabaseClient";
 import { BookOpenIcon, FireIcon, LinkIcon, SparklesIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
@@ -85,24 +86,24 @@ const Dashboard = () => {
 
   // eslint-disable-next-line no-unused-vars
   const StatCard = ({ icon: Icon, title, value }) => (
-    <div className="flex items-center gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+    <div className="flex items-center gap-4 bg-white p-4 rounded-xl shadow">
       <Icon className="h-8 w-8 text-indigo-500" />
       <div>
-        <h4 className="text-md font-semibold text-gray-700 dark:text-white">{title}</h4>
+        <h4 className="text-md font-semibold text-gray-700">{title}</h4>
         {loading ? (
           <div className="flex justify-center items-center mt-1">
             <div className="h-6 w-6 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) :  (
-          <p className="text-xl font-bold text-indigo-600 dark:text-indigo-400">{value}</p>
+          <p className="text-xl font-bold text-indigo-600">{value}</p>
         )}
       </div>
     </div>
   );
 
   const LinkList = ({ title, links }) => (
-    <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
-      <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">{title}</h3>
+    <div className="bg-white p-4 rounded-xl shadow">
+      <h3 className="text-xl font-semibold text-gray-800 mb-2">{title}</h3>
       <ul className="list-disc list-inside space-y-1">
         {links.map((link, idx) => {
           const isInternal = link.href.startsWith("/");
@@ -112,7 +113,7 @@ const Dashboard = () => {
               {isInternal ? (
                 <Link
                   to={link.href}
-                  className="text-indigo-600 dark:text-indigo-400 hover:underline inline-flex items-center gap-1"
+                  className="text-indigo-600 hover:underline inline-flex items-center gap-1"
                 >
                   <LinkIcon className="h-4 w-4" />
                   {link.label}
@@ -122,7 +123,7 @@ const Dashboard = () => {
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-indigo-600 dark:text-indigo-400 hover:underline inline-flex items-center gap-1"
+                  className="text-indigo-600 hover:underline inline-flex items-center gap-1"
                 >
                   <LinkIcon className="h-4 w-4" />
                   {link.label}
@@ -136,18 +137,18 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-100">
       <Navbar />
       <div className="max-w-5xl mx-auto p-6 space-y-8">
         <div>
-          <h1 className="text-4xl text-center font-bold text-gray-900 dark:text-white">Welcome to TAWG!</h1>
+          <h1 className="text-4xl text-center font-bold text-gray-900">Welcome to TAWG!</h1>
         </div>
 
-        {!today && (<div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
-          <h2 className="text-center text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        {!today && (<div className="bg-white p-6 rounded-xl shadow">
+          <h2 className="text-center text-3xl font-bold text-gray-900 mb-2">
             🚨 It Looks Like You Haven't Done Your TAWG Yet 🚨
           </h2>
-          <p className="text-center font-bold text-gray-700 dark:text-gray-300">
+          <p className="text-center font-bold text-gray-700">
             Click the button and do it right now!
           </p>
           <div className="flex justify-center mt-4">
@@ -166,9 +167,9 @@ const Dashboard = () => {
           <StatCard icon={BookOpenIcon} title="Most Read Book" value={mostReadBook} />
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">About This App</h2>
-          <p className="text-gray-700 dark:text-gray-300">
+        <div className="bg-white p-6 rounded-xl shadow">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">About This App</h2>
+          <p className="text-gray-700">
             <strong>TAWG</strong> (<strong>T</strong>ime <strong>A</strong>lone <strong>W</strong>ith <strong>G</strong>od) is a way to intentionally slow down and connect with God daily through Scripture, prayer, and reflection.
           </p>
         </div>
@@ -193,50 +194,50 @@ const Dashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow space-y-4">
-            <h3 className="text-xl font-semibold text-gray-800 dark:text-white">Why We Can Trust the Bible:</h3>
+          <div className="bg-white p-6 rounded-xl shadow space-y-4">
+            <h3 className="text-xl font-semibold text-gray-800">Why We Can Trust the Bible:</h3>
             <div>
               <p className="font-semibold">📜 Historically Accurate</p>
-              <p className="text-gray-700 dark:text-gray-300">
+              <p className="text-gray-700">
                 2 Peter 1:16 - For we did not follow cleverly devised myths when we made known to you the power and coming of our Lord Jesus Christ, but we were eyewitnesses of his majesty.
               </p>
             </div>
             <div>
               <p className="font-semibold">🔗 Internally Consistent</p>
-              <p className="text-gray-700 dark:text-gray-300">
+              <p className="text-gray-700">
                 63,779 cross-references in the graph show how the Bible is 66 books written by 40 authors, but is one story because each writer was inspired by the Holy Spirit.
               </p>
             </div>
             <div>
               <p className="font-semibold">🔮 Prophetically Accurate</p>
-              <p className="text-gray-700 dark:text-gray-300">
+              <p className="text-gray-700">
                 2 Peter 1:21 - For no prophecy was ever produced by the will of man, but men spoke from God as they were carried along by the Holy Spirit.
               </p>
             </div>
             <div>
               <p className="font-semibold">🙌 Jesus Approved</p>
-              <p className="text-gray-700 dark:text-gray-300">
+              <p className="text-gray-700">
                 Romans 10:17 - So faith comes from hearing, and hearing through the word of Christ.
               </p>
             </div>
           </div>
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
-            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Graph of Bible Cross References:</h3>
+          <div className="bg-white p-6 rounded-xl shadow">
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">Graph of Bible Cross References:</h3>
             <img
               src="/src/assets/references.jpg"
               alt="Bible cross reference visualization"
               className="w-full rounded"
             />
-            <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+            <p className="mt-2 text-center text-sm text-gray-600">
               This visualization depicts Bible chapters with alternating light and dark gray bars, starting with Genesis 1 on the left. White bars mark the first chapters of the Old and New Testaments. Bar lengths represent verse counts, with Psalm 119 being the longest. The 63,779 cross references are shown as colored arcs, creating a rainbow effect based on chapter distance.
             </p>
-            <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+            <p className="mt-2 text-center text-sm text-gray-600">
               Graph from{" "}
               <a
                 href="https://www.chrisharrison.net/index.php/Visualizations/BibleViz"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-indigo-600 dark:text-indigo-400 hover:underline inline-flex items-center gap-1"
+                className="text-indigo-600 hover:underline inline-flex items-center gap-1"
               >
                 Chris Harrison
               </a>
@@ -244,6 +245,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
