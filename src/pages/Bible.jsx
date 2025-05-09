@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import esvData from "../data/ESV.json";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const Bible = () => {
   const [selectedBook, setSelectedBook] = useState(Object.keys(esvData)[0]);
@@ -10,75 +11,82 @@ const Bible = () => {
   const chapters = Object.keys(esvData[selectedBook]);
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-100 flex flex-col">
       <Navbar />
-      <div className="min-h-screen p-6">
-        <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-4">
-          Bible (ESV)
-        </h2>
-        <div className="flex justify-center gap-4 mb-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-900 dark:text-gray-300">
-              Select Book:
-            </label>
-            <select
-              value={selectedBook}
-              onChange={(e) => {
-                setSelectedBook(e.target.value);
-                setSelectedChapter("1");
-              }}
-              className="mt-1 block w-48 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
-            >
-              {books.map((book) => (
-                <option key={book} value={book}>
-                  {book}
-                </option>
-              ))}
-            </select>
+      <main className="flex-grow">
+
+        <div className="max-w-5xl mx-auto p-6 space-y-8 flex-grow">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">
+            Bible (ESV)
+          </h2>
+          <div className="flex justify-center gap-4 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-900">
+                Select Book:
+              </label>
+              <select
+                size={1}
+                value={selectedBook}
+                onChange={(e) => {
+                  setSelectedBook(e.target.value);
+                  setSelectedChapter("1");
+                }}
+                className="mt-1 block w-48 rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900"
+              >
+                {books.map((book) => (
+                  <option key={book} value={book}>
+                    {book}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-900">
+                Select Chapter:
+              </label>
+              <select
+                size={1}
+                value={selectedChapter}
+                onChange={(e) => setSelectedChapter(e.target.value)}
+                className="mt-1 block w-20 rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900"
+              >
+                {chapters.map((chapter) => (
+                  <option key={chapter} value={chapter}>
+                    {chapter}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-900 dark:text-gray-300">
-              Select Chapter:
-            </label>
-            <select
-              value={selectedChapter}
-              onChange={(e) => setSelectedChapter(e.target.value)}
-              className="mt-1 block w-20 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white"
-            >
-              {chapters.map((chapter) => (
-                <option key={chapter} value={chapter}>
-                  {chapter}
-                </option>
+          <div className="mx-auto bg-white p-4 rounded-lg shadow-md">
+            <h3 className="text-lg font-semibold text-gray-900">
+              {selectedBook} {selectedChapter}
+            </h3>
+            <div className="mt-2 space-y-2">
+              {esvData[selectedBook][selectedChapter].map((verse) => (
+                <p key={verse.verse} className="text-gray-900">
+                  <strong>{verse.verse}</strong> {verse.text}
+                </p>
               ))}
-            </select>
+            </div>
           </div>
-        </div>
 
-        <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 p-4 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            {selectedBook} {selectedChapter}
-          </h3>
-          <div className="mt-2 space-y-2">
-            {esvData[selectedBook][selectedChapter].map((verse) => (
-              <p key={verse.verse} className="text-gray-900 dark:text-gray-300">
-                <strong>{verse.verse}</strong> {verse.text}
-              </p>
-            ))}
+          <div className="mt-1 text-center text-sm text-gray-600 px-4">
+            The Holy Bible, English Standard Version. ESV® Text Edition: 2016. Copyright © 2001 by{" "}
+            <a
+              href="https://www.crossway.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 underline"
+            >
+              Crossway Bibles, a publishing ministry of Good News Publishers.
+            </a>      
           </div>
         </div>
-      </div>
-      <div className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400 px-4">
-        The Holy Bible, English Standard Version. ESV® Text Edition: 2016. Copyright © 2001 by{" "}
-        <a
-          href="https://www.crossway.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-600 dark:text-blue-400 underline"
-        >
-          Crossway Bibles, a publishing ministry of Good News Publishers.
-        </a>      
-      </div>
+      </main>
+      <Footer />
     </div>
   );
 };

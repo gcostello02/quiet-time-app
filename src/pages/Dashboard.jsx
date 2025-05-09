@@ -137,114 +137,116 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
       <Navbar />
-      <div className="max-w-5xl mx-auto p-6 space-y-8">
-        <div>
-          <h1 className="text-4xl text-center font-bold text-gray-900">Welcome to TAWG!</h1>
-        </div>
-
-        {!today && (<div className="bg-white p-6 rounded-xl shadow">
-          <h2 className="text-center text-3xl font-bold text-gray-900 mb-2">
-            🚨 It Looks Like You Haven't Done Your TAWG Yet 🚨
-          </h2>
-          <p className="text-center font-bold text-gray-700">
-            Click the button and do it right now!
-          </p>
-          <div className="flex justify-center mt-4">
-            <button
-              onClick={() => navigate("/tawg")}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-md shadow-md"
-            >
-              Let's Go
-            </button>
+      <main className="flex-grow">
+        <div className="max-w-5xl mx-auto p-6 space-y-8">
+          <div>
+            <h1 className="text-4xl text-center font-bold text-gray-900">Welcome to TAWG!</h1>
           </div>
-        </div>)}
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <StatCard icon={FireIcon} title="TAWG Streak" value={`${streak} days`} />
-          <StatCard icon={SparklesIcon} title="Total TAWGs" value={`${totalQuietTimes} days`} />
-          <StatCard icon={BookOpenIcon} title="Most Read Book" value={mostReadBook} />
-        </div>
-
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">About This App</h2>
-          <p className="text-gray-700">
-            <strong>TAWG</strong> (<strong>T</strong>ime <strong>A</strong>lone <strong>W</strong>ith <strong>G</strong>od) is a way to intentionally slow down and connect with God daily through Scripture, prayer, and reflection.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <LinkList
-            title="📖 Reading Plans"
-            links={[
-              { label: "40 Day Getting Started Plan", href: "/plan" },
-              { label: "Bible in a Year Plan", href: "https://www.biblica.com/resources/reading-plans/" },
-            ]}
-          />
-          <LinkList
-            title="📚 Resources"
-            links={[
-              { label: "How to do TAWG", href: "/howto" },
-              { label: "Got Questions", href: "https://www.gotquestions.org/" },
-              { label: "Enduring Word Commentary", href: "https://enduringword.com/bible-commentary/" },
-              { label: "Conquering the Summer Guide", href: "https://docs.google.com/document/d/1QfTpVVRfp9lHQJhRdvOi1d0ubiK-3AbAUf5YSi7fQ_0/edit?usp=sharing" }
-            ]}
-          />
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="bg-white p-6 rounded-xl shadow space-y-4">
-            <h3 className="text-xl font-semibold text-gray-800">Why We Can Trust the Bible:</h3>
-            <div>
-              <p className="font-semibold">📜 Historically Accurate</p>
-              <p className="text-gray-700">
-                2 Peter 1:16 - For we did not follow cleverly devised myths when we made known to you the power and coming of our Lord Jesus Christ, but we were eyewitnesses of his majesty.
-              </p>
-            </div>
-            <div>
-              <p className="font-semibold">🔗 Internally Consistent</p>
-              <p className="text-gray-700">
-                63,779 cross-references in the graph show how the Bible is 66 books written by 40 authors, but is one story because each writer was inspired by the Holy Spirit.
-              </p>
-            </div>
-            <div>
-              <p className="font-semibold">🔮 Prophetically Accurate</p>
-              <p className="text-gray-700">
-                2 Peter 1:21 - For no prophecy was ever produced by the will of man, but men spoke from God as they were carried along by the Holy Spirit.
-              </p>
-            </div>
-            <div>
-              <p className="font-semibold">🙌 Jesus Approved</p>
-              <p className="text-gray-700">
-                Romans 10:17 - So faith comes from hearing, and hearing through the word of Christ.
-              </p>
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">Graph of Bible Cross References:</h3>
-            <img
-              src="/src/assets/references.jpg"
-              alt="Bible cross reference visualization"
-              className="w-full rounded"
-            />
-            <p className="mt-2 text-center text-sm text-gray-600">
-              This visualization depicts Bible chapters with alternating light and dark gray bars, starting with Genesis 1 on the left. White bars mark the first chapters of the Old and New Testaments. Bar lengths represent verse counts, with Psalm 119 being the longest. The 63,779 cross references are shown as colored arcs, creating a rainbow effect based on chapter distance.
+          {!today && (<div className="bg-white p-6 rounded-xl shadow">
+            <h2 className="text-center text-3xl font-bold text-gray-900 mb-2">
+              🚨 It Looks Like You Haven't Done Your TAWG Yet 🚨
+            </h2>
+            <p className="text-center font-bold text-gray-700">
+              Click the button and do it right now!
             </p>
-            <p className="mt-2 text-center text-sm text-gray-600">
-              Graph from{" "}
-              <a
-                href="https://www.chrisharrison.net/index.php/Visualizations/BibleViz"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-indigo-600 hover:underline inline-flex items-center gap-1"
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={() => navigate("/tawg")}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-md shadow-md"
               >
-                Chris Harrison
-              </a>
+                Let's Go
+              </button>
+            </div>
+          </div>)}
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <StatCard icon={FireIcon} title="TAWG Streak" value={`${streak} days`} />
+            <StatCard icon={SparklesIcon} title="Total TAWGs" value={`${totalQuietTimes} days`} />
+            <StatCard icon={BookOpenIcon} title="Most Read Book" value={mostReadBook} />
+          </div>
+
+          <div className="bg-white p-6 rounded-xl shadow">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">About This App</h2>
+            <p className="text-gray-700">
+              <strong>TAWG</strong> (<strong>T</strong>ime <strong>A</strong>lone <strong>W</strong>ith <strong>G</strong>od) is a way to intentionally slow down and connect with God daily through Scripture, prayer, and reflection.
             </p>
           </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <LinkList
+              title="📖 Reading Plans"
+              links={[
+                { label: "40 Day Getting Started Plan", href: "/plan" },
+                { label: "Bible in a Year Plan", href: "https://www.biblica.com/resources/reading-plans/" },
+              ]}
+            />
+            <LinkList
+              title="📚 Resources"
+              links={[
+                { label: "How to do TAWG", href: "/howto" },
+                { label: "Got Questions", href: "https://www.gotquestions.org/" },
+                { label: "Enduring Word Commentary", href: "https://enduringword.com/bible-commentary/" },
+                { label: "Conquering the Summer Guide", href: "https://docs.google.com/document/d/1QfTpVVRfp9lHQJhRdvOi1d0ubiK-3AbAUf5YSi7fQ_0/edit?usp=sharing" }
+              ]}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="bg-white p-6 rounded-xl shadow space-y-4">
+              <h3 className="text-xl font-semibold text-gray-800">Why We Can Trust the Bible:</h3>
+              <div>
+                <p className="font-semibold">📜 Historically Accurate</p>
+                <p className="text-gray-700">
+                  2 Peter 1:16 - For we did not follow cleverly devised myths when we made known to you the power and coming of our Lord Jesus Christ, but we were eyewitnesses of his majesty.
+                </p>
+              </div>
+              <div>
+                <p className="font-semibold">🔗 Internally Consistent</p>
+                <p className="text-gray-700">
+                  63,779 cross-references in the graph show how the Bible is 66 books written by 40 authors, but is one story because each writer was inspired by the Holy Spirit.
+                </p>
+              </div>
+              <div>
+                <p className="font-semibold">🔮 Prophetically Accurate</p>
+                <p className="text-gray-700">
+                  2 Peter 1:21 - For no prophecy was ever produced by the will of man, but men spoke from God as they were carried along by the Holy Spirit.
+                </p>
+              </div>
+              <div>
+                <p className="font-semibold">🙌 Jesus Approved</p>
+                <p className="text-gray-700">
+                  Romans 10:17 - So faith comes from hearing, and hearing through the word of Christ.
+                </p>
+              </div>
+            </div>
+            <div className="bg-white p-6 rounded-xl shadow">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">Graph of Bible Cross References:</h3>
+              <img
+                src="/src/assets/references.jpg"
+                alt="Bible cross reference visualization"
+                className="w-full rounded"
+              />
+              <p className="mt-2 text-center text-sm text-gray-600">
+                This visualization depicts Bible chapters with alternating light and dark gray bars, starting with Genesis 1 on the left. White bars mark the first chapters of the Old and New Testaments. Bar lengths represent verse counts, with Psalm 119 being the longest. The 63,779 cross references are shown as colored arcs, creating a rainbow effect based on chapter distance.
+              </p>
+              <p className="mt-2 text-center text-sm text-gray-600">
+                Graph from{" "}
+                <a
+                  href="https://www.chrisharrison.net/index.php/Visualizations/BibleViz"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-indigo-600 hover:underline inline-flex items-center gap-1"
+                >
+                  Chris Harrison
+                </a>
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
+      </main>
       <Footer />
     </div>
   );
