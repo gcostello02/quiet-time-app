@@ -14,8 +14,7 @@ const Bible = () => {
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <Navbar />
       <main className="flex-grow">
-
-        <div className="max-w-5xl mx-auto p-6 space-y-8 flex-grow">
+        <div className="max-w-5xl mx-auto p-6 space-y-8">
           <div className="">
             <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">
               The Holy Bible
