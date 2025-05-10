@@ -16,9 +16,14 @@ const Bible = () => {
       <main className="flex-grow">
 
         <div className="max-w-5xl mx-auto p-6 space-y-8 flex-grow">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">
-            Bible (ESV)
-          </h2>
+          <div className="">
+            <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">
+              The Holy Bible
+            </h2>
+            <h2 className="text-xl font-bold text-center text-gray-900 mb-4">
+              English Standard Version
+            </h2>
+          </div>
           <div className="flex justify-center gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium text-gray-900">
@@ -60,7 +65,7 @@ const Bible = () => {
             </div>
           </div>
 
-          <div className="mx-auto bg-white p-4 rounded-lg shadow-md">
+          <div className="mx-auto bg-white p-4 rounded-xl shadow">
             <h3 className="text-lg font-semibold text-gray-900">
               {selectedBook} {selectedChapter}
             </h3>
