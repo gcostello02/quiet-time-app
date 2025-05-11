@@ -94,7 +94,7 @@ export const AuthContextProvider = ({ children }) => {
           {
             id: data.user.id,
             username, 
-            avatar_url: "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"
+            avatar_url: "https://fkyfymxgbyyznrctanvs.supabase.co/storage/v1/object/public/profile-pictures/avatars/logo.png"
           },
         ]);
       

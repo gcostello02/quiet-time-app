@@ -88,7 +88,7 @@ const ProfilePage = () => {
       <div className="max-w-4xl mx-auto mt-10 p-6 bg-white dark:bg-gray-800 shadow-md rounded-lg">
         <div className="flex items-center space-x-6">
           <img 
-            src={profile.avatar_url || "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"} 
+            src={profile.avatar_url || "https://fkyfymxgbyyznrctanvs.supabase.co/storage/v1/object/public/profile-pictures/avatars/logo.png"} 
             alt="Profile Avatar" 
             className="w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-gray-300 dark:border-gray-600" 
           />

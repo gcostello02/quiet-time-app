@@ -48,7 +48,7 @@ const EditProfile = () => {
     setDescription(profile.description || "");
     setPreviewUrl(
       profile.avatar_url ||
-        "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"
+        "https://fkyfymxgbyyznrctanvs.supabase.co/storage/v1/object/public/profile-pictures/avatars/logo.png"
     );
     setName(profile.name || "");
     setPrayer(profile.prayer_req || "");

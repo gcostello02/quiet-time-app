@@ -113,7 +113,7 @@ export default function Navbar() {
                   <span className="sr-only">Open user menu</span>
                   <img
                     alt="User"
-                    src={profile?.avatar_url || "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"}
+                    src={profile?.avatar_url || "https://fkyfymxgbyyznrctanvs.supabase.co/storage/v1/object/public/profile-pictures/avatars/logo.png"}
                     className="size-8 rounded-full"
                   />
                 </MenuButton>
