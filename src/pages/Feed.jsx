@@ -23,52 +23,57 @@ const Feed = () => {
   }, [session?.user?.id])
 
   const fetchPosts = async (pageNum) => {
-    setLoading(true)
-
-    const friendIds = await fetchFriendIds()
-    friendIds.push(session.user.id)
-
-    const offset = (pageNum - 1) * POSTS_LIMIT
-
+    setLoading(true);
+  
+    const friendIds = await fetchFriendIds();
+    friendIds.push(session.user.id);
+  
+    const offset = (pageNum - 1) * POSTS_LIMIT;
+  
     const { data: newPosts, error } = await supabase
       .from("notes")
       .select("*")
       .in("visibility", ["public_all", "public_friends", "private_anonymous"])
       .order("created_at", { ascending: false })
-      .range(offset, offset + POSTS_LIMIT - 1)
-
+      .range(offset, offset + POSTS_LIMIT - 1);
+  
     if (error) {
-      console.error("Error fetching posts:", error)
-      setLoading(false)
-      return
+      console.error("Error fetching posts:", error);
+      setLoading(false);
+      return;
     }
-
+  
     const filteredPosts = newPosts.filter((post) => {
-      const isFriend = friendIds.includes(post.user_id)
+      const isFriend = friendIds.includes(post.user_id);
       if (isFriend) {
         if (post.visibility === "public_all" || post.visibility === "public_friends") {
-          post.anonymous = false
-          return true
+          post.anonymous = false;
+          return true;
         } else if (post.visibility === "private_anonymous") {
-          post.anonymous = true
-          return true
+          post.anonymous = true;
+          return true;
         } else {
-          return false
+          return false;
         }
       } else {
-        post.anonymous = true
-        return post.visibility === "public_all" || post.visibility === "private_anonymous"
+        post.anonymous = true;
+        return post.visibility === "public_all" || post.visibility === "private_anonymous";
       }
-    })
-
-    if (filteredPosts.length === 0) {
-      setHasMore(false)
-    }
-
-    setPosts((prev) => [...prev, ...filteredPosts])
-    setPage(pageNum)
-    setLoading(false)
-  }
+    });
+  
+    const allPosts = [...posts, ...filteredPosts];
+  
+    const uniquePosts = Array.from(new Set(allPosts.map(post => post.id)))
+      .map(id => allPosts.find(post => post.id === id));
+  
+    setPosts(uniquePosts);
+  
+    const hasMorePosts = filteredPosts.length >= POSTS_LIMIT;
+  
+    setHasMore(hasMorePosts);
+    setPage(pageNum);
+    setLoading(false);
+  };  
 
   const fetchFriendIds = async () => {
     const { data: friendsData, error } = await supabase
