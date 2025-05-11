@@ -18,6 +18,7 @@ import DetailedUserNote from "./pages/DetailedUserNote";
 import EditNote from "./pages/EditNote";
 import OtherProfilePage from "./pages/OtherProfiles";
 import DetailedOtherNote from "./pages/DetailedOtherNote";
+import Unauthorized from "./pages/Unauthorized";
 
 export const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -114,7 +115,7 @@ export const router = createBrowserRouter([
     )
   },
   {
-    path: "profiles/:profileId",
+    path: "/profiles/:profileId",
     element: (
       <PrivateRoute>
         <OtherProfilePage />
@@ -122,10 +123,18 @@ export const router = createBrowserRouter([
     )
   },
   {
-    path: "entries/:noteId",
+    path: "/entries/:noteId",
     element: (
       <PrivateRoute>
         <DetailedOtherNote />
+      </PrivateRoute>
+    )
+  },
+  {
+    path: "/unauthorized",
+    element: (
+      <PrivateRoute>
+        <Unauthorized />
       </PrivateRoute>
     )
   }
