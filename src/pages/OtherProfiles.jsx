@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { supabase } from "../supabaseClient";
-import { useParams, useNavigate } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
 import Footer from "../components/Footer";
 
@@ -10,34 +9,59 @@ const OtherProfilePage = () => {
   const { profileId } = useParams();
   const navigate = useNavigate();
   const { session } = UserAuth();
+
   const [loading, setLoading] = useState(true);
   const [streak, setStreak] = useState(0);
   const [notes, setNotes] = useState([]);
   const [visibleCount, setVisibleCount] = useState(9);
   const [profile, setProfile] = useState(null);
-  const [isFriend, setIsFriend] = useState(false)
+  const [isFriend, setIsFriend] = useState(false);
 
   useEffect(() => {
     if (profileId === session?.user?.id) {
-      navigate("/profile")
+      navigate("/profile");
     }
+  }, [profileId, session?.user?.id, navigate]);
 
-    const fetchProfile = async () => {      
+  useEffect(() => {
+    const fetchProfile = async () => {
       const { data: profile, error } = await supabase
-        .from('profiles')
+        .from("profiles")
         .select("*")
         .eq("id", profileId)
-        .single()
+        .single();
 
       if (error || !profile) {
-        navigate("/dashboard")
-        return
+        navigate("/dashboard");
+        return;
       }
 
       setProfile(profile);
       setLoading(false);
-    }
+    };
 
+    fetchProfile();
+  }, [profileId, navigate]);
+
+  useEffect(() => {
+    const checkIfFriend = async () => {
+      if (!session?.user?.id || !profileId) return;
+
+      const { data, error } = await supabase
+        .from("friends")
+        .select("*")
+        .or(`user_id.eq.${session.user.id},friend_id.eq.${session.user.id}`)
+        .eq("user_id", profileId);
+
+      if (!error && data.length > 0) {
+        setIsFriend(true);
+      }
+    };
+
+    checkIfFriend();
+  }, [profileId, session?.user?.id]);
+
+  useEffect(() => {
     const fetchStats = async () => {
       if (!profile) return;
 
@@ -51,11 +75,10 @@ const OtherProfilePage = () => {
         return;
       }
 
-      const dates = dateData.map(n => new Date(n.created_at));
+      const dates = dateData.map((n) => new Date(n.created_at));
       const today = new Date();
       const todayStr = today.toLocaleDateString();
-
-      const dateSet = new Set(dates.map(date => date.toLocaleDateString()));
+      const dateSet = new Set(dates.map((date) => date.toLocaleDateString()));
 
       let currentStreak = 0;
       let checkingDate = new Date(today);
@@ -77,6 +100,10 @@ const OtherProfilePage = () => {
       setStreak(currentStreak);
     };
 
+    fetchStats();
+  }, [profile, profileId]);
+
+  useEffect(() => {
     const fetchNotes = async () => {
       if (!profile || !isFriend) return;
 
@@ -103,32 +130,8 @@ const OtherProfilePage = () => {
       setNotes(data);
     };
 
-    const checkIfFriend = async () => {
-      if (!session?.user?.id) return
-
-      const { data, error } = await supabase
-        .from("friends")
-        .select("*")
-        .or(
-          `user_id.eq.${session.user.id},friend_id.eq.${session.user.id}`
-        )
-        .eq("user_id", profileId);
-
-      if (error) {
-        console.error("Error checking friendship:", error);
-        return;
-      }
-
-      if (data.length > 0) {
-        setIsFriend(true);
-      }
-    };
-
-    fetchProfile();
-    checkIfFriend()
-    fetchStats();
     fetchNotes();
-  }, [profileId, profile, navigate, isFriend, session.user.id]);
+  }, [profile, profileId, isFriend]);
 
   if (loading) {
     return (
@@ -215,7 +218,7 @@ const OtherProfilePage = () => {
                   <>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       {notes.slice(0, visibleCount).map(note => (
-                        <Link to={`/my-entries/${note.id}`} key={note.id} className="block border p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition">
+                        <Link to={`/entries/${note.id}`} key={note.id} className="block border p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition">
                           <p className="text-xs text-gray-500 italic">
                             {new Date(note.created_at).toLocaleDateString()}
                           </p>
