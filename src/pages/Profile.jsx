@@ -77,8 +77,14 @@ const ProfilePage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex justify-center items-center">
-        <div className="spinner-border animate-spin h-8 w-8 border-4 border-t-transparent border-indigo-600 rounded-full"></div>
+      <div className="min-h-screen bg-gray-100 flex flex-col">
+        <Navbar />
+        <main className="flex-grow">
+          <div className="flex justify-center items-center mt-10">
+            <div className="spinner-border animate-spin h-8 w-8 border-4 border-t-transparent border-indigo-600 rounded-full"></div>
+          </div>
+        </main>
+        <Footer />
       </div>
     );
   }
