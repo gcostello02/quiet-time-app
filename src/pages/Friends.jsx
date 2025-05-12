@@ -3,10 +3,11 @@ import Navbar from '../components/Navbar';
 import { UserAuth } from '../context/AuthContext';
 import { supabase } from "../supabaseClient";
 import { Link } from "react-router-dom";
+import Footer from '../components/Footer';
 
 const Friends = () => {
   const { session } = UserAuth();
-  const [tab, setTab] = useState("requests");
+  const [tab, setTab] = useState("add");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pendingRequests, setPendingRequests] = useState([]);
@@ -16,13 +17,19 @@ const Friends = () => {
 
   useEffect(() => {
     if (session?.user?.id) {
-      fetchUsers();
-      fetchPendingRequests();
-      fetchReceivedRequests();
-      fetchFriends();
+      fetchAll();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
+
+  const fetchAll = async () => {
+    await Promise.all([
+      fetchUsers(),
+      fetchPendingRequests(),
+      fetchReceivedRequests(),
+      fetchFriends(),
+    ]);
+  };
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -64,12 +71,13 @@ const Friends = () => {
       .insert([{ sender_id: session.user.id, receiver_id: receiverId }]);
 
     fetchUsers();
+    fetchPendingRequests();
   };
 
   const fetchPendingRequests = async () => {
     const { data } = await supabase
       .from('friend_requests')
-      .select(`receiver_id, profiles!friend_requests_receiver_id_fkey(id, username) as receiver_profile`)
+      .select(`receiver_id, profiles!friend_requests_receiver_id_fkey(id, username) as profiles`)
       .eq("sender_id", session?.user?.id);
 
     setPendingRequests(data);
@@ -78,7 +86,7 @@ const Friends = () => {
   const fetchReceivedRequests = async () => {
     const { data } = await supabase
       .from("friend_requests")
-      .select(`sender_id, profiles!friend_requests_sender_id_fkey(id, username) as sender_profile`)
+      .select(`sender_id, profiles!friend_requests_sender_id_fkey(id, username) as profiles`)
       .eq("receiver_id", session?.user?.id)
 
     setReceivedRequests(data);
@@ -111,13 +119,15 @@ const Friends = () => {
   const fetchFriends = async () => {
     const { data } = await supabase
       .from("friends")
-      .select(`friend_id, profiles!friends_friend_id_fkey(username) as friend_profile`)
+      .select(`friend_id, profiles!friends_friend_id_fkey(username) as profiles`)
       .eq("user_id", session?.user?.id);
 
     setFriends(data);
   };
 
   const removeFriend = async (friendId) => {
+    if (!window.confirm("Are you sure you want to remove this friend?")) return;
+
     await supabase.from("friends")
       .delete()
       .eq("user_id", session.user.id)
@@ -131,163 +141,111 @@ const Friends = () => {
     fetchFriends();
   };
 
-  const TabButton = ({ label, active, onClick }) => (
-    <button
-      onClick={onClick}
-      className={`w-1/3 py-2 text-center ${active ? "bg-indigo-600 text-gray-100 font-bold" : "text-gray-500"}`}
-    >
-      {label.charAt(0).toUpperCase() + label.slice(1)}
-    </button>
-  );
-  
-  const UserCard = ({ username, rightElement }) => (
-    <div className="flex justify-between items-center border p-2 rounded-lg mb-2 dark:bg-gray-700">
-      <span>{username}</span>
-      {rightElement}
+  const tabs = [
+    { key: "add", label: `Add Friends` },
+    { key: "friends", label: `My Friends (${friends.length})` },
+    { key: "requests", label: `Requests (${receivedRequests.length})` },
+  ];
+
+  const FriendRow = ({ username, children }) => (
+    <div className="flex justify-between items-center p-4 bg-gray-100 rounded-lg">
+      <p className='text-lg font-semibold text-gray-900 hover:text-indigo-600'>{username}</p>
+      <div className="flex gap-2">{children}</div>
     </div>
   );
-  
+
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
       <Navbar />
-      <div className="max-w-2xl mx-auto mt-12 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg">
-        <div className="flex border-b border-gray-300 dark:border-gray-600 mb-6">
-          {["requests", "friends", "notifications"].map((item) => (
-            <button
-              key={item}
-              onClick={() => setTab(item)}
-              className={`w-1/3 py-3 text-lg font-medium transition-colors ${
-                tab === item
-                  ? "bg-indigo-600 text-white rounded-t-md"
-                  : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-              }`}
-            >
-              {item.charAt(0).toUpperCase() + item.slice(1)}
-            </button>
-          ))}
-        </div>
-  
-        {loading ? (
-          <p className="text-center text-gray-500 dark:text-gray-400">Loading...</p>
-        ) : tab === "requests" ? (
-          <div className="space-y-6">
-            {pendingRequests.length > 0 && (
-              <div>
-                <h3 className="text-lg font-semibold mb-3">Pending Requests</h3>
-                <div className="space-y-3">
-                  {pendingRequests.map((req) => (
-                    <div key={req.receiver_id} className="flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                      <Link
-                        to={`/profiles/${req.profiles.id}`}
-                        key={req.profiles.id}
-                      >
-                        <p className='text-lg font-semibold text-gray-900 dark:text-white hover:text-indigo-600'>{req.profiles.username}</p>
-                      </Link>
-                      <span className="text-sm text-gray-500">Pending</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-  
-            <div>
-              <h3 className="text-lg font-semibold mb-3">Add Friends</h3>
-              <input
-                type="text"
-                placeholder="Search users..."
-                className="w-full p-3 mb-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-white"
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              {users.length === 0 ? (
-                <p className="text-gray-500 dark:text-gray-400">No users available to add.</p>
-              ) : (
-                <div className="space-y-3">
-                  {users
-                    .filter((user) => user.username.toLowerCase().includes(searchTerm.toLowerCase()))
-                    .map((user) => (
-                      <div key={user.id} className="flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                        <Link
-                          to={`/profiles/${user.id}`}
-                          key={user.id}
-                        >
-                          <p className='text-lg font-semibold text-gray-900 dark:text-white hover:text-indigo-600'>{user.username}</p>
-                        </Link>
-                        <button
-                          onClick={() => sendFriendRequest(user.id)}
-                          className="bg-indigo-600 hover:bg-indigo-600 text-white px-4 py-1.5 rounded-lg transition"
-                        >
-                          Send Request
-                        </button>
-                      </div>
-                    ))}
-                </div>
-              )}
+      <main className="flex-grow">
+        <div className="max-w-2xl mx-auto space-y-8 p-6">
+          <div className="bg-white shadow rounded-xl p-4">
+            <div className="flex border-b border-gray-300 mb-6">
+              {tabs.map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => setTab(key)}
+                  className={`w-1/3 py-3 text-lg font-medium transition-colors ${
+                    tab === key ? "bg-indigo-600 text-white" : "bg-white text-gray-900"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
             </div>
-          </div>
-        ) : tab === "friends" ? (
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Friends</h3>
-            {friends.length === 0 ? (
-              <p className="text-gray-500 dark:text-gray-400">No friends yet.</p>
-            ) : (
-              <div className="space-y-3">
-                {friends.map((friend) => (
-                  <div key={friend.friend_id} className="flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <Link
-                      to={`/profiles/${friend.friend_id}`}
-                      key={friend.friend_id}
-                    >
-                      <p className='text-lg font-semibold text-gray-900 dark:text-white hover:text-indigo-600'>{friend.profiles.username}</p>
-                    </Link>
-                    <button
-                      onClick={() => removeFriend(friend.friend_id)}
-                      className="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-lg transition"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ))}
+
+            {loading ? (
+              <div className="flex justify-center items-center mt-10">
+                <div className="spinner-border animate-spin h-8 w-8 border-4 border-t-transparent border-indigo-600 rounded-full"></div>
               </div>
-            )}
-          </div>
-        ) : (
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Received Requests</h3>
-            {receivedRequests.length === 0 ? (
-              <p className="text-gray-500 dark:text-gray-400">No received requests.</p>
-            ) : (
-              <div className="space-y-3">
-                {receivedRequests.map((req) => (
-                  <div key={req.sender_id} className="flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <Link
-                      to={`/profiles/${req.sender_id}`}
-                      key={req.sender_id}
-                    >
-                      <p className='text-lg font-semibold text-gray-900 dark:text-white hover:text-indigo-600'>{req.profiles.username}</p>
-                    </Link>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => acceptFriendRequest(req.sender_id)}
-                        className="bg-green-500 hover:bg-green-600 text-white px-4 py-1.5 rounded-lg transition"
-                      >
-                        Accept
-                      </button>
-                      <button
-                        onClick={() => declineFriendRequest(req.sender_id)}
-                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-lg transition"
-                      >
-                        Decline
-                      </button>
+            ) : tab === "add" ? (
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Find New Friends</h3>
+                <input
+                  type="text"
+                  placeholder="Search users..."
+                  className="w-full p-3 mb-4 border border-gray-300 rounded-lg bg-white"
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                {users.length === 0 ? (
+                  <p className="text-gray-500">No users available to add.</p>
+                ) : (
+                  <div className="space-y-3">
+                    {users.filter((user) => user.username.toLowerCase().includes(searchTerm.toLowerCase())).map((user) => (
+                      <FriendRow key={user.id} username={<Link to={`/profiles/${user.id}`}>{user.username}</Link>}>
+                        <button onClick={() => sendFriendRequest(user.id)} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 rounded-lg">Send</button>
+                      </FriendRow>
+                    ))}
+                  </div>
+                )}
+
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Pending Requests</h3>
+                  {pendingRequests.length === 0 ? <p className="text-gray-500">No pending requests.</p> : (
+                    <div className="space-y-3">
+                      {pendingRequests.map((req) => (
+                        <FriendRow key={req.receiver_id} username={<Link to={`/profiles/${req.profiles.id}`}>{req.profiles.username}</Link>}>
+                          <span className="text-sm text-gray-500">Pending</span>
+                        </FriendRow>
+                      ))}
                     </div>
+                  )}
+                </div>
+              </div>
+            ) : tab === "friends" ? (
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Friends</h3>
+                {friends.length === 0 ? <p className="text-gray-500">No friends yet.</p> : (
+                  <div className="space-y-3">
+                    {friends.map((friend) => (
+                      <FriendRow key={friend.friend_id} username={<Link to={`/profiles/${friend.friend_id}`}>{friend.profiles.username}</Link>}>
+                        <button onClick={() => removeFriend(friend.friend_id)} className="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-lg">Remove</button>
+                      </FriendRow>
+                    ))}
                   </div>
-                ))}
+                )}
+              </div>
+            ) : (
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Received Requests</h3>
+                {receivedRequests.length === 0 ? <p className="text-gray-500">No received requests.</p> : (
+                  <div className="space-y-3">
+                    {receivedRequests.map((req) => (
+                      <FriendRow key={req.sender_id} username={<Link to={`/profiles/${req.sender_id}`}>{req.profiles.username}</Link>}>
+                        <button onClick={() => acceptFriendRequest(req.sender_id)} className="bg-green-500 hover:bg-green-600 text-white px-4 py-1.5 rounded-lg">Accept</button>
+                        <button onClick={() => declineFriendRequest(req.sender_id)} className="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-lg">Decline</button>
+                      </FriendRow>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
-        )}
-      </div>
+        </div>
+      </main>
+      <Footer />
     </div>
-  );  
+  );
 };
 
 export default Friends;
