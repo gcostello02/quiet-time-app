@@ -178,6 +178,7 @@ const EditProfile = () => {
                 type="file"
                 onChange={handleFileChange}
                 accept="image/*"
+                className="text-gray-900"
               />
             </div>
 
@@ -189,7 +190,7 @@ const EditProfile = () => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   maxLength={30}
-                  className="w-full p-2 border rounded-md"
+                  className="w-full p-2 border rounded-md border-gray-300 bg-gray-100 px-3 py-2 text-gray-900"
                 />
               </div>
               <div className="w-full">
@@ -199,7 +200,7 @@ const EditProfile = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   maxLength={30}
-                  className="w-full p-2 border rounded-md"
+                  className="w-full p-2 border rounded-md border-gray-300 bg-gray-100 px-3 py-2 text-gray-900"
                 />
               </div>
             </div>
@@ -210,7 +211,8 @@ const EditProfile = () => {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 maxLength={200}
-                className="w-full p-2 border rounded-md"
+                className="w-full p-2 border rounded-md border-gray-300 bg-gray-100 px-3 py-2 text-gray-900"
+                rows={4}
               />
             </div>
 
@@ -221,7 +223,7 @@ const EditProfile = () => {
                 onChange={() => setDisplayPrayer(!displayPrayer)}
                 className="mr-2"
               />
-              <label className="text-sm font-medium">Display Prayer Request</label>
+              <label className="text-sm font-medium text-gray-700">Display Prayer Request</label>
             </div>
 
             {displayPrayer && (
@@ -231,26 +233,25 @@ const EditProfile = () => {
                   value={prayerreq}
                   onChange={(e) => setPrayer(e.target.value)}
                   maxLength={200}
-                  className="w-full p-2 border rounded-md"
+                  className="w-full p-2 border rounded-md border-gray-300 bg-gray-100 px-3 py-2 text-gray-900"
+                  rows={4}
                 />
               </div>
             )}
 
-            <div>
-              <label className="block mt-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={displayVerse}
-                  onChange={() => setDisplayVerse(!displayVerse)}
-                  className="mr-1 cursor-pointer"
-                />
-                Display Favorite Verse
-              </label>
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                checked={displayVerse}
+                onChange={() => setDisplayVerse(!displayVerse)}
+                className="mr-2"
+              />
+              <label className="text-sm font-medium text-gray-700">Display Favorite Verse</label>
             </div>
 
             {displayVerse && (
               <div>
-                <label className="block text-sm font-medium text-gray-900">Favorite Verse(s)</label>
+                <label className="block text-sm font-medium text-gray-700">Favorite Verse(s)</label>
                 <div className="flex gap-4">
                   <select
                     value={selectedBook}
@@ -284,7 +285,7 @@ const EditProfile = () => {
 
             {displayVerse && (
               <div>
-                <label className="block text-sm font-medium text-gray-900">
+                <label className="block text-sm font-medium text-gray-700">
                   Verse(s) Start & End
                 </label>
                 <div className="flex gap-4">
@@ -317,21 +318,19 @@ const EditProfile = () => {
               </div>
             )}
 
-            <div>
-              <label className="block mt-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={displayMemVerse}
-                  onChange={() => setDisplayMemVerse(!displayMemVerse)}
-                  className="mr-1 cursor-pointer"
-                />
-                Display Memory Verse
-              </label>
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                checked={displayMemVerse}
+                onChange={() => setDisplayMemVerse(!displayMemVerse)}
+                className="mr-2"
+              />
+              <label className="text-sm font-medium text-gray-700">Display Memory Verse</label>
             </div>
 
             {displayMemVerse && (
               <div>
-                <label className="block text-sm font-medium text-gray-900">Memory Verse(s)</label>
+                <label className="block text-sm font-medium text-gray-700">Memory Verse(s)</label>
                 <div className="flex gap-4">
                   <select
                     value={selectedMemBook}
@@ -365,7 +364,7 @@ const EditProfile = () => {
 
             {displayMemVerse && (
               <div>
-                <label className="block text-sm font-medium text-gray-900">
+                <label className="block text-sm font-medium text-gray-700">
                   Verse(s) Start & End
                 </label>
                 <div className="flex gap-4">
