@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import esvData from "../data/ESV.json"
 import Navbar from "../components/Navbar"
 import { MinusCircle } from "lucide-react"
@@ -6,7 +6,7 @@ import { UserAuth } from "../context/AuthContext"
 import { supabase } from "../supabaseClient"
 import { useNavigate } from "react-router-dom"
 import Footer from "../components/Footer"
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"
 
 const Notes = () => {
   const { session } = UserAuth() 
@@ -36,9 +36,41 @@ const Notes = () => {
   const [visibility, setVisibility] = useState("public_all")
 
   const [pdfFile, setPdfFile] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const navigate = useNavigate()
+
+  useEffect(() => {    
+    const checkTodayNote = async () => {
+      setLoading(true)
+
+      if (!session?.user?.id) return
+
+      const { data, error } = await supabase
+        .from("notes")
+        .select("id, created_at")
+        .eq("user_id", session.user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+
+      if (error) {
+        console.error("Error checking today's note:", error)
+        return
+      }
+
+      const today = new Date().toLocaleDateString()
+      const note = data?.[0]
+
+      if (note && new Date(note.created_at).toLocaleDateString() === today) {
+        navigate(`/my-entries/${note.id}`)
+      }
+
+      setLoading(false)
+    }
+
+    checkTodayNote()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.user?.id])
 
   const handleTitleChange = (e) => setTitle(e.target.value)
 
@@ -127,6 +159,20 @@ const Notes = () => {
 
     setLoading(false)
     navigate("/dashboard")
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex flex-col">
+        <Navbar />
+        <main className="flex-grow">
+          <div className="flex justify-center items-center mt-10">
+            <div className="spinner-border animate-spin h-8 w-8 border-4 border-t-transparent border-indigo-600 rounded-full"></div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
   }
 
   const enduringWord = "https://enduringword.com/bible-commentary/" + selectedBook + "-" + selectedChapter + "/"
