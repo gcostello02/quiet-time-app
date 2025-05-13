@@ -188,7 +188,7 @@ const Dashboard = () => {
               links={[
                 { label: "How to do TAWG", href: "/howto" },
                 { label: "Got Questions", href: "https://www.gotquestions.org/" },
-                { label: "Enduring Word Commentary", href: "https://enduringword.com/bible-commentary/" },
+                { label: "Enduring Word Commentary", href: "https://enduringword.com/#commentary" },
                 { label: "Conquering the Summer Guide", href: "https://docs.google.com/document/d/1QfTpVVRfp9lHQJhRdvOi1d0ubiK-3AbAUf5YSi7fQ_0/edit?usp=sharing" }
               ]}
             />
