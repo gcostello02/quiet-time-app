@@ -19,6 +19,7 @@ import EditNote from "./pages/EditNote";
 import OtherProfilePage from "./pages/OtherProfiles";
 import DetailedOtherNote from "./pages/DetailedOtherNote";
 import Unauthorized from "./pages/Unauthorized";
+import Information from "./pages/Information";
 
 export const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -135,6 +136,14 @@ export const router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <Unauthorized />
+      </PrivateRoute>
+    )
+  },
+  {
+    path: "/information",
+    element: (
+      <PrivateRoute>
+        <Information />
       </PrivateRoute>
     )
   }
