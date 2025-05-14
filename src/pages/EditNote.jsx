@@ -198,6 +198,8 @@ const EditNote = () => {
     )
   }
 
+  const enduringWord = "https://enduringword.com/bible-commentary/" + selectedBook + "-" + selectedChapter + "/"
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <Navbar />
@@ -556,6 +558,17 @@ const EditNote = () => {
                     ))}
                   </select>
                 </div>
+              </div>
+
+              <div className="text-lg font-bold text-center text-gray-900">
+                <a
+                  href={enduringWord}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-indigo-600 hover:underline"
+                >
+                  Enduring Word Commentary for {selectedBook} {selectedChapter}
+                </a>
               </div>
 
               <div className="max-w-3xl mx-auto bg-white p-4 rounded-xl shadow">
