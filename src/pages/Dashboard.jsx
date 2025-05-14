@@ -169,9 +169,11 @@ const Dashboard = () => {
           </div>
 
           <div className="bg-white p-6 rounded-xl shadow">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">About This App</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">About TAWG</h2>
             <p className="text-gray-700">
-              <strong>TAWG</strong> (<strong>T</strong>ime <strong>A</strong>lone <strong>W</strong>ith <strong>G</strong>od) is a way to intentionally slow down and connect with God daily through Scripture, prayer, and reflection.
+              <strong>TAWG</strong> (<strong>T</strong>ime <strong>A</strong>lone <strong>W</strong>ith <strong>G</strong>od) is a way to intentionally slow down and connect with God daily through Scripture, prayer, and reflection. 
+              As believers we are called to spend time in God's word. Psalm 1:1-2 says: Blessed is the man who walks not in the counsel of the wicked, nor stands in the way of sinners, nor sits in the seat of scoffers; 
+              but his delight is in the law of the Lord, and on his law he meditates day and night.
             </p>
           </div>
 
