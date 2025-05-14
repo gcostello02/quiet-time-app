@@ -241,12 +241,12 @@ const EditNote = () => {
                   name="title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  maxLength="35"
+                  maxLength="50"
                   className="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 px-3 py-2 text-gray-900"
                   placeholder="Suggestion: MM/DD/YYYY TAWG"            
                 />
                 <p className="text-xs text-gray-500">
-                  {title.length} / 35 characters
+                  {title.length} / 50 characters
                 </p>
               </div>
 
