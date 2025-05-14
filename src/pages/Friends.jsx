@@ -126,8 +126,6 @@ const Friends = () => {
   };
 
   const removeFriend = async (friendId) => {
-    if (!window.confirm("Are you sure you want to remove this friend?")) return;
-
     await supabase.from("friends")
       .delete()
       .eq("user_id", session.user.id)
