@@ -10,7 +10,7 @@ const Bible = () => {
   const books = Object.keys(esvData);
   const chapters = Object.keys(esvData[selectedBook]);
 
-  const enduringWord = "https://enduringword.com/bible-commentary/" + selectedBook + "-" + selectedChapter + "/"
+  const enduringWord = selectedBook === 'Psalms' ? "https://enduringword.com/bible-commentary/psalm-" + selectedChapter + "/" : "https://enduringword.com/bible-commentary/" + selectedBook + "-" + selectedChapter + "/"
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
