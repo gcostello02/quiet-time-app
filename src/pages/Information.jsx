@@ -26,6 +26,9 @@ const Information = () => {
               </div>
             </div>
           </div>
+          <div className="bg-white">
+            
+          </div>
         </div>
       </main>
       <Footer />

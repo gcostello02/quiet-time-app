@@ -13,8 +13,12 @@ const ForgotPassword = () => {
     setMessage(null);
     setError(null);
 
+    // const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    //   redirectTo: "http://localhost:5173/resetpassword",
+    // });
+
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "http://localhost:5173/resetpassword", //TODO: Update for production
+      redirectTo: "http://tawg.us/resetpassword",
     });
 
     if (error) {
