@@ -84,7 +84,7 @@ const EditProfile = () => {
     let avatarUrl = previewUrl;
 
     if (avatar) {
-      const filePath = `avatars/${session.user.id}.${avatar.name}`;
+      const filePath = `avatars/${session.user.id}`;
       const { error: uploadError } = await supabase.storage
         .from("profile-pictures")
         .upload(filePath, avatar, { upsert: true });
