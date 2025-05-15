@@ -18,7 +18,7 @@ const ForgotPassword = () => {
     // });
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "http://tawg.us/resetpassword",
+      redirectTo: "https://tawg.us/resetpassword",
     });
 
     if (error) {

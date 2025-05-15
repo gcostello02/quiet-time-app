@@ -227,7 +227,7 @@ const Dashboard = () => {
             <div className="bg-white p-6 rounded-xl shadow">
               <h3 className="text-xl font-semibold text-gray-800 mb-4">Graph of Bible Cross References:</h3>
               <img
-                src="/src/assets/references.jpg"
+                src="https://fkyfymxgbyyznrctanvs.supabase.co/storage/v1/object/public/profile-pictures/avatars/references.jpg"
                 alt="Bible cross reference visualization"
                 className="w-full rounded"
               />

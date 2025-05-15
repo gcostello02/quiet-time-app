@@ -18,7 +18,7 @@ const Unauthorized = () => {
           </div>
           <div className="bg-white p-6 rounded-xl shadow">
             <img
-              src="/src/assets/meme.jpg"
+              src="https://fkyfymxgbyyznrctanvs.supabase.co/storage/v1/object/public/profile-pictures/avatars/meme.jpg"
               alt="Funny Meme"
               className="w-full rounded"
             />
