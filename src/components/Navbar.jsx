@@ -37,7 +37,7 @@ export default function Navbar() {
     e.preventDefault()
     try {
       await signOut()
-      navigate("/")
+      navigate("/signin")
     } catch (err) {
       console.log("An unexpected error occurred ", err)
     }

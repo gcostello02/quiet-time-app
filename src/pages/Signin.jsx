@@ -97,6 +97,11 @@ const Signin = () => {
             Sign up
           </Link>
         </p>
+        <p className="mt-10 text-center text-sm text-gray-500">
+          <Link to="/" className="font-semibold text-indigo-600 hover:text-indigo-500">
+            Continue Without Logging In
+          </Link>
+        </p>
       </div>
     </div>
   );
