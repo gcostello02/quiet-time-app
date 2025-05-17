@@ -176,6 +176,31 @@ const Dashboard = () => {
             </>
           )}
 
+          {!session?.user?.id && (
+            <div className="bg-white p-6 rounded-xl shadow">
+              <h2 className="text-center text-3xl font-bold text-gray-900 mb-2">
+                🚨 It Looks Like You Aren't Logged In 🚨
+              </h2>
+              <p className="text-center font-bold text-gray-700">
+                Please sign-in to experience the full functionality of TAWG!
+              </p>
+              <div className="flex justify-center mt-4 gap-4">
+                <button
+                  onClick={() => navigate("/signin")}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-md shadow-md"
+                >
+                  Sign In!
+                </button>
+                <button
+                  onClick={() => navigate("/signup")}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-md shadow-md"
+                >
+                  Sign Up!
+                </button>
+              </div>
+            </div>
+          )}
+
           <div className="bg-white p-6 rounded-xl shadow">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">About TAWG</h2>
             <p className="text-gray-700">
