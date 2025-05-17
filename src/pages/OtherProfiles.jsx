@@ -32,7 +32,7 @@ const OtherProfilePage = () => {
         .single();
 
       if (error || !profile) {
-        navigate("/dashboard");
+        navigate("/");
         return;
       }
 

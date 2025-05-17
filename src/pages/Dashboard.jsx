@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const { session } = UserAuth();
-  const userId = session.user.id;
 
   const [totalQuietTimes, setTotalQuietTimes] = useState(0);
   const [mostReadBook, setMostReadBook] = useState("");
@@ -26,13 +25,13 @@ const Dashboard = () => {
       const { count: total } = await supabase
         .from("notes")
         .select("*", { count: "exact", head: true })
-        .eq("user_id", userId);
+        .eq("user_id", session?.user?.id);
       setTotalQuietTimes(total || 0);
 
       const { data: bookData } = await supabase
         .from("note_references")
         .select("book, notes!inner(user_id)")
-        .eq("notes.user_id", userId);
+        .eq("notes.user_id", session?.user?.id);
 
       if (bookData) {
         const bookCounts = bookData.reduce((acc, ref) => {
@@ -46,7 +45,7 @@ const Dashboard = () => {
       const { data: dateData } = await supabase
         .from("notes")
         .select("created_at")
-        .eq("user_id", userId);
+        .eq("user_id", session?.user?.id);
 
       if (dateData) {
         const dates = dateData.map(n => new Date(n.created_at));
@@ -81,8 +80,11 @@ const Dashboard = () => {
       }
     };
 
-    fetchStats();
-  }, [userId]);
+    if (session?.user?.id) {
+      fetchStats();
+    }
+
+  }, [session?.user?.id]);
 
   // eslint-disable-next-line no-unused-vars
   const StatCard = ({ icon: Icon, title, value }) => (
@@ -145,28 +147,34 @@ const Dashboard = () => {
             <h1 className="text-4xl text-center font-bold text-gray-900">Welcome to TAWG!</h1>
           </div>
 
-          {!today && (<div className="bg-white p-6 rounded-xl shadow">
-            <h2 className="text-center text-3xl font-bold text-gray-900 mb-2">
-              🚨 It Looks Like You Haven't Done Your TAWG Yet 🚨
-            </h2>
-            <p className="text-center font-bold text-gray-700">
-              Click the button and do it right now!
-            </p>
-            <div className="flex justify-center mt-4">
-              <button
-                onClick={() => navigate("/tawg")}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-md shadow-md"
-              >
-                Let's Go
-              </button>
-            </div>
-          </div>)}
+          {session?.user?.id && (
+            <>
+              {!today && (
+                <div className="bg-white p-6 rounded-xl shadow">
+                  <h2 className="text-center text-3xl font-bold text-gray-900 mb-2">
+                    🚨 It Looks Like You Haven't Done Your TAWG Yet 🚨
+                  </h2>
+                  <p className="text-center font-bold text-gray-700">
+                    Click the button and do it right now!
+                  </p>
+                  <div className="flex justify-center mt-4">
+                    <button
+                      onClick={() => navigate("/tawg")}
+                      className="px-4 py-2 bg-indigo-600 text-white rounded-md shadow-md"
+                    >
+                      Let's Go
+                    </button>
+                  </div>
+                </div>
+              )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <StatCard icon={FireIcon} title="TAWG Streak" value={`${streak} days`} />
-            <StatCard icon={SparklesIcon} title="Total TAWGs" value={`${totalQuietTimes} days`} />
-            <StatCard icon={BookOpenIcon} title="Most Read Book" value={mostReadBook} />
-          </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <StatCard icon={FireIcon} title="TAWG Streak" value={`${streak} days`} />
+                <StatCard icon={SparklesIcon} title="Total TAWGs" value={`${totalQuietTimes} days`} />
+                <StatCard icon={BookOpenIcon} title="Most Read Book" value={mostReadBook} />
+              </div>
+            </>
+          )}
 
           <div className="bg-white p-6 rounded-xl shadow">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">About TAWG</h2>

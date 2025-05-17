@@ -19,7 +19,7 @@ import React from "react"
 import logo from '../assets/logo.png'
 
 const navigationItems = [
-  { name: 'Dashboard', href: '/dashboard' },
+  { name: 'Dashboard', href: '/' },
   { name: 'Bible', href: '/bible' },
   { name: 'Feed', href: '/feed' }
 ]

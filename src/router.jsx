@@ -22,19 +22,11 @@ import Unauthorized from "./pages/Unauthorized";
 import Information from "./pages/Information";
 
 export const router = createBrowserRouter([
-  { path: "/", element: <App /> },
+  { path: "/", element: <Dashboard /> },
   { path: "/signup", element: <Signup /> },
   { path: "/signin", element: <Signin /> },
   { path: "/forgotpassword", element: <ForgotPassword /> },
   { path: "/resetpassword", element: <ResetPassword /> },
-  {
-    path: "/dashboard",
-    element: (
-      <PrivateRoute>
-        <Dashboard />
-      </PrivateRoute>
-    ),
-  },
   { 
     path: "/bible", 
     element: (

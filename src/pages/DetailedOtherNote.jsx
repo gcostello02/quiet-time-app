@@ -27,7 +27,7 @@ const DetailedOtherNote = () => {
         .single()
 
       if (error || !data) {
-        navigate("/dashboard")
+        navigate("/")
         return
       }
 

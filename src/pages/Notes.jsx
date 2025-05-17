@@ -158,7 +158,7 @@ const Notes = () => {
     }
 
     setLoading(false)
-    navigate("/dashboard")
+    navigate("/")
   }
 
   if (loading) {
