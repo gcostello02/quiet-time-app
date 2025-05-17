@@ -27,14 +27,10 @@ export const router = createBrowserRouter([
   { path: "/signin", element: <Signin /> },
   { path: "/forgotpassword", element: <ForgotPassword /> },
   { path: "/resetpassword", element: <ResetPassword /> },
-  { 
-    path: "/bible", 
-    element: (
-      <PrivateRoute>
-        <Bible />
-      </PrivateRoute>
-    )
-  },
+  { path: "/bible", element: <Bible /> },
+  { path: "/plan", element: <Plan />  },
+  { path: "/howto", element: <HowTo /> },
+  { path: "/information", element: <Information /> },
   { 
     path: "/profile", 
     element: (
@@ -64,22 +60,6 @@ export const router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <Friends />
-      </PrivateRoute>
-    )
-  },
-  { 
-    path: "/howto", 
-    element: (
-      <PrivateRoute>
-        <HowTo />
-      </PrivateRoute>
-    )
-  },
-  { 
-    path: "/plan", 
-    element: (
-      <PrivateRoute>
-        <Plan />
       </PrivateRoute>
     )
   },
@@ -128,14 +108,6 @@ export const router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <Unauthorized />
-      </PrivateRoute>
-    )
-  },
-  {
-    path: "/information",
-    element: (
-      <PrivateRoute>
-        <Information />
       </PrivateRoute>
     )
   }
