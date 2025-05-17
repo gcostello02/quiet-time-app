@@ -29,7 +29,7 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
-  const { signOut, profile } = UserAuth()
+  const { signOut, profile, session } = UserAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -118,24 +118,44 @@ export default function Navbar() {
                   />
                 </MenuButton>
               </div>
-              <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 ring-1 shadow-lg ring-black/5 transition focus:outline-none">
-                <MenuItem>
-                  <Link
-                    to="/profile"
-                    className="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100"
-                  >
-                    Your Profile
-                  </Link>
-                </MenuItem>
-                <MenuItem>
-                  <button
-                    onClick={handleSignOut}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-900 bg-white hover:bg-gray-100 cursor-pointer"
-                  >
-                    Sign out
-                  </button>
-                </MenuItem>
-              </MenuItems>
+              {session?.user?.id ? 
+                (<MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 ring-1 shadow-lg ring-black/5 transition focus:outline-none">
+                  <MenuItem>
+                    <Link
+                      to="/profile"
+                      className="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100"
+                    >
+                      Your Profile
+                    </Link>
+                  </MenuItem>
+                  <MenuItem>
+                    <button
+                      onClick={handleSignOut}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-900 bg-white hover:bg-gray-100 cursor-pointer"
+                    >
+                      Sign out
+                    </button>
+                  </MenuItem>
+                </MenuItems>) :
+                (<MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 ring-1 shadow-lg ring-black/5 transition focus:outline-none">
+                  <MenuItem>
+                    <Link
+                      to="/signin"
+                      className="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100"
+                    >
+                      Sign In
+                    </Link>
+                  </MenuItem>
+                  <MenuItem>
+                    <Link
+                      to="/signup"
+                      className="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100"
+                    >
+                      Sign Up
+                    </Link>
+                  </MenuItem>
+                </MenuItems>)
+              }
             </Menu>
           </div>
         </div>
