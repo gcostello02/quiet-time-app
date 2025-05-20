@@ -15,7 +15,6 @@ import {
 } from '@heroicons/react/24/outline'
 import { useNavigate, useLocation, Link } from "react-router-dom"
 import { UserAuth } from "../context/AuthContext"
-import React from "react"
 import logo from '../assets/logo.png'
 
 const navigationItems = [
@@ -123,7 +122,7 @@ export default function Navbar() {
                   <MenuItem>
                     <Link
                       to="/profile"
-                      className="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100"
+                      className="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 hover:text-indigo-600"
                     >
                       Your Profile
                     </Link>
@@ -131,7 +130,7 @@ export default function Navbar() {
                   <MenuItem>
                     <button
                       onClick={handleSignOut}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-900 bg-white hover:bg-gray-100 cursor-pointer"
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-900 bg-white hover:bg-gray-100 hover:text-indigo-600 cursor-pointer hover:border-none focus:outline-none focus-visible:outline-none border-none"
                     >
                       Sign out
                     </button>
