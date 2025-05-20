@@ -184,9 +184,9 @@ const Notes = () => {
         <div className="text-center mx-auto mt-4">
           <button
             onClick={() => setIsBibleVisible(!isBibleVisible)}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-md shadow-md"
+            className="px-4 py-2 bg-indigo-600 text-white rounded-md shadow-md focus:outline-none"
           >
-            {isBibleVisible ? "Hide Bible" : "Show Splitscreen Bible"}
+            {isBibleVisible ? "Hide Bible" : "Show Bible"}
           </button>
         </div>
 

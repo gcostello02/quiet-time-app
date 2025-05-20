@@ -163,7 +163,7 @@ const Friends = () => {
                 <button
                   key={key}
                   onClick={() => setTab(key)}
-                  className={`w-1/3 py-3 text-lg font-medium transition-colors ${
+                  className={`w-1/3 py-3 text-lg font-medium transition-colors focus:outline-none ${
                     tab === key ? "bg-indigo-600 text-white" : "bg-white text-gray-900"
                   }`}
                 >
