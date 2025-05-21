@@ -182,6 +182,20 @@ const DetailedOtherNote = () => {
               </div>
             )}
 
+            {note.pdf_url && note.pdf_display && (
+              <div className="mb-4">
+                <h2 className="text-base font-semibold text-gray-900 mb-1">Attached PDF:</h2>
+                <a
+                  href={note.pdf_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-indigo-600 hover:text-indigo-800"
+                >
+                  Scanned Notes
+                </a>
+              </div>
+            )}
+
           </div>
         </div>
       </main>

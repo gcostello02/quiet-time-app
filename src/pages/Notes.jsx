@@ -35,6 +35,7 @@ const Notes = () => {
 
   const [visibility, setVisibility] = useState("public_all")
 
+  const [displayPdf, setDisplayPdf] = useState(false)
   const [pdfFile, setPdfFile] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -122,6 +123,7 @@ const Notes = () => {
           public_prayer_content: publicPrayerContent,
           private_prayer_content: prayerContent,
           visibility: visibility,
+          pdf_display: displayPdf,
           pdf_url: pdfUrl,
           mem_verse_display: addMemoryVerse,
           mem_verse_book: selectedMemBook,
@@ -432,6 +434,18 @@ const Notes = () => {
                   onChange={handleFileChange}
                   className="mt-1 block w-full text-sm text-gray-900"
                 />
+              </div>
+
+              <div>
+                <label className="block mt-2 cursor-pointer text-gray-900">
+                  <input
+                    type="checkbox"
+                    checked={displayPdf}
+                    onChange={() => setDisplayPdf(!displayPdf)}
+                    className="mr-1 cursor-pointer"
+                  />
+                  Make PDF Visible to Others?
+                </label>
               </div>
 
               <div>

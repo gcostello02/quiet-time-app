@@ -35,6 +35,7 @@ const EditNote = () => {
   const chaptersMem = Object.keys(esvData[selectedMemBook])
   const versesMem = esvData[selectedMemBook]?.[selectedMemChapter]?.length ?? 0
 
+  const [displayPdf, setDisplayPdf] = useState(false)
   const [pdfFile, setPdfFile] = useState(null)
   const [existingPdfUrl, setExistingPdfUrl] = useState(null)
   const [createdAt, setCreatedAt] = useState(null)
@@ -57,6 +58,7 @@ const EditNote = () => {
           public_prayer_content,
           private_prayer_content,
           visibility,
+          pdf_display,
           pdf_url,
           mem_verse_display,
           mem_verse_book,
@@ -93,6 +95,7 @@ const EditNote = () => {
       setMemSelectedChapter(data.mem_verse_chapter || 1)
       setMemStartVerse(data.mem_verse_start || 1)
       setMemEndVerse(data.mem_verse_end || 1)
+      setDisplayPdf(data.pdf_display)
       setPdfFile(null)
       setCreatedAt(new Date(data.created_at))
       setExistingPdfUrl(data.pdf_url || null)
@@ -161,6 +164,7 @@ const EditNote = () => {
         public_prayer_content: publicPrayerContent,
         private_prayer_content: prayerContent,
         visibility: visibility,
+        pdf_display: displayPdf,
         pdf_url: pdfUrl,
         mem_verse_display: addMemoryVerse,
         mem_verse_book: selectedMemBook,
@@ -462,6 +466,18 @@ const EditNote = () => {
                   onChange={handleFileChange}
                   className="mt-1 block w-full text-sm text-gray-900"
                 />
+              </div>
+
+              <div>
+                <label className="block mt-2 cursor-pointer text-gray-900">
+                  <input
+                    type="checkbox"
+                    checked={displayPdf}
+                    onChange={() => setDisplayPdf(!displayPdf)}
+                    className="mr-1 cursor-pointer"
+                  />
+                  Make PDF Visible to Others?
+                </label>
               </div>
 
               <div>
