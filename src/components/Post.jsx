@@ -67,7 +67,7 @@ const Post = ({ note }) => {
         (
           <div className="flex items-center gap-3">
             <img
-              src="/src/assets/logo.png"
+              src="https://fkyfymxgbyyznrctanvs.supabase.co/storage/v1/object/public/profile-pictures/avatars/default.png"
               alt="profile"
               className="w-10 h-10 rounded-full object-cover border border-gray-300"
             />

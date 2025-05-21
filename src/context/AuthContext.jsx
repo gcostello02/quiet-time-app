@@ -94,7 +94,7 @@ export const AuthContextProvider = ({ children }) => {
           {
             id: data.user.id,
             username, 
-            avatar_url: "https://fkyfymxgbyyznrctanvs.supabase.co/storage/v1/object/public/profile-pictures/avatars/logo.png"
+            avatar_url: "https://fkyfymxgbyyznrctanvs.supabase.co/storage/v1/object/public/profile-pictures/avatars/default.png"
           },
         ]);
       

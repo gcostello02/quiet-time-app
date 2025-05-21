@@ -50,7 +50,7 @@ const EditProfile = () => {
       setDescription(profile.description || "");
       setPreviewUrl(
         profile.avatar_url ||
-          "https://fkyfymxgbyyznrctanvs.supabase.co/storage/v1/object/public/profile-pictures/avatars/logo.png"
+          "https://fkyfymxgbyyznrctanvs.supabase.co/storage/v1/object/public/profile-pictures/avatars/default.png"
       );
       setName(profile.name || "");
       setPrayer(profile.prayer_req || "");

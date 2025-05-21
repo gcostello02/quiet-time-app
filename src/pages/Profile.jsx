@@ -97,7 +97,7 @@ const ProfilePage = () => {
           <div className="bg-white shadow rounded-xl p-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-6 space-y-4 sm:space-y-0">
               <img 
-                src={profile.avatar_url || "https://fkyfymxgbyyznrctanvs.supabase.co/storage/v1/object/public/profile-pictures/avatars/logo.png"} 
+                src={profile.avatar_url || "https://fkyfymxgbyyznrctanvs.supabase.co/storage/v1/object/public/profile-pictures/avatars/default.png"} 
                 alt="Profile Avatar" 
                 className="w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-gray-300 self-center sm:self-auto" 
               />
