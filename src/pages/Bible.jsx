@@ -81,11 +81,18 @@ const Bible = () => {
             <h3 className="text-lg font-semibold text-gray-900">
               {selectedBook} {selectedChapter}
             </h3>
+            <h3 className="text-md font-semibold text-gray-900">
+              {esvData[selectedBook][selectedChapter][0].verse === 0 ? esvData[selectedBook][selectedChapter][0].text : ""}
+            </h3>
+            <p className="text-gray-900 italic">
+              {esvData[selectedBook][selectedChapter][1].verse === -1 ? esvData[selectedBook][selectedChapter][1].text : ""}
+            </p>
             <div className="mt-2 space-y-2">
               {esvData[selectedBook][selectedChapter].map((verse) => (
+                verse.verse !== 0 && verse.verse !== -1 ?
                 <p key={verse.verse} className="text-gray-900">
                   <strong>{verse.verse}</strong> {verse.text}
-                </p>
+                </p> : <></>
               ))}
             </div>
           </div>

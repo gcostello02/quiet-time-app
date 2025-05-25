@@ -536,19 +536,27 @@ const Notes = () => {
                   Enduring Word Commentary for {selectedBook} {selectedChapter}
                 </a>
               </div>
-
+              
               <div className="max-w-3xl mx-auto bg-white p-4 rounded-xl shadow">
                 <h3 className="text-lg font-semibold text-gray-900">
                   {selectedBook} {selectedChapter}
                 </h3>
+                <h3 className="text-md font-semibold text-gray-900">
+                  {esvData[selectedBook][selectedChapter][0].verse === 0 ? esvData[selectedBook][selectedChapter][0].text : ""}
+                </h3>
+                <p className="text-gray-900 italic">
+                  {esvData[selectedBook][selectedChapter][1].verse === -1 ? esvData[selectedBook][selectedChapter][1].text : ""}
+                </p>
                 <div className="mt-2 space-y-2">
                   {esvData[selectedBook][selectedChapter].map((verse) => (
+                    verse.verse !== 0 && verse.verse !== -1 ?
                     <p key={verse.verse} className="text-gray-900">
                       <strong>{verse.verse}</strong> {verse.text}
-                    </p>
+                    </p> : <></>
                   ))}
                 </div>
               </div>
+
               <div className="mt-4 text-center text-sm text-gray-600 px-4">
                 The Holy Bible, English Standard Version. ESV® Text Edition: 2016. Copyright © 2001 by{" "}
                 <a
