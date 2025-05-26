@@ -160,7 +160,7 @@ const Notes = () => {
     }
 
     setLoading(false)
-    navigate("/")
+    navigate("/feed")
   }
 
   if (loading) {

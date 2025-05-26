@@ -4,6 +4,7 @@ import { UserAuth } from "../context/AuthContext"
 import { supabase } from "../supabaseClient"
 import Post from "../components/Post"
 import Footer from "../components/Footer"
+import { useNavigate } from "react-router-dom";
 
 const Feed = () => {
   const { session } = UserAuth()
@@ -12,15 +13,40 @@ const Feed = () => {
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
   const containerRef = useRef(null)
+  const [today, setToday] = useState(false)
+  const navigate = useNavigate();
 
   const POSTS_LIMIT = 5
 
   useEffect(() => {
     if (session?.user?.id) {
+      fetchCompletedToday()
       fetchPosts(page)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.user?.id])
+
+  const fetchCompletedToday = async () => {
+    const { data: dateData } = await supabase
+      .from("notes")
+      .select("created_at")
+      .eq("user_id", session?.user?.id);
+
+    if (dateData) {
+      const dates = dateData.map(n => new Date(n.created_at));
+      const today = new Date(); 
+      const todayStr = today.toLocaleDateString(); 
+
+      const dateSet = new Set(dates.map(date => date.toLocaleDateString()));
+
+      if (!dateSet.has(todayStr)) {
+        setToday(false)
+      }
+      else {
+        setToday(true)
+      }
+    }
+  }
 
   const fetchPosts = async (pageNum) => {
     setLoading(true);
@@ -110,16 +136,41 @@ const Feed = () => {
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <Navbar />
       <main className="flex-grow" ref={containerRef}>
-        <div className="max-w-2xl mx-auto p-6 space-y-8">
-          {posts.map((post) => (
-            <Post note={post} key={post.id} />
-          ))}
-          {loading && (
-            <div className="flex justify-center items-center mt-5">
-              <div className="spinner-border animate-spin h-8 w-8 border-4 border-t-transparent border-indigo-600 rounded-full"></div>
+        {!today && (
+          <div className="max-w-5xl mx-auto p-6 space-y-8">
+            <div className="bg-white p-6 rounded-xl shadow">
+              <h2 className="text-center text-3xl font-bold text-gray-900 mb-2">
+                🚨 It Looks Like You Haven't Done Your TAWG Yet 🚨
+              </h2>
+              <p className="text-center font-bold text-gray-700">
+                You must do your TAWG before viewing the Feed
+              </p>
+              <p className="text-center font-bold text-gray-700">
+                Click the button and do it right now!
+              </p>
+              <div className="flex justify-center mt-4">
+                <button
+                  onClick={() => navigate("/tawg")}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-md shadow-md"
+                >
+                  Let's Go
+                </button>
+              </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
+        {today && (
+          <div className="max-w-2xl mx-auto p-6 space-y-8">
+            {posts.map((post) => (
+              <Post note={post} key={post.id} />
+            ))}
+            {loading && (
+              <div className="flex justify-center items-center mt-5">
+                <div className="spinner-border animate-spin h-8 w-8 border-4 border-t-transparent border-indigo-600 rounded-full"></div>
+              </div>
+            )}
+          </div>
+        )}
       </main>
       <Footer />
     </div>
