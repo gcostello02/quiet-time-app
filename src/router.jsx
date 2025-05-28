@@ -19,6 +19,7 @@ import OtherProfilePage from "./pages/OtherProfiles";
 import DetailedOtherNote from "./pages/DetailedOtherNote";
 import Unauthorized from "./pages/Unauthorized";
 import Information from "./pages/Information";
+import Accountability from "./pages/Accountability";
 
 export const router = createBrowserRouter([
   { path: "/", element: <Dashboard /> },
@@ -109,5 +110,13 @@ export const router = createBrowserRouter([
         <Unauthorized />
       </PrivateRoute>
     )
-  }
+  },
+  {
+    path: "/accountability",
+    element: (
+      <PrivateRoute>
+        <Accountability />
+      </PrivateRoute>
+    )
+  },
 ]);

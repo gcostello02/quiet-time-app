@@ -5,6 +5,7 @@ import { supabase } from "../supabaseClient"
 import Post from "../components/Post"
 import Footer from "../components/Footer"
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Feed = () => {
   const { session } = UserAuth()
@@ -15,16 +16,24 @@ const Feed = () => {
   const containerRef = useRef(null)
   const [today, setToday] = useState(false)
   const navigate = useNavigate();
+  const [numFriendsDone, setNumFriendsDone] = useState(0)
 
   const POSTS_LIMIT = 5
 
   useEffect(() => {
     if (session?.user?.id) {
       fetchCompletedToday()
-      fetchPosts(page)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.user?.id])
+
+  useEffect(() => {
+    if (session?.user?.id && today) {
+      fetchFriendsDone()
+      fetchPosts(page)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [today, session?.user?.id])
 
   const fetchCompletedToday = async () => {
     const { data: dateData } = await supabase
@@ -99,7 +108,7 @@ const Feed = () => {
     setHasMore(hasMorePosts);
     setPage(pageNum);
     setLoading(false);
-  };  
+  }
 
   const fetchFriendIds = async () => {
     const { data: friendsData, error } = await supabase
@@ -115,13 +124,41 @@ const Feed = () => {
     return friendsData.map((f) => f.friend_id)
   }
 
+  const fetchFriendsDone = async () => {
+    setLoading(true);
+
+    const friendIds = await fetchFriendIds();
+    const todayStr = new Date().toLocaleDateString();
+
+    const doneChecks = await Promise.all(
+      friendIds.map(async (id) => {
+        const { data } = await supabase
+          .from("notes")
+          .select("created_at")
+          .eq("user_id", id);
+
+        if (data) {
+          const dateSet = new Set(data.map(n => new Date(n.created_at).toLocaleDateString()));
+          return dateSet.has(todayStr);
+        }
+
+        return false;
+      })
+    );
+
+    const totalDone = doneChecks.filter(Boolean).length;
+    setNumFriendsDone(totalDone);
+    setLoading(false);
+  }
+
   useEffect(() => {
     const handleScroll = () => {
       if (
         containerRef.current &&
         window.innerHeight + window.scrollY >= containerRef.current.offsetHeight &&
         hasMore &&
-        !loading
+        !loading &&
+        today
       ) {
         fetchPosts(page + 1)
       }
@@ -130,7 +167,7 @@ const Feed = () => {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, hasMore, loading])
+  }, [page, hasMore, loading, today])
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
@@ -160,7 +197,25 @@ const Feed = () => {
           </div>
         )}
         {today && (
-          <div className="max-w-2xl mx-auto p-6 space-y-8">
+          <div className="max-w-4xl mx-auto pr-6 pl-6 pt-6">
+            <div className="bg-white shadow rounded-xl p-4 mx-auto">
+              <h2 className="text-center text-5xl font-bold text-gray-900 mb-2">
+                {numFriendsDone}
+              </h2>
+              <p className="text-center text-xl font-bold text-gray-700">
+                of your friends have done their TAWG today
+              </p>
+              <Link
+                to={"/accountability"}
+                className="text-indigo-600 text-center font-bold flex justify-center text-xl hover:underline mt-1"
+              >
+                Click here to check on your friends' progress and hold them accountable!
+              </Link>
+            </div>
+          </div>
+        )}
+        {today && (
+          <div className="max-w-2xl mx-auto pb-6 pr-6 pl-6 space-y-8">
             {posts.map((post) => (
               <Post note={post} key={post.id} />
             ))}
