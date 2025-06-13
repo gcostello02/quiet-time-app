@@ -20,6 +20,7 @@ import DetailedOtherNote from "./pages/DetailedOtherNote";
 import Unauthorized from "./pages/Unauthorized";
 import Information from "./pages/Information";
 import Accountability from "./pages/Accountability";
+import Progress from "./pages/Progress";
 
 export const router = createBrowserRouter([
   { path: "/", element: <Dashboard /> },
@@ -116,6 +117,14 @@ export const router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <Accountability />
+      </PrivateRoute>
+    )
+  },
+  {
+    path: "/progress",
+    element: (
+      <PrivateRoute>
+        <Progress />
       </PrivateRoute>
     )
   },
