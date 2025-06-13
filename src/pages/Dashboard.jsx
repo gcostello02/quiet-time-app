@@ -210,6 +210,19 @@ const Dashboard = () => {
             </p>
           </div>
 
+          <div className="bg-white p-6 rounded-xl shadow text-center">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">📊 Track Your Bible Reading</h2>
+            <p className="text-gray-700 mb-4">
+              See how much of the Bible you've read and track your progress book by book!
+            </p>
+            <button
+              onClick={() => navigate("/progress")}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-md shadow hover:bg-indigo-700"
+            >
+              View Bible Progress
+            </button>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <LinkList
               title="📖 Reading Plans"
