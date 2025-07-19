@@ -18,7 +18,7 @@ const Feed = () => {
   const navigate = useNavigate();
   const [numFriendsDone, setNumFriendsDone] = useState(0)
 
-  const POSTS_LIMIT = 5
+  const POSTS_LIMIT = 10
 
   useEffect(() => {
     if (session?.user?.id) {
@@ -30,7 +30,7 @@ const Feed = () => {
   useEffect(() => {
     if (session?.user?.id && today) {
       fetchFriendsDone()
-      fetchPosts(page)
+      fetchPosts(1) // Always start with page 1
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [today, session?.user?.id])
@@ -96,7 +96,8 @@ const Feed = () => {
       }
     });
   
-    const allPosts = [...posts, ...filteredPosts];
+    // If it's page 1, replace all posts. Otherwise, append new posts
+    const allPosts = pageNum === 1 ? filteredPosts : [...posts, ...filteredPosts];
   
     const uniquePosts = Array.from(new Set(allPosts.map(post => post.id)))
       .map(id => allPosts.find(post => post.id === id));
@@ -151,23 +152,11 @@ const Feed = () => {
     setLoading(false);
   }
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        containerRef.current &&
-        window.innerHeight + window.scrollY >= containerRef.current.offsetHeight &&
-        hasMore &&
-        !loading &&
-        today
-      ) {
-        fetchPosts(page + 1)
-      }
+  const handleShowMore = () => {
+    if (hasMore && !loading) {
+      fetchPosts(page + 1);
     }
-
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, hasMore, loading, today])
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
@@ -222,6 +211,16 @@ const Feed = () => {
             {loading && (
               <div className="flex justify-center items-center mt-5">
                 <div className="spinner-border animate-spin h-8 w-8 border-4 border-t-transparent border-indigo-600 rounded-full"></div>
+              </div>
+            )}
+            {hasMore && !loading && (
+              <div className="flex justify-center mt-6">
+                <button
+                  onClick={handleShowMore}
+                  className="px-6 py-3 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition-colors duration-200 font-semibold"
+                >
+                  Show More
+                </button>
               </div>
             )}
           </div>

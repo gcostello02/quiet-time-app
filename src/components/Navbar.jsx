@@ -72,7 +72,7 @@ export default function Navbar() {
                     key={item.name}
                     to={item.href}
                     className={classNames(
-                      "px-3 py-2 text-sm font-medium rounded-md border-b-2 border-transparent",
+                      "px-3 py-2 text-sm font-medium rounded-md border-b-2 border-white",
                       location.pathname === item.href
                         ? "bg-indigo-600 text-white border-indigo-600"
                         : "text-gray-900 hover:bg-gray-100 hover:text-black"
