@@ -6,19 +6,27 @@ import Post from "../components/Post"
 import Footer from "../components/Footer"
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import chaptersData from "../data/Chapters.json";
 
 const Feed = () => {
   const { session } = UserAuth()
   const [loading, setLoading] = useState(true)
   const [posts, setPosts] = useState([])
-  const [page, setPage] = useState(1)
+  const [allPosts, setAllPosts] = useState([]) // Store all posts for filtering
   const [hasMore, setHasMore] = useState(true)
   const containerRef = useRef(null)
   const [today, setToday] = useState(false)
   const navigate = useNavigate();
   const [numFriendsDone, setNumFriendsDone] = useState(0)
+  
+  // Filter state
+  const [selectedBook, setSelectedBook] = useState("")
+  const [selectedChapter, setSelectedChapter] = useState("")
+  const [availableChapters, setAvailableChapters] = useState([])
+  const [filteredPosts, setFilteredPosts] = useState([]) // Store filtered posts
 
   const POSTS_LIMIT = 10
+  const books = Object.keys(chaptersData)
 
   useEffect(() => {
     if (session?.user?.id) {
@@ -30,10 +38,79 @@ const Feed = () => {
   useEffect(() => {
     if (session?.user?.id && today) {
       fetchFriendsDone()
-      fetchPosts(1) // Always start with page 1
+      fetchPosts() // Always start with page 1
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [today, session?.user?.id])
+
+  // Update available chapters when book changes
+  useEffect(() => {
+    if (selectedBook) {
+      const chapters = [];
+      for (let i = 1; i <= chaptersData[selectedBook]; i++) {
+        chapters.push(i);
+      }
+      setAvailableChapters(chapters);
+      setSelectedChapter(""); // Reset chapter when book changes
+    } else {
+      setAvailableChapters([]);
+      setSelectedChapter("");
+    }
+  }, [selectedBook]);
+
+  // Filter posts when filter changes
+  useEffect(() => {
+    if (allPosts.length > 0) {
+      filterPosts();
+    }
+  }, [selectedBook, selectedChapter, allPosts]);
+
+  const filterPosts = async () => {
+    if (!selectedBook && !selectedChapter) {
+      // No filter applied, show all posts
+      setFilteredPosts(allPosts);
+      setPosts(allPosts.slice(0, POSTS_LIMIT));
+      setHasMore(allPosts.length > POSTS_LIMIT);
+      return;
+    }
+
+    // Get all posts with their references for filtering
+    const postsWithReferences = await Promise.all(
+      allPosts.map(async (post) => {
+        const { data: references } = await supabase
+          .from('note_references')
+          .select('book, chapter')
+          .eq('note_id', post.id);
+        
+        return {
+          ...post,
+          references: references || []
+        };
+      })
+    );
+
+    // Filter posts based on selected book and chapter
+    const filtered = postsWithReferences.filter(post => {
+      if (!post.references || post.references.length === 0) {
+        return false; // Skip posts without references when filter is active
+      }
+
+      return post.references.some(ref => {
+        const bookMatches = !selectedBook || ref.book === selectedBook;
+        const chapterMatches = !selectedChapter || ref.chapter === parseInt(selectedChapter);
+        return bookMatches && chapterMatches;
+      });
+    });
+
+    setFilteredPosts(filtered);
+    setPosts(filtered.slice(0, POSTS_LIMIT));
+    setHasMore(filtered.length > POSTS_LIMIT);
+  };
+
+  const clearFilters = () => {
+    setSelectedBook("");
+    setSelectedChapter("");
+  };
 
   const fetchCompletedToday = async () => {
     const { data: dateData } = await supabase
@@ -57,20 +134,18 @@ const Feed = () => {
     }
   }
 
-  const fetchPosts = async (pageNum) => {
+  const fetchPosts = async () => {
     setLoading(true);
   
     const friendIds = await fetchFriendIds();
     friendIds.push(session.user.id);
   
-    const offset = (pageNum - 1) * POSTS_LIMIT;
-  
+    // Fetch all posts instead of paginating
     const { data: newPosts, error } = await supabase
       .from("notes")
       .select("*")
       .in("visibility", ["public_all", "public_friends", "private_anonymous"])
-      .order("created_at", { ascending: false })
-      .range(offset, offset + POSTS_LIMIT - 1);
+      .order("created_at", { ascending: false });
   
     if (error) {
       console.error("Error fetching posts:", error);
@@ -96,18 +171,20 @@ const Feed = () => {
       }
     });
   
-    // If it's page 1, replace all posts. Otherwise, append new posts
-    const allPosts = pageNum === 1 ? filteredPosts : [...posts, ...filteredPosts];
+    const uniquePosts = Array.from(new Set(filteredPosts.map(post => post.id)))
+      .map(id => filteredPosts.find(post => post.id === id));
   
-    const uniquePosts = Array.from(new Set(allPosts.map(post => post.id)))
-      .map(id => allPosts.find(post => post.id === id));
+    setAllPosts(uniquePosts);
+    
+    // Apply current filter to the new data
+    if (!selectedBook && !selectedChapter) {
+      setPosts(uniquePosts.slice(0, POSTS_LIMIT));
+      setHasMore(uniquePosts.length > POSTS_LIMIT);
+    } else {
+      // Filter will be applied in the useEffect
+      setHasMore(uniquePosts.length > POSTS_LIMIT);
+    }
   
-    setPosts(uniquePosts);
-  
-    const hasMorePosts = filteredPosts.length >= POSTS_LIMIT;
-  
-    setHasMore(hasMorePosts);
-    setPage(pageNum);
     setLoading(false);
   }
 
@@ -154,7 +231,11 @@ const Feed = () => {
 
   const handleShowMore = () => {
     if (hasMore && !loading) {
-      fetchPosts(page + 1);
+      const currentPosts = selectedBook || selectedChapter ? filteredPosts : allPosts;
+      const currentCount = posts.length;
+      const nextPosts = currentPosts.slice(currentCount, currentCount + POSTS_LIMIT);
+      setPosts([...posts, ...nextPosts]);
+      setHasMore(currentCount + POSTS_LIMIT < currentPosts.length);
     }
   }
 
@@ -204,7 +285,76 @@ const Feed = () => {
           </div>
         )}
         {today && (
-          <div className="max-w-2xl mx-auto pb-6 pr-6 pl-6 space-y-8">
+          <div className="max-w-2xl mx-auto p-6 space-y-8">
+            {/* Bible Filter */}
+            <div className="bg-white shadow rounded-xl p-4">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex-1">
+                  <label htmlFor="book-select" className="block text-sm font-medium text-gray-700 mb-1">
+                    Book
+                  </label>
+                  <select
+                    id="book-select"
+                    value={selectedBook}
+                    onChange={(e) => setSelectedBook(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  >
+                    <option value="">All Books</option>
+                    {books.map((book) => (
+                      <option key={book} value={book}>
+                        {book.replace(/_/g, " ")}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div className="flex-1">
+                  <label htmlFor="chapter-select" className="block text-sm font-medium text-gray-700 mb-1">
+                    Chapter
+                  </label>
+                  <select
+                    id="chapter-select"
+                    value={selectedChapter}
+                    onChange={(e) => setSelectedChapter(e.target.value)}
+                    disabled={!selectedBook}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  >
+                    <option value="">All Chapters</option>
+                    {availableChapters.map((chapter) => (
+                      <option key={chapter} value={chapter}>
+                        {chapter}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div className="flex items-end">
+                  <button
+                    onClick={clearFilters}
+                    className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-gray-600 transition-colors duration-200 text-sm font-medium"
+                  >
+                    Clear
+                  </button>
+                </div>
+              </div>
+              
+              {(selectedBook || selectedChapter) && (
+                <div className="mt-3 text-sm text-gray-600">
+                  <span className="font-medium">Active filters:</span>
+                  {selectedBook && (
+                    <span className="ml-2 px-2 py-1 bg-indigo-100 text-indigo-800 rounded text-xs">
+                      {selectedBook.replace(/_/g, " ")}
+                    </span>
+                  )}
+                  {selectedChapter && (
+                    <span className="ml-2 px-2 py-1 bg-indigo-100 text-indigo-800 rounded text-xs">
+                      Chapter {selectedChapter}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+
             {posts.map((post) => (
               <Post note={post} key={post.id} />
             ))}
