@@ -4,13 +4,25 @@ import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { supabase } from "../supabaseClient";
 import Footer from "../components/Footer";
+import chaptersData from "../data/Chapters.json";
 
 const ProfilePage = () => {
   const { session, profile } = UserAuth();
   const [loading, setLoading] = useState(true);
   const [streak, setStreak] = useState(0);
   const [notes, setNotes] = useState([]);
+  const [allNotes, setAllNotes] = useState([]); // Store all notes for filtering
   const [visibleCount, setVisibleCount] = useState(9);
+  
+  // Filter state
+  const [selectedBook, setSelectedBook] = useState("");
+  const [selectedChapter, setSelectedChapter] = useState("");
+  const [availableChapters, setAvailableChapters] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
+
+  const books = Object.keys(chaptersData);
 
   useEffect(() => {
     if (profile) {
@@ -67,6 +79,7 @@ const ProfilePage = () => {
         .order("created_at", { ascending: false });
 
       if (!error) {
+        setAllNotes(data);
         setNotes(data);
       }
     };
@@ -74,6 +87,70 @@ const ProfilePage = () => {
     fetchStats();
     fetchNotes();
   }, [profile, session.user.id]);
+
+  // Update available chapters when book changes
+  useEffect(() => {
+    if (selectedBook) {
+      const chapters = [];
+      for (let i = 1; i <= chaptersData[selectedBook]; i++) {
+        chapters.push(i);
+      }
+      setAvailableChapters(chapters);
+      setSelectedChapter(""); // Reset chapter when book changes
+    } else {
+      setAvailableChapters([]);
+      setSelectedChapter("");
+    }
+  }, [selectedBook]);
+
+  // Filter notes when filter changes
+  useEffect(() => {
+    if (allNotes.length > 0) {
+      filterNotes();
+    }
+  }, [selectedBook, selectedChapter, startDate, endDate, allNotes]);
+
+  const filterNotes = () => {
+    let filtered = allNotes;
+
+    // Filter by Bible reference
+    if (selectedBook || selectedChapter) {
+      filtered = filtered.filter(note => {
+        if (!note.note_references || note.note_references.length === 0) {
+          return false; // Skip notes without references when filter is active
+        }
+
+        return note.note_references.some(ref => {
+          const bookMatches = !selectedBook || ref.book === selectedBook;
+          const chapterMatches = !selectedChapter || ref.chapter === parseInt(selectedChapter);
+          return bookMatches && chapterMatches;
+        });
+      });
+    }
+
+    // Filter by date range
+    if (startDate || endDate) {
+      filtered = filtered.filter(note => {
+        const noteDate = new Date(note.created_at);
+        const noteDateStr = noteDate.toISOString().split('T')[0]; // YYYY-MM-DD format
+        
+        const startMatch = !startDate || noteDateStr >= startDate;
+        const endMatch = !endDate || noteDateStr <= endDate;
+        
+        return startMatch && endMatch;
+      });
+    }
+
+    setNotes(filtered);
+    setVisibleCount(9);
+  };
+
+  const clearFilters = () => {
+    setSelectedBook("");
+    setSelectedChapter("");
+    setStartDate("");
+    setEndDate("");
+  };
 
   if (loading) {
     return (
@@ -162,8 +239,158 @@ const ProfilePage = () => {
             <div className="mt-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Your TAWG Entries:</h3>
 
+              {/* Filter Section */}
+              <div className="bg-white shadow rounded-xl p-4 mb-4 border">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-md font-semibold text-gray-900">Filter</h4>
+                  <button
+                    onClick={() => setShowFilters(!showFilters)}
+                    className="text-indigo-600 focus:outline-none"
+                    type="button"
+                  >
+                    <svg
+                      className={`w-5 h-5 transition-transform duration-200 ${showFilters ? 'rotate-180' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Active Filters Display - Always visible */}
+                {(selectedBook || selectedChapter || startDate || endDate) && (
+                  <div className="mb-3 text-sm text-gray-600">
+                    <span className="font-medium">Active filters:</span>
+                    {selectedBook && (
+                      <span className="ml-2 px-2 py-1 bg-indigo-100 text-indigo-800 rounded text-xs">
+                        {selectedBook.replace(/_/g, " ")}
+                      </span>
+                    )}
+                    {selectedChapter && (
+                      <span className="ml-2 px-2 py-1 bg-indigo-100 text-indigo-800 rounded text-xs">
+                        Chapter {selectedChapter}
+                      </span>
+                    )}
+                    {startDate && (
+                      <span className="ml-2 px-2 py-1 bg-indigo-100 text-indigo-800 rounded text-xs">
+                        From {new Date(startDate).toLocaleDateString()}
+                      </span>
+                    )}
+                    {endDate && (
+                      <span className="ml-2 px-2 py-1 bg-indigo-100 text-indigo-800 rounded text-xs">
+                        To {new Date(endDate).toLocaleDateString()}
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {/* Collapsible Filter Options */}
+                {showFilters && (
+                  <div className="border-t pt-4">
+                    {/* Bible Reference Filter */}
+                    <div className="mb-4">
+                      <h5 className="text-sm font-medium text-gray-700 mb-2">Bible Reference</h5>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <div className="flex-1">
+                          <label htmlFor="book-select" className="block text-xs text-gray-600 mb-1">
+                            Book
+                          </label>
+                          <select
+                            id="book-select"
+                            value={selectedBook}
+                            onChange={(e) => setSelectedBook(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                          >
+                            <option value="">All Books</option>
+                            {books.map((book) => (
+                              <option key={book} value={book}>
+                                {book.replace(/_/g, " ")}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        
+                        <div className="flex-1">
+                          <label htmlFor="chapter-select" className="block text-xs text-gray-600 mb-1">
+                            Chapter
+                          </label>
+                          <select
+                            id="chapter-select"
+                            value={selectedChapter}
+                            onChange={(e) => setSelectedChapter(e.target.value)}
+                            disabled={!selectedBook}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed text-sm"
+                          >
+                            <option value="">All Chapters</option>
+                            {availableChapters.map((chapter) => (
+                              <option key={chapter} value={chapter}>
+                                {chapter}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Date Range Filter */}
+                    <div className="mb-4">
+                      <h5 className="text-sm font-medium text-gray-700 mb-2">Date Range</h5>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <div className="flex-1">
+                          <label htmlFor="start-date" className="block text-xs text-gray-600 mb-1">
+                            Start Date
+                          </label>
+                          <input
+                            type="date"
+                            id="start-date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                          />
+                        </div>
+                        
+                        <div className="flex-1">
+                          <label htmlFor="end-date" className="block text-xs text-gray-600 mb-1">
+                            End Date
+                          </label>
+                          <input
+                            type="date"
+                            id="end-date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Clear Button */}
+                    <div className="flex justify-end">
+                      <button
+                        onClick={clearFilters}
+                        className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors duration-200 text-sm font-medium"
+                      >
+                        Clear Filters
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {notes.length === 0 ? (
-                <p className="text-gray-500">Do your TAWG and they will show up here!</p>
+                <p className="text-gray-500">
+                  {selectedBook || selectedChapter || startDate || endDate
+                    ? "No TAWG entries match your filter criteria." 
+                    : "Do your TAWG and they will show up here!"}
+                </p>
               ) : (
                 <>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
