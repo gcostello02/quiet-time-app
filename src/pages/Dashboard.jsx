@@ -111,7 +111,7 @@ const Dashboard = () => {
           const isInternal = link.href.startsWith("/");
   
           return (
-            <li key={idx}>
+            <li key={idx} className="text-gray-900">
               {isInternal ? (
                 <Link
                   to={link.href}
@@ -246,25 +246,25 @@ const Dashboard = () => {
             <div className="bg-white p-6 rounded-xl shadow space-y-4">
               <h3 className="text-xl font-semibold text-gray-800">Why We Can Trust the Bible:</h3>
               <div>
-                <p className="font-semibold">📜 Historically Accurate</p>
+                <p className="font-semibold text-gray-900">📜 Historically Accurate</p>
                 <p className="text-gray-700">
                   2 Peter 1:16 - "For we did not follow cleverly devised myths when we made known to you the power and coming of our Lord Jesus Christ, but we were eyewitnesses of his majesty."
                 </p>
               </div>
               <div>
-                <p className="font-semibold">🔗 Internally Consistent</p>
+                <p className="font-semibold text-gray-900">🔗 Internally Consistent</p>
                 <p className="text-gray-700">
                   There are 63,779 cross-references as seen in the graph on the right, which shows that though the Bible is 66 books with 40 authors, it is one story inspired by the Holy Spirit.
                 </p>
               </div>
               <div>
-                <p className="font-semibold">🔮 Prophetically Accurate</p>
+                <p className="font-semibold text-gray-900">🔮 Prophetically Accurate</p>
                 <p className="text-gray-700">
                   2 Peter 1:21 - "For no prophecy was ever produced by the will of man, but men spoke from God as they were carried along by the Holy Spirit."
                 </p>
               </div>
               <div>
-                <p className="font-semibold">🙌 Jesus Approved</p>
+                <p className="font-semibold text-gray-900">🙌 Jesus Approved</p>
                 <p className="text-gray-700">
                   Romans 10:17 - "So faith comes from hearing, and hearing through the word of Christ."
                 </p>
