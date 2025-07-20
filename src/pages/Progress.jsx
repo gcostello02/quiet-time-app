@@ -10,6 +10,7 @@ const Progress = () => {
   // eslint-disable-next-line no-unused-vars
   const [references, setReferences] = useState([]);
   const [progressByBook, setProgressByBook] = useState({});
+  const [chapterCounts, setChapterCounts] = useState({});
   const [overallProgress, setOverallProgress] = useState(0);
 
   useEffect(() => {
@@ -28,15 +29,23 @@ const Progress = () => {
       setReferences(allRefs);
 
       const progress = {};
+      const counts = {};
       const seen = new Set();
 
       allRefs.forEach(({ book, chapter }) => {
+        // Track unique chapters for progress
         if (!progress[book]) progress[book] = new Set();
         progress[book].add(chapter);
         seen.add(`${book}-${chapter}`);
+
+        // Track chapter read counts
+        if (!counts[book]) counts[book] = {};
+        if (!counts[book][chapter]) counts[book][chapter] = 0;
+        counts[book][chapter]++;
       });
 
       setProgressByBook(progress);
+      setChapterCounts(counts);
 
       const totalChapters = Object.values(bibleChapters).reduce((a, b) => a + b, 0);
       const readChapters = seen.size;
@@ -85,14 +94,20 @@ const Progress = () => {
                     {Array.from({ length: total }, (_, i) => {
                       const chapter = i + 1;
                       const isRead = progressByBook[book]?.has(chapter);
+                      const readCount = chapterCounts[book]?.[chapter] || 0;
                       return (
                         <div
                           key={chapter}
-                          className={`w-8 h-8 flex items-center justify-center text-sm rounded-full border ${
+                          className={`w-8 h-8 flex items-center justify-center text-sm rounded-full border relative ${
                             isRead ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-600"
                           }`}
                         >
                           {chapter}
+                          {readCount > 1 && (
+                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-teal-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
+                              {readCount}
+                            </div>
+                          )}
                         </div>
                       );
                     })}
