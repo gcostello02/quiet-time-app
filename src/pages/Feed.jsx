@@ -297,7 +297,7 @@ const Feed = () => {
                     id="book-select"
                     value={selectedBook}
                     onChange={(e) => setSelectedBook(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900"
                   >
                     <option value="">All Books</option>
                     {books.map((book) => (
@@ -317,7 +317,7 @@ const Feed = () => {
                     value={selectedChapter}
                     onChange={(e) => setSelectedChapter(e.target.value)}
                     disabled={!selectedBook}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 disabled:bg-gray-100 disabled:cursor-not-allowed"
                   >
                     <option value="">All Chapters</option>
                     {availableChapters.map((chapter) => (

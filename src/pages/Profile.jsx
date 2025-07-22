@@ -240,16 +240,16 @@ const ProfilePage = () => {
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Your TAWG Entries:</h3>
 
               {/* Filter Section */}
-              <div className="bg-white shadow rounded-xl p-4 mb-4 border">
+              <div className="bg-white shadow rounded-xl p-4 mb-4 border" style={{ backgroundColor: '#fff', color: '#1a202c' }}>
                 <div className="flex items-center justify-between">
                   <h4 className="text-md font-semibold text-gray-900">Filter</h4>
                   <button
                     onClick={() => setShowFilters(!showFilters)}
-                    className="text-indigo-600 focus:outline-none"
+                    className="text-indigo-600 bg-white focus:outline-none"
                     type="button"
                   >
                     <svg
-                      className={`w-5 h-5 transition-transform duration-200 ${showFilters ? 'rotate-180' : ''}`}
+                      className={`w-5 h-5transition-transform duration-200 ${showFilters ? 'rotate-180' : ''}`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -294,7 +294,7 @@ const ProfilePage = () => {
 
                 {/* Collapsible Filter Options */}
                 {showFilters && (
-                  <div className="border-t pt-4">
+                  <div className="border-t pt-4" style={{ backgroundColor: '#fff', color: '#1a202c' }}>
                     {/* Bible Reference Filter */}
                     <div className="mb-4">
                       <h5 className="text-sm font-medium text-gray-700 mb-2">Bible Reference</h5>
@@ -307,7 +307,8 @@ const ProfilePage = () => {
                             id="book-select"
                             value={selectedBook}
                             onChange={(e) => setSelectedBook(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                            className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-900 text-sm"
+                            style={{ backgroundColor: '#fff', color: '#1a202c' }}
                           >
                             <option value="">All Books</option>
                             {books.map((book) => (
@@ -327,7 +328,8 @@ const ProfilePage = () => {
                             value={selectedChapter}
                             onChange={(e) => setSelectedChapter(e.target.value)}
                             disabled={!selectedBook}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed text-sm"
+                            className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-900 text-sm"
+                            style={{ backgroundColor: '#fff', color: '#1a202c' }}
                           >
                             <option value="">All Chapters</option>
                             {availableChapters.map((chapter) => (
@@ -354,6 +356,7 @@ const ProfilePage = () => {
                             value={startDate}
                             onChange={(e) => setStartDate(e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                            style={{ backgroundColor: '#fff', color: '#1a202c' }}
                           />
                         </div>
                         
@@ -367,6 +370,7 @@ const ProfilePage = () => {
                             value={endDate}
                             onChange={(e) => setEndDate(e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                            style={{ backgroundColor: '#fff', color: '#1a202c' }}
                           />
                         </div>
                       </div>
@@ -377,6 +381,7 @@ const ProfilePage = () => {
                       <button
                         onClick={clearFilters}
                         className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors duration-200 text-sm font-medium"
+                        style={{ backgroundColor: '#6366f1', color: '#fff' }}
                       >
                         Clear Filters
                       </button>

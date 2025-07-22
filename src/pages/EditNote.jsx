@@ -204,9 +204,9 @@ const EditNote = () => {
   const enduringWord = selectedBook === 'Psalms' ? "https://enduringword.com/bible-commentary/psalm-" + selectedChapter + "/" : "https://enduringword.com/bible-commentary/" + selectedBook + "-" + selectedChapter + "/"
 
   return (
-    <div className="h-screen bg-gray-100 flex flex-col overflow-hidden">
+    <div className="lg:h-screen bg-gray-100 flex flex-col lg:overflow-hidden">
       <Navbar />
-      <main className="flex-1 flex overflow-hidden">
+      <main className="flex-1 flex lg:overflow-hidden">
         {/* Responsive Layout */}
         <div className="flex flex-col lg:flex-row w-full">
           {/* Left Side - Edit TAWG Form */}
@@ -487,7 +487,7 @@ const EditNote = () => {
                   </select>
                 </div>
 
-                <div className="flex flex-col lg:flex-row lg:justify-evenly mt-2">
+                <div className="flex space-x-2 flex-row lg:justify-evenly mt-2">
                   <button
                     type="button"
                     onClick={() => navigate(`/my-entries/${noteId}`)}
@@ -520,7 +520,7 @@ const EditNote = () => {
           </div>
 
           {/* Right Side - Bible */}
-          <div className="w-full lg:w-1/2 overflow-y-auto p-6 bg-gray-50">
+          <div className="w-full lg:w-1/2 overflow-y-auto p-6">
             <div className="max-w-2xl mx-auto space-y-8">
               <div className="">
                 <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">

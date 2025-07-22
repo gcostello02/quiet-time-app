@@ -81,7 +81,7 @@ const Progress = () => {
               return (
                 <div key={book} className="bg-white rounded-xl shadow p-4 mb-4">
                   <div className="flex items-center justify-between mb-2">
-                    <h2 className="text-xl font-semibold">{book.replace(/_/g, " ")}</h2>
+                    <h2 className="text-xl text-gray-900 font-semibold">{book.replace(/_/g, " ")}</h2>
                     <span className="text-lg font-semibold text-gray-600">{percent}% read</span>
                   </div>
                   <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden mb-3">
