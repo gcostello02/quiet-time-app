@@ -1,0 +1,66 @@
+# Cloud Build: build from Secret Manager (env.yaml) or trigger substitution vars, then deploy to Cloud Run.
+# Project gcostello, region us-east4. Uses secret _ENV_SECRET by default; or set _VITE_SUPABASE_* in the trigger.
+
+substitutions:
+  _PROJECT_ID: gcostello
+  _REGION: us-east4
+  _REPO: quiet-time-app
+  _SERVICE: quiet-time-app
+  _ENV_SECRET: quiet-time-app-env
+  _VITE_SUPABASE_URL: ''
+  _VITE_SUPABASE_ANON_KEY: ''
+
+steps:
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    id: fetch-env
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        if [ -n "${_ENV_SECRET}" ]; then
+          gcloud secrets versions access latest --secret="${_ENV_SECRET}" > env.yaml
+        fi
+
+  - name: gcr.io/cloud-builders/docker
+    id: build
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        BUILD_ARGS=""
+        if [ -f env.yaml ]; then
+          while IFS= read -r line; do
+            [[ "$line" =~ ^#.*$ || -z "$line" ]] && continue
+            key="${line%%=*}"
+            val="${line#*=}"
+            BUILD_ARGS="$BUILD_ARGS --build-arg $key=$val"
+          done < env.yaml
+        else
+          [ -n "${_VITE_SUPABASE_URL}" ] && BUILD_ARGS="$BUILD_ARGS --build-arg VITE_SUPABASE_URL=${_VITE_SUPABASE_URL}"
+          [ -n "${_VITE_SUPABASE_ANON_KEY}" ] && BUILD_ARGS="$BUILD_ARGS --build-arg VITE_SUPABASE_ANON_KEY=${_VITE_SUPABASE_ANON_KEY}"
+        fi
+        docker build $BUILD_ARGS -t ${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO}/${_SERVICE}:latest .
+    waitFor: ['fetch-env']
+
+  - name: gcr.io/cloud-builders/docker
+    id: push
+    args:
+      - push
+      - ${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO}/${_SERVICE}:latest
+    waitFor: ['build']
+
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    id: deploy
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - ${_SERVICE}
+      - --image=${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO}/${_SERVICE}:latest
+      - --region=${_REGION}
+      - --platform=managed
+      - --allow-unauthenticated
+    waitFor: ['push']
+
+images:
+  - ${_REGION}-docker.pkg.dev/${_PROJECT_ID}/${_REPO}/${_SERVICE}:latest
