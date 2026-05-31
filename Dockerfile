@@ -15,7 +15,7 @@ ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
 
 RUN npm run build
 
-# Run stage: serve static files (Cloud Run sets PORT)
+# Run stage: serve static files (PORT defaults to 8080)
 FROM node:20-alpine
 WORKDIR /app
 RUN npm install -g serve

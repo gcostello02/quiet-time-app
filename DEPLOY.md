@@ -1,155 +1,79 @@
-# Deploying to Google Cloud Run
+# Deploying with Docker Compose (Linux)
 
-This app is a Vite + React SPA. It runs on **Cloud Run** using the repo’s `Dockerfile` and optional **Cloud Build** config.
-
-## Environment config
-
-- **Local / dev:** Use a **`.env`** file in the project root. Vite loads it for `npm run dev` and `npm run build`. Add:
-  ```env
-  VITE_SUPABASE_URL=https://your-project.supabase.co
-  VITE_SUPABASE_ANON_KEY=your-anon-key
-  ```
-- **Cloud Build:** Uses **Secret Manager** by default. Store your env as the secret `quiet-time-app-env` (same format as `env.yaml`: one `KEY=value` per line). Alternatively you can pass `_VITE_SUPABASE_URL` and `_VITE_SUPABASE_ANON_KEY` as trigger substitution variables.
+This app is a Vite + React SPA. On a Linux server, build and run it with **Docker Compose** using the repo `Dockerfile`.
 
 ## Prerequisites
 
-- A [Google Cloud project](https://console.cloud.google.com/)
-- [gcloud](https://cloud.google.com/sdk/docs/install) installed and logged in
-- Supabase values for production (in `.env` locally or in `env.yaml` / trigger for Cloud Build)
+- [Docker Engine](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/) on the target Linux machine
+- Supabase URL and anon key for production
 
-## 1. Set project and enable APIs
+## 1. Configure environment
 
-This repo is set up for project **gcostello** and region **us-east4** (see `cloudbuild.yaml`).
-
-```bash
-gcloud config set project gcostello
-gcloud services enable run.googleapis.com artifactregistry.googleapis.com cloudbuild.googleapis.com secretmanager.googleapis.com
-```
-
-## 2. Secret Manager (one-time)
-
-Cloud Build reads build-time env from the secret **`quiet-time-app-env`** (see `_ENV_SECRET` in `cloudbuild.yaml`).
-
-### Create the secret in Google Cloud Console
-
-1. Open [Secret Manager](https://console.cloud.google.com/security/secret-manager) in project **gcostello**.
-2. Click **Create secret**.
-3. **Name:** `quiet-time-app-env` (must match `_ENV_SECRET` in `cloudbuild.yaml`).
-4. **Secret value:** paste the following, then replace the placeholders with your real values (one `KEY=value` per line, no spaces around `=`):
-   ```
-   VITE_SUPABASE_URL=https://your-project.supabase.co
-   VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
-   ```
-5. Create the secret. Then grant Cloud Build access (see “Grant access” below).
-
-### Create the secret from a file (alternative)
-
-1. Create a local file with your values (same format as above):
-   ```bash
-   cp env.yaml.example env.yaml
-   # Edit env.yaml with real VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
-   ```
-2. Create the secret and grant access:
-   ```bash
-   gcloud secrets create quiet-time-app-env --data-file=env.yaml
-   ```
-   To add a new version later: `gcloud secrets versions add quiet-time-app-env --data-file=env.yaml`
-
-### Grant access
-
-After the secret exists (Console or gcloud), grant the Cloud Build service account permission to read it:
+From the repo root on the server:
 
 ```bash
-PROJECT_NUMBER=$(gcloud projects describe gcostello --format='value(projectNumber)')
-gcloud secrets add-iam-policy-binding quiet-time-app-env \
-  --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
-  --role="roles/secretmanager.secretAccessor"
+cp .env.example .env
 ```
 
-If the build still can’t access the secret, also grant the same role to:  
-`serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com`
+Edit `.env` and set:
 
-## 3. Create Artifact Registry repo (one-time)
+```env
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+```
+
+These values are baked into the client at **image build time**. After changing them, rebuild the image (see below).
+
+Optional: set `PORT` in `.env` to change the host port (default `8081`). The app inside the container always listens on `8080`.
+
+## 2. Build and run
 
 ```bash
-gcloud artifacts repositories create quiet-time-app \
-  --repository-format=docker \
-  --location=us-east4 \
-  --description="Docker repo for quiet-time-app"
+docker compose build
+docker compose up -d
 ```
 
-## 4. Deploy with Cloud Build (recommended)
+The app is available at `http://<server-ip>:8081` (or your chosen `PORT`).
 
-With Secret Manager set up, the build fetches `quiet-time-app-env` and uses it as `env.yaml` for the Docker build.
-
-**From your machine:**
-```bash
-gcloud builds submit --config=cloudbuild.yaml .
-```
-
-**From a trigger (e.g. on push):** Create a trigger that uses this repo and `cloudbuild.yaml`. The default substitution `_ENV_SECRET=quiet-time-app-env` is already in the config, so the build will use that secret. No need to set `_VITE_SUPABASE_*` unless you want to skip the secret and use substitution variables instead.
-
-To skip Secret Manager and use a local `env.yaml` when running manually, pass an empty secret name:
-```bash
-gcloud builds submit --config=cloudbuild.yaml --substitutions=_ENV_SECRET= .
-```
-(Your local `env.yaml` will be in the build context and used if the fetch step didn’t create one.)
-
-## 5. One-off deploy without Cloud Build
-
-If you prefer not to use `cloudbuild.yaml`:
-
-**Using `.env` (local):**
+## 3. View logs and stop
 
 ```bash
-# Ensure .env has VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
-npm run build
-# Then build the image; the Dockerfile expects build-args, so pass them from .env or export first:
-export $(grep -v '^#' .env | xargs)
-docker build \
-  --build-arg VITE_SUPABASE_URL="$VITE_SUPABASE_URL" \
-  --build-arg VITE_SUPABASE_ANON_KEY="$VITE_SUPABASE_ANON_KEY" \
-  -t us-east4-docker.pkg.dev/gcostello/quiet-time-app/quiet-time-app:latest .
-gcloud auth configure-docker us-east4-docker.pkg.dev
-docker push us-east4-docker.pkg.dev/gcostello/quiet-time-app/quiet-time-app:latest
-gcloud run deploy quiet-time-app \
-  --image us-east4-docker.pkg.dev/gcostello/quiet-time-app/quiet-time-app:latest \
-  --region us-east4 \
-  --platform managed \
-  --allow-unauthenticated
+docker compose logs -f
+docker compose down
 ```
 
-**Using `env.yaml`:**
+## 4. Update after code or env changes
+
+Pull the latest code, then:
 
 ```bash
-# Ensure env.yaml exists (copy from env.yaml.example)
-docker build --build-arg VITE_SUPABASE_URL="$(grep VITE_SUPABASE_URL env.yaml | cut -d= -f2-)" \
-  --build-arg VITE_SUPABASE_ANON_KEY="$(grep VITE_SUPABASE_ANON_KEY env.yaml | cut -d= -f2-)" \
-  -t us-east4-docker.pkg.dev/gcostello/quiet-time-app/quiet-time-app:latest .
-# ... push and deploy as above (us-east4-docker.pkg.dev, region us-east4)
+docker compose build
+docker compose up -d
 ```
 
-## 6. App URL
+If you only changed `.env` (Supabase values), you must run `docker compose build` again so Vite picks up the new build args.
 
-After deploy, Cloud Run prints the service URL. Or:
+## Local development (without Docker)
+
+Use a `.env` file in the project root (same variables as above). Vite loads it for `npm run dev` and `npm run build`:
 
 ```bash
-gcloud run services describe quiet-time-app --region us-east4 --format 'value(status.url)'
+npm install
+npm run dev
 ```
-
-**Note:** The IAM binding above grants the default compute service account access to the secret. If your build fails with a permission error, grant the same role to the Cloud Build service account: `gcloud secrets add-iam-policy-binding quiet-time-app-env --member="serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" --role="roles/secretmanager.secretAccessor"`.
-
-## Custom domain
-
-In [Cloud Run](https://console.cloud.google.com/run), open the service → **Manage custom domains**, then follow the DNS steps.
 
 ## Troubleshooting
 
 - **Blank page or Supabase errors**  
-  Rebuild with the correct `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` (via `.env` / `env.yaml` or trigger substitutions).
+  Confirm `.env` has the correct `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`, then run `docker compose build` and `docker compose up -d` again.
 
 - **404 on refresh or direct URLs**  
-  The image serves the SPA with `serve -s dist`; all routes should serve `index.html`. If not, confirm you’re using the repo’s Dockerfile and that the build completed.
+  The container serves the SPA with `serve -s dist`. If routes fail, confirm the image built successfully and you are using this repo’s `Dockerfile`.
 
-- **Permission denied on push**  
-  Run `gcloud auth configure-docker us-east4-docker.pkg.dev` and `gcloud auth login`.
+- **Port already in use**  
+  Set a different `PORT` in `.env` and run `docker compose up -d` again.
+
+## Production tips
+
+- Put **nginx** or **Caddy** in front of the container for HTTPS and a custom domain.
+- Open only the ports you need in the host firewall (e.g. `ufw allow 8081/tcp` if exposing the app directly).
